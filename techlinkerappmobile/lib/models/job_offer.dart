@@ -43,7 +43,34 @@ class JobOffer {
           location: "San Miguel, 123",
           image:
           "https://thetapacademy.com/wp-content/uploads/2022/10/full-stack-web-developer-1024x1024.jpg",
-          requirement: "Bachelor's degree in Computer Science or related field, or equivalent experience. 3+ years of experience in software development. Experience in developing web applications using at least one popular web framework (JSF, Wicket, GWT, Spring MVC). Experience with test-driven development.")
+          requirement: "Bachelor's degree in Computer Science or related field, or equivalent experience. 3+ years of experience in software development. Experience in developing web applications using at least one popular web framework (JSF, Wicket, GWT, Spring MVC). Experience with test-driven development."),
+          JobOffer(
+          id: "04",
+          title: "Mobile Developer",
+          description: "We are looking for a Mobile Developer who is motivated to combine the art of design with the art of programming. Responsibilities will include translation of the UI/UX design wireframes to actual code that will produce visual elements of the application. You will work with the UI/UX designer and bridge the gap between graphical design and technical implementation, taking an active role on both sides and defining how the application looks as well as how it works.",
+          company: "Apple",
+          location: "San Isidro, 243",
+          image:
+          "https://assets-global.website-files.com/6410ebf8e483b5bb2c86eb27/6410ebf8e483b5758186fbd8_ABM%20college%20mobile%20app%20dev%20main.jpg",
+          requirement: "Bachelor's degree in Computer Science or related field, or equivalent experience. 3+ years of experience in software development. Experience in developing web applications using at least one popular web framework (JSF, Wicket, GWT, Spring MVC). Experience with test-driven development."),
+      JobOffer(
+          id: "05",
+          title: "Data Scientist",
+          description: "We are looking for a Data Scientist who will support our product, sales, leadership and marketing teams with insights gained from analyzing company data. The ideal candidate is adept at using large data sets to find opportunities for product and process optimization and using models to test the effectiveness of different courses of action. They must have strong experience using a variety of data mining/data analysis methods, using a variety of data tools, building and implementing models, using/creating algorithms and creating/running simulations. They must have a proven ability to drive business results with their data-based insights. They must be comfortable working with a wide range of stakeholders and functional teams. The right candidate will have a passion for discovering solutions hidden in large data sets and working with stakeholders to improve business outcomes.",
+          company: "Google",
+          location: "San Isidro, 243",
+          image:
+          "https://www.analyticsinsight.net/wp-content/uploads/2021/08/7-Benefits-of-Data-Science.jpg",
+          requirement: "Bachelor's degree in Computer Science or related field, or equivalent experience. 3+ years of experience in software development. Experience in developing web applications using at least one popular web framework (JSF, Wicket, GWT, Spring MVC). Experience with test-driven development."),
+      JobOffer(
+          id: "06",
+          title: "DevOps Engineer",
+          description: "We are looking for a DevOps Engineer to help us build functional systems that improve customer experience. DevOps Engineer responsibilities include deploying product updates, identifying production issues and implementing integrations that meet customer needs. If you have a solid background in software engineering and are familiar with Ruby or Python, we’d like to meet you. Ultimately, you will execute and automate operational processes fast, accurately and securely.",
+          company: "Facebook",
+          location: "San Isidro, 100",
+          image:
+          "https://www.codemotion.com/magazine/wp-content/uploads/2020/09/devops-1024x527.png",
+          requirement: "Bachelor's degree in Computer Science or related field, or equivalent experience. 3+ years of experience in software development. Experience in developing web applications using at least one popular web framework (JSF, Wicket, GWT, Spring MVC). Experience with test-driven development."),
     ];
 
   }
