@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
+
 
 import '../constants/colors.dart';
 import 'home_company.dart';
