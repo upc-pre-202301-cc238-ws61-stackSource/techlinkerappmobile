@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/widgets/post_item.dart';
+import '../models/company_unique_post.dart';
 
 class CompanyProfile extends StatelessWidget {
   const CompanyProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final companyPosts = PostItem.allCompanyPosts();
+
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -36,7 +40,7 @@ class CompanyProfile extends StatelessWidget {
                   const SizedBox(
                     height: 17,
                   ),
-                  const Center(
+                  Center(
                       child: Icon(Icons.maps_home_work_outlined,
                           color: textColor, size: 150)),
                   const SizedBox(
@@ -57,10 +61,10 @@ class CompanyProfile extends StatelessWidget {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: textColor,
-                          fontSize: 21,
+                          fontSize: 20,
                           fontWeight: FontWeight.normal)),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: 30,
                   ),
                   Row(
                     children: [
@@ -71,7 +75,7 @@ class CompanyProfile extends StatelessWidget {
                             Container(
                               width: 37,
                               height: 37,
-                              child: const CircleAvatar(
+                              child: CircleAvatar(
                                 radius: 25,
                                 backgroundImage: NetworkImage(
                                     'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
@@ -82,7 +86,7 @@ class CompanyProfile extends StatelessWidget {
                               child: Container(
                                 width: 35,
                                 height: 35,
-                                child: const CircleAvatar(
+                                child: CircleAvatar(
                                   radius: 25,
                                   backgroundImage: NetworkImage(
                                       'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
@@ -94,7 +98,7 @@ class CompanyProfile extends StatelessWidget {
                               child: Container(
                                 width: 35,
                                 height: 35,
-                                child: const CircleAvatar(
+                                child: CircleAvatar(
                                   radius: 25,
                                   backgroundImage: NetworkImage(
                                       'https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
@@ -104,10 +108,10 @@ class CompanyProfile extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 10,
                       ),
-                      const Text(
+                      Text(
                         "+50 Developers in charge",
                         style: TextStyle(
                             color: textColor,
@@ -116,166 +120,12 @@ class CompanyProfile extends StatelessWidget {
                       )
                     ],
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 25,
                   ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Need a Full Stack Developer',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: const [
-                                          Icon(Icons.location_on),
-                                          SizedBox(width: 8),
-                                          Text('New York, NY'),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        children: const [
-                                          CircleAvatar(
-                                            radius: 10,
-                                            backgroundImage: NetworkImage(
-                                                'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-                                          ),
-                                          SizedBox(width: 8),
-                                          Text('Remote'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: buttonColor),
-                                    onPressed: () {},
-                                    child: Text('Apply'),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 150,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                            ),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Need a Full Stack Developer',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: const [
-                                          Icon(Icons.location_on),
-                                          SizedBox(width: 8),
-                                          Text('New York, NY'),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        children: const [
-                                          CircleAvatar(
-                                            radius: 10,
-                                            backgroundImage: NetworkImage(
-                                                'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-                                          ),
-                                          SizedBox(width: 8),
-                                          Text('Remote'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: buttonColor),
-                                    onPressed: () {},
-                                    child: Text('Apply'),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
+                  for (int i = 0; i < companyPosts.length; i++)
+                    CompanyPost(item: companyPosts[i]),
+                  SizedBox(
                     height: 25,
                   ),
                 ],
