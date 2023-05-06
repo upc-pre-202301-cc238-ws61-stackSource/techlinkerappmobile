@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/screens/message_company_inbox.dart';
 import 'package:techlinkerappmobile/widgets/message_item.dart';
 
 import '../models/developer_unique_item.dart';
@@ -45,7 +46,15 @@ class _CompanyMessageState extends State<CompanyMessage> {
                   child: ListView(
                 children: [
                   for (var item in DeveloperUniqueItem.developerItems())
-                    MessageItem(item: item),
+                    MessageItem(
+                        item: item,
+                        onPressed: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CompanyMessageInbox()))
+                            }),
                 ],
               ))
             ],

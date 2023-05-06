@@ -18,7 +18,9 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     CompanyHome(),
     CompanyMessage(),
     Center(child: Text("Mail3", style: TextStyle(color: Colors.blue))),
-    Center(child: Text("Mail4", style: TextStyle(color: Colors.blue))),
+    Center(
+        child: Text("Mail4",
+            style: TextStyle(color: Color.fromRGBO(33, 150, 243, 1)))),
   ];
 
   @override

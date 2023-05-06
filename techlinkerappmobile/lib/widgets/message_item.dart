@@ -5,7 +5,8 @@ import '../models/developer_unique_item.dart';
 
 class MessageItem extends StatelessWidget {
   final DeveloperUniqueItem item;
-  const MessageItem({super.key, required this.item});
+  final Function onPressed;
+  const MessageItem({super.key, required this.item, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class MessageItem extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12), color: primaryColor),
       child: ListTile(
-        onTap: () => {print("Clicked")},
+        onTap: () => {print("Clicked"), onPressed()},
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: Image.network(
