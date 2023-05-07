@@ -53,7 +53,7 @@ class _CompanyMessageState extends State<CompanyMessage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CompanyMessageInbox()))
+                                          CompanyMessageInbox(item: item)))
                             }),
                 ],
               ))
