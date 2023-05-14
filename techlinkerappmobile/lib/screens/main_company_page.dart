@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/screens/company-profile.dart';
+import 'package:techlinkerappmobile/screens/messages_company.dart';
 
 import '../constants/colors.dart';
 import 'home_company.dart';
@@ -15,9 +17,11 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
 
   final screens = [
     CompanyHome(),
-    Center(child: Text("Mail2", style: TextStyle(color: Colors.blue))),
-    Center(child: Text("Mail3", style: TextStyle(color: Colors.blue))),
-    Center(child: Text("Mail4", style: TextStyle(color: Colors.blue))),
+    CompanyMessage(),
+    CompanyProfile(),
+    Center(
+        child: Text("Notifications",
+            style: TextStyle(color: Color.fromRGBO(33, 150, 243, 1)))),
   ];
 
   @override
