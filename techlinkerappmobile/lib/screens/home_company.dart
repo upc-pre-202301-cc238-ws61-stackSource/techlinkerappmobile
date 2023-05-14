@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/developer_unique_item.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CompanyHome extends StatefulWidget {
   CompanyHome({super.key});
@@ -95,19 +96,13 @@ class _CompanyHomeState extends State<CompanyHome> {
                                     value['selectedProgrammingLanguage'];
                                 selectedYearsOfExperience =
                                     value['selectedYearsOfExperience'];
-
-                                print(selectedSpecialityType);
-                                print(selectedFramework);
-                                print(selectedDatabase);
-                                print(selectedProgrammingLanguage);
-                                print(selectedYearsOfExperience);
                               })
                             }
                         });
               },
               child: Row(children: [
-                Icon(Icons.filter_list, color: textColor),
-                Text('Filter Developers',
+                const Icon(Icons.filter_list, color: textColor),
+                const Text('Filter Developers',
                     style: TextStyle(color: textColor, fontSize: 17))
               ]),
               style: ElevatedButton.styleFrom(
@@ -135,7 +130,10 @@ class _CompanyHomeState extends State<CompanyHome> {
                       final developer = filterDevelopersList[index];
 
                       return isLoding
-                          ? buildSkeleton(context)
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor,
+                              highlightColor: loadingColor,
+                              child: buildSkeleton(context))
                           : DeveloperItem(
                               item: developer,
                               urlImage: urlDevelopersImages[index],
