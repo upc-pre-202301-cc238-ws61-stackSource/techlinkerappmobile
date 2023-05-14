@@ -63,19 +63,13 @@ class _CompanyHomeState extends State<CompanyHome> {
                                     value['selectedProgrammingLanguage'];
                                 selectedYearsOfExperience =
                                     value['selectedYearsOfExperience'];
-
-                                print(selectedSpecialityType);
-                                print(selectedFramework);
-                                print(selectedDatabase);
-                                print(selectedProgrammingLanguage);
-                                print(selectedYearsOfExperience);
                               })
                             }
                         });
               },
               child: Row(children: [
-                Icon(Icons.filter_list, color: textColor),
-                Text('Filter Developers',
+                const Icon(Icons.filter_list, color: textColor),
+                const Text('Filter Developers',
                     style: TextStyle(color: textColor, fontSize: 17))
               ]),
               style: ElevatedButton.styleFrom(
