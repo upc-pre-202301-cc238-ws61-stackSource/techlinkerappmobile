@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/developer_unique_item.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CompanyHome extends StatefulWidget {
   CompanyHome({super.key});
@@ -129,7 +130,10 @@ class _CompanyHomeState extends State<CompanyHome> {
                       final developer = filterDevelopersList[index];
 
                       return isLoding
-                          ? buildSkeleton(context)
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor,
+                              highlightColor: loadingColor,
+                              child: buildSkeleton(context))
                           : DeveloperItem(
                               item: developer,
                               urlImage: urlDevelopersImages[index],
