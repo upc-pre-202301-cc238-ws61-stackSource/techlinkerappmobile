@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
@@ -5,8 +6,13 @@ import '../models/developer_unique_item.dart';
 
 class MessageItem extends StatelessWidget {
   final DeveloperUniqueItem item;
+  final String urlImage;
   final Function onPressed;
-  const MessageItem({super.key, required this.item, required this.onPressed});
+  const MessageItem(
+      {super.key,
+      required this.item,
+      required this.onPressed,
+      required this.urlImage});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +24,10 @@ class MessageItem extends StatelessWidget {
         onTap: () => {print("Clicked"), onPressed()},
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(30),
-          child: Image.network(
-            item.image!,
+          child: CachedNetworkImage(
+            imageUrl: urlImage,
+            width: 64,
             height: 64,
-            width: 56,
             fit: BoxFit.cover,
           ),
         ),
