@@ -34,13 +34,17 @@ class _CompanyHomeState extends State<CompanyHome> {
   }
 
   Future loadData() async {
-    setState(() => isLoding = true);
+    if (mounted) {
+      setState(() => isLoding = true);
+    }
 
     await Future.wait(urlDevelopersImages
         .map((urlImage) => cacheImage(context, urlImage))
         .toList());
 
-    setState(() => isLoding = false);
+    if (mounted) {
+      setState(() => isLoding = false);
+    }
   }
 
   Future cacheImage(BuildContext context, String urlImage) =>

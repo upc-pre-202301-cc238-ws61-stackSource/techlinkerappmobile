@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/screens/message_company_inbox.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,13 +28,17 @@ class _CompanyMessageState extends State<CompanyMessage> {
   }
 
   Future loadData() async {
-    setState(() => isLoding = true);
+    if (mounted) {
+      setState(() => isLoding = true);
+    }
 
     await Future.wait(urlMessagesIcons
         .map((urlImage) => cacheImage(context, urlImage))
         .toList());
 
-    setState(() => isLoding = false);
+    if (mounted) {
+      setState(() => isLoding = false);
+    }
   }
 
   Future cacheImage(BuildContext context, String urlImage) =>
@@ -82,7 +87,10 @@ class _CompanyMessageState extends State<CompanyMessage> {
                             DeveloperUniqueItem.developerItems()[index];
 
                         return isLoding
-                            ? buildSkeleton(context)
+                            ? Shimmer.fromColors(
+                                baseColor: secondaryColor,
+                                highlightColor: loadingColor,
+                                child: buildSkeleton(context))
                             : MessageItem(
                                 item: developer,
                                 onPressed: () => {
