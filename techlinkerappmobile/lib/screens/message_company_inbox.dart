@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/developer_unique_item.dart';
+import 'package:techlinkerappmobile/widgets/developer_item.dart';
 import '../constants/colors.dart';
 
 class CompanyMessageInbox extends StatefulWidget {
-  const CompanyMessageInbox({super.key});
+  final DeveloperUniqueItem item;
+  const CompanyMessageInbox({super.key, required this.item});
 
   @override
   State<CompanyMessageInbox> createState() => _CompanyMessageInboxState();
@@ -31,15 +34,14 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: Row(
-          children: const [
+          children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(
-                  'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+              backgroundImage: NetworkImage(widget.item.image!),
             ),
             const SizedBox(width: 15),
             Text(
-              'User Name',
+              widget.item.name!,
               style: const TextStyle(fontSize: 20),
             ),
           ],
@@ -51,7 +53,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,
-              reverse: true,
+              reverse: false,
               itemBuilder: (BuildContext context, int index) {
                 final message = _messages[index];
                 return Row(
@@ -82,7 +84,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            message['time'].toString(),
+                            message['time'].toString().substring(11, 16),
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -97,16 +99,17 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _textController,
                     decoration: const InputDecoration(
-                      hintText: 'Type a message',
-                      border: OutlineInputBorder(),
-                    ),
+                        hintText: 'Type a message',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: textColor),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -125,9 +128,9 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                   },
                   child: const Icon(Icons.send),
                   style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(16),
-                  ),
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: Colors.indigo),
                 ),
               ],
             ),

@@ -1,11 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
 
 class DeveloperItem extends StatelessWidget {
   final DeveloperUniqueItem item;
-
-  const DeveloperItem({super.key, required this.item});
+  final String urlImage;
+  const DeveloperItem({super.key, required this.item, required this.urlImage});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +19,10 @@ class DeveloperItem extends StatelessWidget {
         onTap: () => {print("Clicked")},
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            item.image!,
-            height: 64,
+          child: CachedNetworkImage(
+            imageUrl: urlImage,
             width: 64,
+            height: 64,
             fit: BoxFit.cover,
           ),
         ),
