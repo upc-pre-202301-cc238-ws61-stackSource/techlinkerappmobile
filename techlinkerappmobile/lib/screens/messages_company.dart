@@ -15,7 +15,7 @@ class CompanyMessage extends StatefulWidget {
 }
 
 class _CompanyMessageState extends State<CompanyMessage> {
-  bool isLoding = false;
+  bool isLoding = true;
 
   final urlMessagesIcons = [];
 
