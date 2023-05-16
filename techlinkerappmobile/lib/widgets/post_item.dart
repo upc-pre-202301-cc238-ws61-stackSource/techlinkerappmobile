@@ -4,7 +4,8 @@ import 'package:techlinkerappmobile/models/company_unique_post.dart';
 
 class CompanyPost extends StatelessWidget {
   final PostItem item;
-  const CompanyPost({super.key, required this.item});
+  final String urlImage;
+  const CompanyPost({super.key, required this.urlImage, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +18,13 @@ class CompanyPost extends StatelessWidget {
         children: [
           Container(
             height: 150,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                fit: BoxFit.cover,
-                image: const NetworkImage(
-                  "https://static.vecteezy.com/system/resources/previews/002/223/229/large_2x/abstract-technology-hi-tech-background-banner-template-with-copy-space-vector.jpg",
-                ),
-              ),
+                  fit: BoxFit.cover, image: NetworkImage(urlImage)),
             ),
           ),
           Padding(

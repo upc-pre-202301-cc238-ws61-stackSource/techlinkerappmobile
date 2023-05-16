@@ -1,16 +1,76 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class CompanyProfile extends StatelessWidget {
+class CompanyProfile extends StatefulWidget {
   const CompanyProfile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final companyPosts = PostItem.allCompanyPosts();
+  State<CompanyProfile> createState() => _CompanyProfileState();
+}
 
+class _CompanyProfileState extends State<CompanyProfile> {
+  final urlPostImages = [];
+  bool isLoding = true;
+  bool usersIconisLoading = true;
+  final companyPosts = PostItem.allCompanyPosts();
+
+  final urlUserIcons = [
+    "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    //create delay to show shimmer 2 seconds
+
+    getPostImages();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+  }
+
+  Future loadData() async {
+    if (mounted) {
+      setState(() => isLoding = true);
+    }
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (mounted) {
+      await Future.wait(urlPostImages
+          .map((urlImage) => cacheImage(context, urlImage))
+          .toList());
+
+      await Future.wait(urlUserIcons
+          .map((urlImage) => cacheImage(context, urlImage))
+          .toList());
+    }
+
+    if (mounted) {
+      setState(() => {
+            isLoding = false,
+            usersIconisLoading = false,
+          });
+    }
+  }
+
+  Future cacheImage(BuildContext context, String urlImage) =>
+      precacheImage(CachedNetworkImageProvider(urlImage), context);
+
+  void getPostImages() {
+    for (var item in companyPosts) {
+      urlPostImages.add(item.imageUrl!);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -71,60 +131,66 @@ class CompanyProfile extends StatelessWidget {
                       const SizedBox(
                         height: 30,
                       ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 85,
-                            child: Stack(
+                      usersIconisLoading && isLoding
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor!,
+                              highlightColor: loadingColor,
+                              child: buildSkeletonUserIcon(context),
+                            )
+                          : Row(
                               children: [
                                 Container(
-                                  width: 37,
-                                  height: 37,
-                                  child: const CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: NetworkImage(
-                                        'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                                  width: 85,
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: 37,
+                                        height: 37,
+                                        child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(urlUserIcons[0]),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 25,
+                                        child: Container(
+                                          width: 35,
+                                          height: 35,
+                                          child: CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(urlUserIcons[1]),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        child: Container(
+                                          width: 35,
+                                          height: 35,
+                                          child: CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(urlUserIcons[2]),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Positioned(
-                                  right: 25,
-                                  child: Container(
-                                    width: 35,
-                                    height: 35,
-                                    child: const CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                          'https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-                                    ),
-                                  ),
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  child: Container(
-                                    width: 35,
-                                    height: 35,
-                                    child: const CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                          'https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
-                                    ),
-                                  ),
-                                ),
+                                const Text(
+                                  "+50 Developers in charge",
+                                  style: TextStyle(
+                                      color: textColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800),
+                                )
                               ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            "+50 Developers in charge",
-                            style: TextStyle(
-                                color: textColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800),
-                          )
-                        ],
-                      )
+                            )
                     ]),
               ),
               const SizedBox(
@@ -136,10 +202,19 @@ class CompanyProfile extends StatelessWidget {
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: true, // Enable automatic sliding
                   viewportFraction: 0.8,
+
                   // Add more options as needed
                 ),
                 items: companyPosts
-                    .map((item) => CompanyPost(item: item))
+                    .map((item) => isLoding && usersIconisLoading
+                        ? Shimmer.fromColors(
+                            baseColor: secondaryColor!,
+                            highlightColor: loadingColor,
+                            child: skeletonPostItem(context),
+                          )
+                        : CompanyPost(
+                            item: item,
+                            urlImage: urlPostImages[int.parse(item.id!) - 1]))
                     .toList(),
               ),
               const SizedBox(
@@ -149,6 +224,50 @@ class CompanyProfile extends StatelessWidget {
           )),
         ],
       )),
+    );
+  }
+
+  Widget skeletonPostItem(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Color.fromARGB(154, 255, 255, 255),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 100,
+            height: 20,
+            color: Colors.grey[200],
+            margin: EdgeInsets.only(bottom: 10),
+          ),
+          Container(
+            width: double.infinity,
+            height: 12,
+            color: Colors.grey[200],
+            margin: EdgeInsets.only(bottom: 6),
+          ),
+          Container(
+            width: double.infinity,
+            height: 12,
+            color: Colors.grey[200],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSkeletonUserIcon(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10, top: 10),
+      padding: EdgeInsets.symmetric(vertical: 15),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: loadingColor),
+      height: 30,
     );
   }
 }

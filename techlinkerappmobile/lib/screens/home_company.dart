@@ -21,7 +21,7 @@ class _CompanyHomeState extends State<CompanyHome> {
   List<dynamic> selectedProgrammingLanguage = [];
   List<dynamic> selectedDatabase = [];
 
-  bool isLoding = false;
+  bool isLoding = true;
 
   final urlDevelopersImages = [];
 
