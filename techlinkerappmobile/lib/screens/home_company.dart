@@ -100,9 +100,9 @@ class _CompanyHomeState extends State<CompanyHome> {
                             }
                         });
               },
-              child: Row(children: [
-                const Icon(Icons.filter_list, color: textColor),
-                const Text('Filter Developers',
+              child: Row(children: const [
+                Icon(Icons.filter_list, color: textColor),
+                Text('Filter Developers',
                     style: TextStyle(color: textColor, fontSize: 17))
               ]),
               style: ElevatedButton.styleFrom(
