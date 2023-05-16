@@ -82,49 +82,46 @@ class _CompanyProfileState extends State<CompanyProfile> {
               child: ListView(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                decoration: const BoxDecoration(
+                  color: buttonColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(children: [
+                  const SizedBox(
+                    height: 70,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Profile",
+                      style: TextStyle(
+                          color: textColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 17,
+                  ),
+                  Center(child: buildProfileCard()),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                ]),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
-                        height: 34,
-                      ),
-                      const Text(
-                        "Profile",
-                        style: TextStyle(
-                            color: textColor,
-                            fontSize: 44,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      const Text(
-                        "Company",
-                        style: TextStyle(
-                            color: textColor,
-                            fontSize: 44,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      const SizedBox(
-                        height: 17,
-                      ),
-                      const Center(
-                          child: Icon(Icons.maps_home_work_outlined,
-                              color: textColor, size: 150)),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                        "Profile",
-                        style: TextStyle(
-                            color: textColor,
-                            fontSize: 36,
-                            fontWeight: FontWeight.w800),
-                      ),
-                      const SizedBox(
-                        height: 5,
+                        height: 15,
                       ),
                       const Text(
                           "Is the world’s leading blockchain and cryptocurrency infrastructure provider with a financial product suite that includes the largest digital asset exchange by volume.",
-                          textAlign: TextAlign.left,
+                          textAlign: TextAlign.justify,
                           style: TextStyle(
                               color: textColor,
                               fontSize: 20,
@@ -138,60 +135,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                               highlightColor: loadingColor,
                               child: buildSkeletonUserIcon(context),
                             )
-                          : Row(
-                              children: [
-                                Container(
-                                  width: 85,
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: 37,
-                                        height: 37,
-                                        child: CircleAvatar(
-                                          radius: 25,
-                                          backgroundImage:
-                                              NetworkImage(urlUserIcons[0]),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 25,
-                                        child: Container(
-                                          width: 35,
-                                          height: 35,
-                                          child: CircleAvatar(
-                                            radius: 25,
-                                            backgroundImage:
-                                                NetworkImage(urlUserIcons[1]),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 0,
-                                        child: Container(
-                                          width: 35,
-                                          height: 35,
-                                          child: CircleAvatar(
-                                            radius: 25,
-                                            backgroundImage:
-                                                NetworkImage(urlUserIcons[2]),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Text(
-                                  "+50 Developers in charge",
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800),
-                                )
-                              ],
-                            )
+                          : buildDeveloperIcons(),
                     ]),
               ),
               const SizedBox(
@@ -202,7 +146,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   height: 335, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: true, // Enable automatic sliding
-                  viewportFraction: 0.8,
+                  viewportFraction: 0.9,
 
                   // Add more options as needed
                 ),
@@ -269,6 +213,100 @@ class _CompanyProfileState extends State<CompanyProfile> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: loadingColor),
       height: 30,
+    );
+  }
+
+  Card buildProfileCard() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 50),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: NetworkImage(urlUserIcons[0]),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Company Name',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'john.doe@example.com',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildDeveloperIcons() {
+    return Row(
+      children: [
+        Container(
+          width: 85,
+          child: Stack(
+            children: [
+              Container(
+                width: 37,
+                height: 37,
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(urlUserIcons[0]),
+                ),
+              ),
+              Positioned(
+                right: 25,
+                child: Container(
+                  width: 35,
+                  height: 35,
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(urlUserIcons[1]),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: Container(
+                  width: 35,
+                  height: 35,
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(urlUserIcons[2]),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        const Text(
+          "+50 Developers in charge",
+          style: TextStyle(
+              color: textColor, fontSize: 17, fontWeight: FontWeight.w500),
+        )
+      ],
     );
   }
 }
