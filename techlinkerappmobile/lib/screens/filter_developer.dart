@@ -140,28 +140,47 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                   fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
             ),
             SizedBox(height: verticalWith),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: frameworkOptions
-                    .map((framework) => Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(framework),
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  selectedFramework.add(framework);
-                                } else {
-                                  selectedFramework.remove(framework);
-                                }
-                              });
-                            },
-                            selected: selectedFramework.contains(framework),
-                          ),
-                        ))
-                    .toList(),
-              ),
+            Row(
+              children: frameworkOptions
+                  .take(4)
+                  .map((framework) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(framework),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedFramework.add(framework);
+                              } else {
+                                selectedFramework.remove(framework);
+                              }
+                            });
+                          },
+                          selected: selectedFramework.contains(framework),
+                        ),
+                      ))
+                  .toList(),
+            ),
+            Row(
+              children: frameworkOptions
+                  .skip(4)
+                  .map((framework) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(framework),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedFramework.add(framework);
+                              } else {
+                                selectedFramework.remove(framework);
+                              }
+                            });
+                          },
+                          selected: selectedFramework.contains(framework),
+                        ),
+                      ))
+                  .toList(),
             ),
             SizedBox(height: verticalWith),
             Divider(thickness: ticknessWidth, color: textColor),
@@ -174,31 +193,53 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                   fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
             ),
             SizedBox(height: verticalWith),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: programmingLanguageOptions
-                    .map((programmingLanguage) => Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(programmingLanguage),
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  selectedProgrammingLanguage
-                                      .add(programmingLanguage);
-                                } else {
-                                  selectedProgrammingLanguage
-                                      .remove(programmingLanguage);
-                                }
-                              });
-                            },
-                            selected: selectedProgrammingLanguage
-                                .contains(programmingLanguage),
-                          ),
-                        ))
-                    .toList(),
-              ),
+            Row(
+              children: programmingLanguageOptions
+                  .take(5)
+                  .map((programmingLanguage) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(programmingLanguage),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedProgrammingLanguage
+                                    .add(programmingLanguage);
+                              } else {
+                                selectedProgrammingLanguage
+                                    .remove(programmingLanguage);
+                              }
+                            });
+                          },
+                          selected: selectedProgrammingLanguage
+                              .contains(programmingLanguage),
+                        ),
+                      ))
+                  .toList(),
+            ),
+            Row(
+              children: programmingLanguageOptions
+                  .skip(5)
+                  .map((programmingLanguage) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(programmingLanguage),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedProgrammingLanguage
+                                    .add(programmingLanguage);
+                              } else {
+                                selectedProgrammingLanguage
+                                    .remove(programmingLanguage);
+                              }
+                            });
+                          },
+                          selected: selectedProgrammingLanguage
+                              .contains(programmingLanguage),
+                        ),
+                      ))
+                  .toList(),
             ),
             SizedBox(height: verticalWith),
             Divider(thickness: ticknessWidth, color: textColor),
@@ -211,28 +252,47 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                   fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
             ),
             SizedBox(height: verticalWith),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: databaseOptions
-                    .map((database) => Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(database),
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  selectedDatabase.add(database);
-                                } else {
-                                  selectedDatabase.remove(database);
-                                }
-                              });
-                            },
-                            selected: selectedDatabase.contains(database),
-                          ),
-                        ))
-                    .toList(),
-              ),
+            Row(
+              children: databaseOptions
+                  .take(3)
+                  .map((database) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(database),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedDatabase.add(database);
+                              } else {
+                                selectedDatabase.remove(database);
+                              }
+                            });
+                          },
+                          selected: selectedDatabase.contains(database),
+                        ),
+                      ))
+                  .toList(),
+            ),
+            Row(
+              children: databaseOptions
+                  .skip(3)
+                  .map((database) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(database),
+                          onSelected: (selected) {
+                            setState(() {
+                              if (selected) {
+                                selectedDatabase.add(database);
+                              } else {
+                                selectedDatabase.remove(database);
+                              }
+                            });
+                          },
+                          selected: selectedDatabase.contains(database),
+                        ),
+                      ))
+                  .toList(),
             ),
             SizedBox(height: verticalWith),
             Divider(thickness: ticknessWidth, color: textColor),
@@ -264,6 +324,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                             style: TextStyle(color: textColor, fontSize: 17))
                       ])),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
