@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/screens/messages_developer.dart';
+import 'package:techlinkerappmobile/screens/notifications_developer.dart';
 import '../constants/colors.dart';
 import '../screens/home_developer.dart';
 
@@ -15,7 +16,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
 
   final screens = [
     DeveloperHome(),
-    Center(child: Text("Mail2", style: TextStyle(color: Colors.green))),
+    DeveloperNotifications(),
     DeveloperMessages(),
     Center(child: Text("Mail4", style: TextStyle(color: Colors.blue))),
   ];
