@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/job_offer.dart';
+import '../models/company_unique_post.dart';
 import '../widgets/job_offer_item.dart';
 import '../constants/colors.dart';
 
-class DeveloperHome extends StatefulWidget {
-  DeveloperHome({super.key});
-  @override
-  State<DeveloperHome> createState() => _DeveloperHomeState();
-}
+class DeveloperHome extends StatelessWidget {
+  const DeveloperHome({super.key});
 
-class _DeveloperHomeState extends State<DeveloperHome> {
-  final jobOffersItem = JobOffer.jobOffers();
   @override
   Widget build(BuildContext context) {
+    final companyPosts = PostItem.allCompanyPosts();
     return Scaffold(
         backgroundColor: primaryColor,
         body: Container(
@@ -41,9 +37,9 @@ class _DeveloperHomeState extends State<DeveloperHome> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: jobOffersItem.length,
-                itemBuilder: (context, index) => JobOfferItem(
-                  item: jobOffersItem[index],
+                itemCount: companyPosts.length,
+                itemBuilder: (context, index) => CompanyPost(
+                  item: companyPosts[index],
                 ),
               ),
             ),
@@ -52,3 +48,4 @@ class _DeveloperHomeState extends State<DeveloperHome> {
         ));
   }
 }
+
