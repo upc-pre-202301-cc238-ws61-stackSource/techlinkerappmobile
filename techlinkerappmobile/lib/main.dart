@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
-      home: MainCompanyPage(),
+      home: MainDeveloperPage(),
     );
   }
 }
