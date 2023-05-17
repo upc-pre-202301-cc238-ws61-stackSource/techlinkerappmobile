@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_developer.dart';
 import 'package:techlinkerappmobile/screens/notifications_developer.dart';
 import '../constants/colors.dart';
@@ -18,7 +19,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
     DeveloperHome(),
     DeveloperNotifications(),
     DeveloperMessages(),
-    Container(child: Center(child: Text('Profile'))),
+    DeveloperProfile(),
   ];
 
   @override
