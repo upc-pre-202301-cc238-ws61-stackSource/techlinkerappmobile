@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../models/job_offer.dart';
+import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import '../constants/colors.dart';
 
-class JobOfferItem extends StatelessWidget{
-  final JobOffer item;
+class CompanyPost extends StatelessWidget{
+  final PostItem item;
 
-  const JobOfferItem({super.key, required this.item});
+  const CompanyPost({super.key, required this.item});
 
   @override
   Widget build(BuildContext context){
@@ -29,7 +29,7 @@ class JobOfferItem extends StatelessWidget{
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    item.image!,
+                    item.imageUrl!,
                     height: 150,
                     width: 350,
                     fit: BoxFit.cover,
@@ -47,12 +47,22 @@ class JobOfferItem extends StatelessWidget{
                   ),
                   textAlign: TextAlign.left,
                 ),
+
               ),
               Padding(
                 padding: EdgeInsets.only(left:6.0, top: 2.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      item.description!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
                     Row(
                       children: [
                         Icon(
@@ -61,7 +71,7 @@ class JobOfferItem extends StatelessWidget{
                           color: Colors.white,
                         ),
                         Text(
-                          item.location!,
+                          item.companyUniqueItem!.address!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,
@@ -92,7 +102,7 @@ class JobOfferItem extends StatelessWidget{
                           color: Colors.white,
                         ),
                         Text(
-                          item.company!,
+                          item.companyUniqueItem!.companyName!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,

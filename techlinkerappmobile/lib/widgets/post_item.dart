@@ -72,7 +72,7 @@ class CompanyPost extends StatelessWidget {
                               CircleAvatar(
                                 radius: 10,
                                 backgroundImage:
-                                    NetworkImage(item.companyProfileImage!),
+                                    NetworkImage(item.companyUniqueItem!.bannerImage!),
                               ),
                               const SizedBox(width: 8),
                               const Text('Remote'),

@@ -18,7 +18,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
     DeveloperHome(),
     DeveloperNotifications(),
     DeveloperMessages(),
-    Center(child: Text("Mail4", style: TextStyle(color: Colors.blue))),
+    Container(child: Center(child: Text('Profile'))),
   ];
 
   @override
