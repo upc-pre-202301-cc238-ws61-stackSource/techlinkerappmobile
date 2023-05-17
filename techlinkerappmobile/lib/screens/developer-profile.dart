@@ -5,6 +5,8 @@ import 'package:techlinkerappmobile/constants/colors.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../widgets/job_offer_item.dart';
+
 class DeveloperProfile extends StatefulWidget {
   const DeveloperProfile({super.key});
 
@@ -53,9 +55,9 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
     if (mounted) {
       setState(() => {
-        isLoading = false,
-        usersIconisLoading = false,
-      });
+            isLoading = false,
+            usersIconisLoading = false,
+          });
     }
   }
 
@@ -73,134 +75,223 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              child: ListView(
             children: [
-              SizedBox(
-                height: 34,
+              Container(
+                decoration: const BoxDecoration(
+                  color: buttonColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(children: [
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  const Center(
+                    child: Text(
+                      "Profile",
+                      style: TextStyle(
+                          color: textColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 17,
+                  ),
+                  Center(
+                      child: isLoading
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor!,
+                              highlightColor: loadingColor,
+                              child: buildSkeletonCard(context),
+                            )
+                          : buildProfileCard()),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                ]),
               ),
-              const Text(
-                "Profile",
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
-                    fontWeight: FontWeight.w800),
-              ),
-              const Text(
-                "Developer",
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
-                    fontWeight: FontWeight.w800),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                          "This is a developer profile decription, here you can see the developer's skills, education, experience, projects and certificates.",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal)),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text("Education",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800)),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height:
+                              375, // Adjust the height as per your requirements
+                          enableInfiniteScroll:
+                              true, // Enable infinite scrolling
+                          autoPlay: true, // Enable automatic sliding
+                          viewportFraction: 1,
+
+                          // Add more options as needed
+                        ),
+                        items: companyPosts
+                            .map((item) => isLoading && usersIconisLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: secondaryColor!,
+                                    highlightColor: loadingColor,
+                                    child: skeletonPostItem(context),
+                                  )
+                                : CompanyPost(item: item))
+                            .toList(),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text("Tools / Skills",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800)),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height:
+                              375, // Adjust the height as per your requirements
+                          enableInfiniteScroll:
+                              true, // Enable infinite scrolling
+                          autoPlay: true, // Enable automatic sliding
+                          viewportFraction: 1,
+
+                          // Add more options as needed
+                        ),
+                        items: companyPosts
+                            .map((item) => isLoading && usersIconisLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: secondaryColor!,
+                                    highlightColor: loadingColor,
+                                    child: skeletonPostItem(context),
+                                  )
+                                : CompanyPost(item: item))
+                            .toList(),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text("Latest projects",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800)),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height:
+                              375, // Adjust the height as per your requirements
+                          enableInfiniteScroll:
+                              true, // Enable infinite scrolling
+                          autoPlay: true, // Enable automatic sliding
+                          viewportFraction: 1,
+
+                          // Add more options as needed
+                        ),
+                        items: companyPosts
+                            .map((item) => isLoading && usersIconisLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: secondaryColor!,
+                                    highlightColor: loadingColor,
+                                    child: skeletonPostItem(context),
+                                  )
+                                : CompanyPost(item: item))
+                            .toList(),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text("Certificates & Awards",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800)),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height:
+                              375, // Adjust the height as per your requirements
+                          enableInfiniteScroll:
+                              true, // Enable infinite scrolling
+                          autoPlay: true, // Enable automatic sliding
+                          viewportFraction: 1,
+
+                          // Add more options as needed
+                        ),
+                        items: companyPosts
+                            .map((item) => isLoading && usersIconisLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: secondaryColor!,
+                                    highlightColor: loadingColor,
+                                    child: skeletonPostItem(context),
+                                  )
+                                : CompanyPost(item: item))
+                            .toList(),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text("Experience in companies",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800)),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height:
+                              375, // Adjust the height as per your requirements
+                          enableInfiniteScroll:
+                              true, // Enable infinite scrolling
+                          autoPlay: true, // Enable automatic sliding
+                          viewportFraction: 1,
+
+                          // Add more options as needed
+                        ),
+                        items: companyPosts
+                            .map((item) => isLoading && usersIconisLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: secondaryColor!,
+                                    highlightColor: loadingColor,
+                                    child: skeletonPostItem(context),
+                                  )
+                                : CompanyPost(item: item))
+                            .toList(),
+                      ),
+                    ]),
               ),
               const SizedBox(
-                height: 17,
+                height: 25,
               ),
-              Expanded(
-                  child: ListView(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: buttonColor,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-
-                        child: Column(children: [
-                          Center(
-                              child: isLoading
-                                  ? Shimmer.fromColors(
-                                baseColor: secondaryColor!,
-                                highlightColor: loadingColor,
-                                child: buildSkeletonCard(context),
-                              )
-                                  : buildProfileCard()),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                        ]),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 24),
-
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-
-                              const Text(
-                                  "Education",
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800)
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-
-                              const Text(
-                                  "Tools / Skills",
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800)
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const Text(
-                                  "Latest projects",
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800)
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const Text(
-                                  "Certificates & Awards",
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800)
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              const Text(
-                                  "Experience in companies",
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800)
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                            ]
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 25,
-                      ),
-
-
-                      const SizedBox(
-                        height: 25,
-                      ),
-                    ],
-                  )),
             ],
           )),
+        ],
+      )),
     );
   }
 
@@ -251,18 +342,18 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   Card buildProfileCard() {
     return Card(
       elevation: 4,
-      color: buttonColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 50),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+        ),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-
           children: [
             CircleAvatar(
               radius: 50,
@@ -274,23 +365,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: textColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Software Engineer',
+              'john.doe@example.com',
               style: TextStyle(
                 fontSize: 16,
-                color: textColor,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Specialist in software development',
-              style: TextStyle(
-                fontSize: 16,
-                color: textColor,
+                color: Colors.grey[600],
               ),
             ),
           ],
