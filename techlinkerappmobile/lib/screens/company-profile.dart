@@ -214,8 +214,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   Widget buildSkeletonUserIcon(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
-      padding: EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: loadingColor),
       height: 30,
@@ -243,7 +243,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
               backgroundImage: NetworkImage(urlUserIcons[0]),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Company Name',
               style: TextStyle(
                 fontSize: 18,

@@ -15,22 +15,23 @@ class CompanyUniqueItem {
   String? country;
   String? city;
 
-  CompanyUniqueItem(
-      {required this.id,
-        required this.firstName,
-        required this.lastName,
-        required this.email,
-        required this.phone,
-        required this.password,
-        required this.role,
-        required this.description,
-        required this.bannerImage,
-        required this.ruc,
-        required this.owner,
-        required this.companyName,
-        required this.address,
-        required this.country,
-        required this.city,});
+  CompanyUniqueItem({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phone,
+    required this.password,
+    required this.role,
+    required this.description,
+    required this.bannerImage,
+    required this.ruc,
+    required this.owner,
+    required this.companyName,
+    required this.address,
+    required this.country,
+    required this.city,
+  });
 
   static List<CompanyUniqueItem> developerItems() {
     return [
@@ -43,7 +44,8 @@ class CompanyUniqueItem {
           password: "123456",
           role: "company",
           description: "Somos una empresa de desarrollo de software",
-          bannerImage: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+          bannerImage:
+              "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
           ruc: "1234567890",
           owner: "John Doe",
           companyName: "Google",
@@ -59,7 +61,8 @@ class CompanyUniqueItem {
           password: "123456",
           role: "company",
           description: "Somos una empresa de desarrollo de software",
-          bannerImage: "https://images.pexels.com/photos/749091/pexels-photo-749091.jpeg",
+          bannerImage:
+              "https://images.pexels.com/photos/749091/pexels-photo-749091.jpeg",
           ruc: "1234567890",
           owner: "Jane Smith",
           companyName: "Facebook",
@@ -75,7 +78,8 @@ class CompanyUniqueItem {
           password: "123456",
           role: "company",
           description: "Somos una empresa de desarrollo de software",
-          bannerImage: "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg",
+          bannerImage:
+              "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg",
           ruc: "1234567890",
           owner: "Robert Johnson",
           companyName: "Amazon",
