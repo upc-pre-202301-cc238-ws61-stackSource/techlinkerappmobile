@@ -16,7 +16,7 @@ class CompanyProfile extends StatefulWidget {
 
 class _CompanyProfileState extends State<CompanyProfile> {
   final urlPostImages = [];
-  bool isLoding = true;
+  bool isLoading = true;
   bool usersIconisLoading = true;
   final companyPosts = PostItem.allCompanyPosts();
 
@@ -38,7 +38,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   Future loadData() async {
     if (mounted) {
-      setState(() => isLoding = true);
+      setState(() => isLoading = true);
     }
 
     await Future.delayed(const Duration(seconds: 1));
@@ -55,7 +55,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     if (mounted) {
       setState(() => {
-            isLoding = false,
+            isLoading = false,
             usersIconisLoading = false,
           });
     }
@@ -91,7 +91,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                 ),
                 child: Column(children: [
                   const SizedBox(
-                    height: 70,
+                    height: 60,
                   ),
                   const Center(
                     child: Text(
@@ -105,7 +105,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   const SizedBox(
                     height: 17,
                   ),
-                  Center(child: buildProfileCard()),
+                  Center(
+                      child: isLoading
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor!,
+                              highlightColor: loadingColor,
+                              child: buildSkeletonCard(context),
+                            )
+                          : buildProfileCard()),
                   const SizedBox(
                     height: 30,
                   ),
@@ -117,7 +124,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
                       const Text(
                           "Is the world’s leading blockchain and cryptocurrency infrastructure provider with a financial product suite that includes the largest digital asset exchange by volume.",
@@ -129,7 +136,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                       const SizedBox(
                         height: 30,
                       ),
-                      usersIconisLoading && isLoding
+                      usersIconisLoading && isLoading
                           ? Shimmer.fromColors(
                               baseColor: secondaryColor!,
                               highlightColor: loadingColor,
@@ -151,7 +158,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   // Add more options as needed
                 ),
                 items: companyPosts
-                    .map((item) => isLoding && usersIconisLoading
+                    .map((item) => isLoading && usersIconisLoading
                         ? Shimmer.fromColors(
                             baseColor: secondaryColor!,
                             highlightColor: loadingColor,
@@ -254,6 +261,42 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildSkeletonCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 65),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Color.fromARGB(152, 255, 255, 255),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 10, top: 10),
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              color: loadingColor,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            width: 150,
+            height: 18,
+            color: loadingColor,
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 200,
+            height: 16,
+            color: loadingColor,
+          ),
+        ],
       ),
     );
   }

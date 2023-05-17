@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
+import 'package:techlinkerappmobile/screens/notifications_company.dart';
 
 import '../constants/colors.dart';
 import 'home_company.dart';
@@ -19,9 +20,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     CompanyHome(),
     CompanyMessage(),
     CompanyProfile(),
-    Center(
-        child: Text("Notifications",
-            style: TextStyle(color: Color.fromRGBO(33, 150, 243, 1)))),
+    CompanyNotifications(),
   ];
 
   @override
