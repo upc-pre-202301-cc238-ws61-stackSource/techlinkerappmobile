@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/screens/messages_developer.dart';
 import '../constants/colors.dart';
 import '../screens/home_developer.dart';
 
@@ -9,15 +10,13 @@ class MainDeveloperPage extends StatefulWidget {
   State<MainDeveloperPage> createState() => _MainDeveloperPageState();
 }
 
-class _MainDeveloperPageState extends State<MainDeveloperPage>{
+class _MainDeveloperPageState extends State<MainDeveloperPage> {
   int index = 0;
 
   final screens = [
     DeveloperHome(),
     Center(child: Text("Mail2", style: TextStyle(color: Colors.green))),
-    Center(
-        child: Text("Mail3",
-            style: TextStyle(color: Color.fromRGBO(233, 30, 99, 1)))),
+    DeveloperMessages(),
     Center(child: Text("Mail4", style: TextStyle(color: Colors.blue))),
   ];
 
