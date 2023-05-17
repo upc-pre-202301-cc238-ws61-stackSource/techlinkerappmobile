@@ -72,7 +72,7 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
                     fontWeight: FontWeight.w800),
               ),
               const Text(
-                "Company",
+                "Developer",
                 style: TextStyle(
                     color: textColor,
                     fontSize: 44,
