@@ -26,10 +26,10 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
-      home: MainCompanyPage(),
+      home: MainDeveloperPage(),
     );
   }
 }

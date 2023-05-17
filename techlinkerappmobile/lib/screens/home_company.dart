@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/screens/filter_developer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/developer_unique_item.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CompanyHome extends StatefulWidget {
   CompanyHome({super.key});
@@ -18,6 +20,41 @@ class _CompanyHomeState extends State<CompanyHome> {
   List<dynamic> selectedFramework = [];
   List<dynamic> selectedProgrammingLanguage = [];
   List<dynamic> selectedDatabase = [];
+
+  bool isLoding = true;
+
+  final urlDevelopersImages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getDevelopersImageUrls();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+  }
+
+  Future loadData() async {
+    if (mounted) {
+      setState(() => isLoding = true);
+    }
+
+    await Future.wait(urlDevelopersImages
+        .map((urlImage) => cacheImage(context, urlImage))
+        .toList());
+
+    if (mounted) {
+      setState(() => isLoding = false);
+    }
+  }
+
+  Future cacheImage(BuildContext context, String urlImage) =>
+      precacheImage(CachedNetworkImageProvider(urlImage), context);
+
+  void getDevelopersImageUrls() {
+    for (var item in developersItem) {
+      urlDevelopersImages.add(item.image!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +100,11 @@ class _CompanyHomeState extends State<CompanyHome> {
                                     value['selectedProgrammingLanguage'];
                                 selectedYearsOfExperience =
                                     value['selectedYearsOfExperience'];
-
-                                print(selectedSpecialityType);
-                                print(selectedFramework);
-                                print(selectedDatabase);
-                                print(selectedProgrammingLanguage);
-                                print(selectedYearsOfExperience);
                               })
                             }
                         });
               },
-              child: Row(children: [
+              child: Row(children: const [
                 Icon(Icons.filter_list, color: textColor),
                 Text('Filter Developers',
                     style: TextStyle(color: textColor, fontSize: 17))
@@ -101,12 +132,29 @@ class _CompanyHomeState extends State<CompanyHome> {
                     itemCount: filterDevelopersList.length,
                     itemBuilder: (context, index) {
                       final developer = filterDevelopersList[index];
-                      return DeveloperItem(
-                        item: developer,
-                      );
+
+                      return isLoding
+                          ? Shimmer.fromColors(
+                              baseColor: secondaryColor,
+                              highlightColor: loadingColor,
+                              child: buildSkeleton(context))
+                          : DeveloperItem(
+                              item: developer,
+                              urlImage: urlDevelopersImages[index],
+                            );
                     }))
           ]),
         ));
+  }
+
+  Widget buildSkeleton(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10, top: 10),
+      padding: EdgeInsets.symmetric(vertical: 15),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: loadingColor),
+      height: 100,
+    );
   }
 
   List<dynamic> filterDevelopers() {
