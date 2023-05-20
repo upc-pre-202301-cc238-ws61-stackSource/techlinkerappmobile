@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/developer_framework_item.dart';
+import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -19,6 +21,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool isLoading = true;
   bool usersIconisLoading = true;
   final companyPosts = PostItem.allCompanyPosts();
+  final developerFrameworks =
+      DeveloperFrameworkItem.listOfDeveloperFrameworks();
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -83,207 +87,190 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
             children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: buttonColor,
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF39BCFD),
+                      Color(0xFF4F93E9),
+                      Color(0xFF7176EE),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
                 ),
-                child: Column(children: [
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  const Center(
-                    child: Text(
-                      "Profile",
-                      style: TextStyle(
-                          color: textColor,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 60),
+                    const Center(
+                      child: Text(
+                        "Profile",
+                        style: TextStyle(
+                          color: cardColor,
                           fontSize: 25,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 17,
-                  ),
-                  Center(
+                    const SizedBox(height: 17),
+                    Center(
                       child: isLoading
                           ? Shimmer.fromColors(
-                              baseColor: secondaryColor!,
-                              highlightColor: loadingColor,
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
                               child: buildSkeletonCard(context),
                             )
-                          : buildProfileCard()),
-                  const SizedBox(
-                    height: 30,
+                          : buildProfileCard(),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(children: const [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                        "This is a developer profile decription, here you can see the developer's skills, education, experience, projects and certificates.",
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(
+                            color: textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal)),
+                  ),
+                  SizedBox(
+                    height: 20,
                   ),
                 ]),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                          "This is a developer profile decription, here you can see the developer's skills, education, experience, projects and certificates.",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.normal)),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text("Education",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height:
-                              375, // Adjust the height as per your requirements
-                          enableInfiniteScroll:
-                              true, // Enable infinite scrolling
-                          autoPlay: true, // Enable automatic sliding
-                          viewportFraction: 1,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text("Education",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 375, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  autoPlay: true, // Enable automatic sliding
+                  viewportFraction: 1,
 
-                          // Add more options as needed
-                        ),
-                        items: companyPosts
-                            .map((item) => isLoading && usersIconisLoading
-                                ? Shimmer.fromColors(
-                                    baseColor: secondaryColor!,
-                                    highlightColor: loadingColor,
-                                    child: skeletonPostItem(context),
-                                  )
-                                : CompanyPost(item: item))
-                            .toList(),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text("Tools / Skills",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height:
-                              375, // Adjust the height as per your requirements
-                          enableInfiniteScroll:
-                              true, // Enable infinite scrolling
-                          autoPlay: true, // Enable automatic sliding
-                          viewportFraction: 1,
+                  // Add more options as needed
+                ),
+                items: companyPosts
+                    .map((item) => isLoading && usersIconisLoading
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : CompanyPost(item: item))
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text("Tools / Skills",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  // Enable automatic sliding
+                  viewportFraction: 0.6,
 
-                          // Add more options as needed
-                        ),
-                        items: companyPosts
-                            .map((item) => isLoading && usersIconisLoading
-                                ? Shimmer.fromColors(
-                                    baseColor: secondaryColor!,
-                                    highlightColor: loadingColor,
-                                    child: skeletonPostItem(context),
-                                  )
-                                : CompanyPost(item: item))
-                            .toList(),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text("Latest projects",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height:
-                              375, // Adjust the height as per your requirements
-                          enableInfiniteScroll:
-                              true, // Enable infinite scrolling
-                          autoPlay: true, // Enable automatic sliding
-                          viewportFraction: 1,
+                  // Add more options as needed
+                ),
+                items: developerFrameworks
+                    .map((item) => isLoading && usersIconisLoading
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : DeveloperFramework(
+                            framework: item, frameworkIcon: item.iconLink!))
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: Text("Latest projects",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 375, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  autoPlay: true, // Enable automatic sliding
+                  viewportFraction: 1,
 
-                          // Add more options as needed
-                        ),
-                        items: companyPosts
-                            .map((item) => isLoading && usersIconisLoading
-                                ? Shimmer.fromColors(
-                                    baseColor: secondaryColor!,
-                                    highlightColor: loadingColor,
-                                    child: skeletonPostItem(context),
-                                  )
-                                : CompanyPost(item: item))
-                            .toList(),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text("Certificates & Awards",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height:
-                              375, // Adjust the height as per your requirements
-                          enableInfiniteScroll:
-                              true, // Enable infinite scrolling
-                          autoPlay: true, // Enable automatic sliding
-                          viewportFraction: 1,
+                  // Add more options as needed
+                ),
+                items: companyPosts
+                    .map((item) => isLoading && usersIconisLoading
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : CompanyPost(item: item))
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text("Certificates & Awards",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  // Enable automatic sliding
+                  viewportFraction: 0.6,
 
-                          // Add more options as needed
-                        ),
-                        items: companyPosts
-                            .map((item) => isLoading && usersIconisLoading
-                                ? Shimmer.fromColors(
-                                    baseColor: secondaryColor!,
-                                    highlightColor: loadingColor,
-                                    child: skeletonPostItem(context),
-                                  )
-                                : CompanyPost(item: item))
-                            .toList(),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Text("Experience in companies",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800)),
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height:
-                              375, // Adjust the height as per your requirements
-                          enableInfiniteScroll:
-                              true, // Enable infinite scrolling
-                          autoPlay: true, // Enable automatic sliding
-                          viewportFraction: 1,
-
-                          // Add more options as needed
-                        ),
-                        items: companyPosts
-                            .map((item) => isLoading && usersIconisLoading
-                                ? Shimmer.fromColors(
-                                    baseColor: secondaryColor!,
-                                    highlightColor: loadingColor,
-                                    child: skeletonPostItem(context),
-                                  )
-                                : CompanyPost(item: item))
-                            .toList(),
-                      ),
-                    ]),
+                  // Add more options as needed
+                ),
+                items: developerFrameworks
+                    .map((item) => isLoading && usersIconisLoading
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : DeveloperFramework(
+                            framework: item, frameworkIcon: item.iconLink!))
+                    .toList(),
               ),
               const SizedBox(
                 height: 25,
@@ -360,21 +347,20 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               backgroundImage: NetworkImage(urlUserIcons[0]),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Developer Name',
+            const Text(
+              'Company Name',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
-            const SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'john.doe@example.com',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: textColor,
               ),
             ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
