@@ -5,9 +5,11 @@ import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/models/developer_framework_item.dart';
 import 'package:techlinkerappmobile/models/developer_project_item.dart';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
+import 'package:techlinkerappmobile/widgets/developer_study_center.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -27,12 +29,15 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool usersIconisLoading = true;
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
+  bool studyCenterIconisLoading = true;
+
   final companyPosts = PostItem.allCompanyPosts();
   final developerFrameworks =
       DeveloperFrameworkItem.listOfDeveloperFrameworks();
   final developerProjects = DeveloperProjectItem.developerProjects();
   final developerCertificates =
       DeveloperCertificateItem.developerCertificates();
+  final developerStudyCenters = StudyCenterUniqueItem.studyCenters();
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -72,7 +77,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
             isLoading = false,
             usersIconisLoading = false,
             projectsIconisLoading = false,
-            certificatesIconisLoading = false
+            certificatesIconisLoading = false,
+            studyCenterIconisLoading = false,
           });
     }
   }
@@ -172,21 +178,22 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 375, // Adjust the height as per your requirements
+                  height: 250, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: true, // Enable automatic sliding
-                  viewportFraction: 1,
+                  viewportFraction: 0.8,
 
                   // Add more options as needed
                 ),
-                items: companyPosts
-                    .map((item) => isLoading && usersIconisLoading
+                items: developerStudyCenters
+                    .map((item) => studyCenterIconisLoading
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(item: item))
+                        : DeveloperStudyCenter(
+                            studyCenter: item, studyCenterIcon: item.iconUrl!))
                     .toList(),
               ),
               const SizedBox(
