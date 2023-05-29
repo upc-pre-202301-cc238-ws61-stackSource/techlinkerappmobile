@@ -10,12 +10,12 @@ class CompanyPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10, right: 10),
+      margin: EdgeInsets.all(15),
       padding: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: primaryColor),
-        color: secondaryColor,
+        color: Colors.white,
       ),
       child: Center(
         child: ListTile(

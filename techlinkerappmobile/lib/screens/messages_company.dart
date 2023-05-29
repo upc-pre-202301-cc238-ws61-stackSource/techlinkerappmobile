@@ -53,59 +53,80 @@ class _CompanyMessageState extends State<CompanyMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: primaryColor,
-        body: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 34,
+      backgroundColor: primaryColor,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF39BCFD),
+                  Color(0xFF4F93E9),
+                  Color(0xFF7176EE),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const Text(
+            ),
+            child: Column(children: const [
+              SizedBox(
+                height: 40,
+              ),
+              Text(
                 "Company",
                 style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
+                    color: cardColor,
+                    fontSize: 40,
                     fontWeight: FontWeight.w800),
               ),
-              const Text(
+              Text(
                 "Messages",
                 style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
+                    color: cardColor,
+                    fontSize: 41,
                     fontWeight: FontWeight.w800),
               ),
-              const SizedBox(
-                height: 17,
-              ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: DeveloperUniqueItem.developerItems().length,
-                      itemBuilder: (context, index) {
-                        final developer =
-                            DeveloperUniqueItem.developerItems()[index];
-
-                        return isLoding
-                            ? Shimmer.fromColors(
-                                baseColor: secondaryColor,
-                                highlightColor: loadingColor,
-                                child: buildSkeleton(context))
-                            : MessageItem(
-                                item: developer,
-                                onPressed: () => {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CompanyMessageInbox(
-                                                      item: developer)))
-                                    },
-                                urlImage: urlMessagesIcons[index]);
-                      }))
-            ],
+              SizedBox(
+                height: 25,
+              )
+            ]),
           ),
-        ));
+          const SizedBox(height: 20),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListView.builder(
+                itemCount: DeveloperUniqueItem.developerItems().length,
+                itemBuilder: (context, index) {
+                  final developer = DeveloperUniqueItem.developerItems()[index];
+
+                  return isLoding
+                      ? Shimmer.fromColors(
+                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                          highlightColor: Colors.grey[200]!,
+                          child: buildSkeleton(context))
+                      : MessageItem(
+                          item: developer,
+                          onPressed: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CompanyMessageInbox(item: developer),
+                                  ),
+                                ),
+                              },
+                          urlImage: urlMessagesIcons[index]);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildSkeleton(BuildContext context) {

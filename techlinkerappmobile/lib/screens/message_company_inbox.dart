@@ -30,9 +30,8 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secondaryColor,
+      backgroundColor: primaryColor,
       appBar: AppBar(
-        backgroundColor: primaryColor,
         title: Row(
           children: [
             CircleAvatar(
@@ -45,6 +44,14 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
               style: const TextStyle(fontSize: 20),
             ),
           ],
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+            Color(0xFF39BCFD),
+            Color(0xFF4F93E9),
+            Color(0xFF7176EE),
+          ])),
         ),
         // Add an app bar background color
       ),
@@ -65,7 +72,9 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                       margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: message['isMe'] ? primaryColor : buttonColor,
+                        color: message['isMe']
+                            ? Color(0xFF7176EE)
+                            : Color.fromARGB(255, 221, 221, 221),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(16),
                         ),
@@ -75,21 +84,37 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            message['text'],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
+                          message['isMe']
+                              ? Text(
+                                  message['text'],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                )
+                              : Text(
+                                  message['text'],
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 120, 120, 120),
+                                    fontSize: 16,
+                                  ),
+                                ),
                           const SizedBox(height: 8),
-                          Text(
-                            message['time'].toString().substring(11, 16),
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
+                          message['isMe']
+                              ? Text(
+                                  '${message['time'].hour}:${message['time'].minute}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                )
+                              : Text(
+                                  '${message['time'].hour}:${message['time'].minute}',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 120, 120, 120),
+                                    fontSize: 12,
+                                  ),
+                                ),
                         ],
                       ),
                     ),
@@ -106,10 +131,18 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                   child: TextField(
                     controller: _textController,
                     decoration: const InputDecoration(
-                        hintText: 'Type a message',
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: textColor),
+                      hintStyle:
+                          TextStyle(color: Color.fromARGB(255, 120, 120, 120)),
+                      hintText: 'Type a message',
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 221, 221, 221))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 221, 221, 221))),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 221, 221, 221),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -130,7 +163,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(16),
-                      backgroundColor: Colors.indigo),
+                      backgroundColor: Color(0xFF7176EE)),
                 ),
               ],
             ),

@@ -63,6 +63,13 @@ class _ApplicantsListState extends State<ApplicantsList> {
         ),
       ),
       centerTitle: true,
+      flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+        Color(0xFF39BCFD),
+        Color(0xFF4F93E9),
+        Color(0xFF7176EE),
+      ]))),
     );
   }
 

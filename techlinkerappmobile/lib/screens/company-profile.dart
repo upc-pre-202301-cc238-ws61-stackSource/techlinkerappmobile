@@ -36,28 +36,27 @@ class _CompanyProfileState extends State<CompanyProfile> {
   }
 
   Future loadData() async {
-    if (mounted) {
-      setState(() => isLoading = true);
-    }
+    if (!mounted) return; // Check if the state is mounted
+
+    setState(() => isLoading = true);
 
     await Future.delayed(const Duration(seconds: 1));
 
-    if (mounted) {
-      await Future.wait(urlPostImages
-          .map((urlImage) => cacheImage(context, urlImage))
-          .toList());
+    if (!mounted) return; // Check if the state is still mounted
 
-      await Future.wait(urlUserIcons
-          .map((urlImage) => cacheImage(context, urlImage))
-          .toList());
-    }
+    await Future.wait(urlPostImages
+        .map((urlImage) => cacheImage(context, urlImage))
+        .toList());
 
-    if (mounted) {
-      setState(() => {
-            isLoading = false,
-            usersIconisLoading = false,
-          });
-    }
+    await Future.wait(
+        urlUserIcons.map((urlImage) => cacheImage(context, urlImage)).toList());
+
+    if (!mounted) return; // Check if the state is still mounted
+
+    setState(() {
+      isLoading = false;
+      usersIconisLoading = false;
+    });
   }
 
   Future cacheImage(BuildContext context, String urlImage) =>
@@ -67,6 +66,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -82,7 +86,15 @@ class _CompanyProfileState extends State<CompanyProfile> {
             children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: buttonColor,
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF39BCFD),
+                      Color(0xFF4F93E9),
+                      Color(0xFF7176EE),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
@@ -96,7 +108,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     child: Text(
                       "Profile",
                       style: TextStyle(
-                          color: textColor,
+                          color: cardColor,
                           fontSize: 25,
                           fontWeight: FontWeight.w600),
                     ),
@@ -107,8 +119,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   Center(
                       child: isLoading
                           ? Shimmer.fromColors(
-                              baseColor: secondaryColor!,
-                              highlightColor: loadingColor,
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
                               child: buildSkeletonCard(context),
                             )
                           : buildProfileCard()),
@@ -129,16 +141,16 @@ class _CompanyProfileState extends State<CompanyProfile> {
                           "Is the world’s leading blockchain and cryptocurrency infrastructure provider with a financial product suite that includes the largest digital asset exchange by volume.",
                           textAlign: TextAlign.justify,
                           style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
+                              color: secondaryTextInBackground,
+                              fontSize: 19,
                               fontWeight: FontWeight.normal)),
                       const SizedBox(
                         height: 30,
                       ),
                       usersIconisLoading && isLoading
                           ? Shimmer.fromColors(
-                              baseColor: secondaryColor!,
-                              highlightColor: loadingColor,
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
                               child: buildSkeletonUserIcon(context),
                             )
                           : buildDeveloperIcons(),
@@ -159,8 +171,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
                 items: companyPosts
                     .map((item) => isLoading && usersIconisLoading
                         ? Shimmer.fromColors(
-                            baseColor: secondaryColor!,
-                            highlightColor: loadingColor,
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
                         : CompanyPost(
@@ -246,18 +258,17 @@ class _CompanyProfileState extends State<CompanyProfile> {
             const Text(
               'Company Name',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
-            const SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'john.doe@example.com',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: textColor,
               ),
             ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -346,7 +357,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
         const Text(
           "+50 Developers in charge",
           style: TextStyle(
-              color: textColor, fontSize: 17, fontWeight: FontWeight.w500),
+              color: mainTextInBackground,
+              fontSize: 17,
+              fontWeight: FontWeight.w500),
         )
       ],
     );

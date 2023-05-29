@@ -11,19 +11,28 @@ class DeveloperItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () => {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return DeveloperProfile();
         }))
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 10, top: 10),
-        padding: EdgeInsets.symmetric(vertical: 15),
+        margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12), color: secondaryColor),
+          borderRadius: BorderRadius.circular(12),
+          color: cardColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // Shadow color
+              spreadRadius: 1, // Spread radius
+              blurRadius: 2, // Blur radius
+              offset: Offset(0, 0.5), // Offset in the y direction
+            ),
+          ],
+        ),
         child: ListTile(
-          onTap: () => {print("Clicked")},
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: CachedNetworkImage(
@@ -39,14 +48,15 @@ class DeveloperItem extends StatelessWidget {
               Text(
                 item.name!,
                 style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: textColor),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: mainCardText,
+                ),
               ),
               Text(
                 "${item.specialityType!} Developer",
                 style: const TextStyle(
-                  color: textColor,
+                  color: secondaryCardText,
                   fontSize: 16,
                 ),
               ),
@@ -67,15 +77,16 @@ class DeveloperItem extends StatelessWidget {
             children: [
               Text(
                 item.yearsOfExperience!.toString(),
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: textColor),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: mainCardText,
+                ),
               ),
-              Text(
+              const Text(
                 'Years',
                 style: TextStyle(
-                  color: textColor,
+                  color: mainCardText,
                   fontSize: 16,
                 ),
               ),

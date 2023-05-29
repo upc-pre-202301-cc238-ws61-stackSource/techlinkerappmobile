@@ -57,58 +57,122 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 50,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF39BCFD),
+                  Color(0xFF4F93E9),
+                  Color(0xFF7176EE),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const Text(
-                "Notifications",
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
-                    fontWeight: FontWeight.w800),
+            ),
+            child: Column(children: const [
+              SizedBox(
+                height: 40,
               ),
-              const Text(
+              Text(
                 "Company",
                 style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
+                    color: cardColor,
+                    fontSize: 40,
                     fontWeight: FontWeight.w800),
               ),
-              const SizedBox(
-                height: 30,
+              Text(
+                "Notifications",
+                style: TextStyle(
+                    color: cardColor,
+                    fontSize: 41,
+                    fontWeight: FontWeight.w800),
               ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: companyNotifications.length,
-                      itemBuilder: (context, index) {
-                        final notification = companyNotifications[index];
+              SizedBox(
+                height: 25,
+              )
+            ]),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: ListView.builder(
+                itemCount: companyNotifications.length,
+                itemBuilder: (context, index) {
+                  final notification = companyNotifications[index];
 
-                        return isLoding
-                            ? Shimmer.fromColors(
-                                baseColor: secondaryColor,
-                                highlightColor: loadingColor,
-                                child: buildSkeletonNotification(context))
-                            : NotificationItem(
-                                notification: notification,
-                                emmiterIcon: urlEmittersImages[index],
-                              );
-                      }))
-            ],
+                  return isLoding
+                      ? Shimmer.fromColors(
+                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                          highlightColor: Colors.grey[200]!,
+                          child: buildSkeletonNotification(context))
+                      : NotificationItem(
+                          notification: notification,
+                          emmiterIcon: urlEmittersImages[index],
+                        );
+                }),
           )),
+          const SizedBox(height: 10),
+        ],
+      )),
     );
   }
 
   Widget buildSkeletonNotification(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
-      padding: EdgeInsets.symmetric(vertical: 15),
+      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: loadingColor),
-      height: 80,
+        color: Color.fromARGB(154, 255, 255, 255),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            //create a circle for simulating the image of avatar
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    width: 150,
+                    height: 13,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

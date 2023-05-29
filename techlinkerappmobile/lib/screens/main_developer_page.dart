@@ -17,8 +17,8 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
 
   final screens = [
     DeveloperHome(),
-    DeveloperNotifications(),
     DeveloperMessages(),
+    DeveloperNotifications(),
     DeveloperProfile(),
   ];
 
@@ -28,37 +28,65 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
       body: screens[index],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-          indicatorColor: secondaryColor,
+          indicatorColor: thirdColor,
           iconTheme: MaterialStateProperty.all(
-            const IconThemeData(color: Colors.white),
+            const IconThemeData(color: textColor),
           ),
           labelTextStyle: MaterialStateProperty.all(
             TextStyle(
-              color: Colors.white,
+              color: textColor,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
         ),
-        child: NavigationBar(
-          height: 90,
-          backgroundColor: buttonColor,
-          selectedIndex: index,
-          onDestinationSelected: (index) {
-            setState(() {
-              this.index = index;
-            });
-          },
-          destinations: [
-            NavigationDestination(icon: Icon(Icons.home_filled), label: 'Home'),
-            NavigationDestination(
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, -2),
+              ),
+            ],
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFF39BCFD),
+                const Color(0xFF4F93E9),
+                const Color(0xFF7176EE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: NavigationBar(
+            height: 90,
+            backgroundColor: Colors.white,
+            selectedIndex: index,
+            onDestinationSelected: (index) {
+              setState(() {
+                this.index = index;
+              });
+            },
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home_filled),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.messenger_outline),
+                label: 'Messages',
+              ),
+              NavigationDestination(
                 icon: Icon(Icons.notifications_none_outlined),
-                label: 'notifications'),
-            NavigationDestination(
-                icon: Icon(Icons.messenger_outline), label: 'Messages'),
-            NavigationDestination(
-                icon: Icon(Icons.person_2_outlined), label: 'Dev'),
-          ],
+                label: 'Notifications',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person_2_outlined),
+                label: 'Profile',
+              ),
+            ],
+          ),
         ),
       ),
     );
