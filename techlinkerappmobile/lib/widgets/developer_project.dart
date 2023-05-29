@@ -1,56 +1,82 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// class DeveloperProject extends StatelessWidget {
-//   final DeveloperProjectItem project;
-//   final String projectIcon;
+import '../models/developer_project_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-//   const DeveloperProject(
-//       {required this.project, required this.projectIcon, super.key});
+class DeveloperProject extends StatelessWidget {
+  final DeveloperProjectItem project;
+  final String projectIcon;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(10),
-//       ),
-//       elevation: 2,
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           const SizedBox(height: 10),
-//           Container(
-//             height: 80,
-//             decoration: BoxDecoration(
-//               borderRadius: const BorderRadius.only(
-//                 topLeft: Radius.circular(10),
-//                 topRight: Radius.circular(10),
-//               ),
-//               image: DecorationImage(
-//                 fit: BoxFit.contain,
-//                 image: NetworkImage(projectIcon),
-//               ),
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Center(
-//                     child: Text(
-//                   project.name!,
-//                   style: const TextStyle(
-//                       fontWeight: FontWeight.w700, fontSize: 18),
-//                 )),
-//                 Center(
-//                     child: Text(project.description!,
-//                         style: const TextStyle(
-//                             fontWeight: FontWeight.w400, fontSize: 16)))
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  const DeveloperProject(
+      {required this.project, required this.projectIcon, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 2,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: 130,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(projectIcon),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  project.name!,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700, fontSize: 18),
+                ),
+                const SizedBox(height: 5),
+                Text(project.description!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, fontSize: 16)),
+                const SizedBox(height: 5),
+                //a row with an link icon and a text
+                GestureDetector(
+                  onTap: () {
+                    launch(project.projectUrl!);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.link),
+                      SizedBox(width: 5),
+                      Flexible(
+                        child: Text(
+                          'Click Here',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

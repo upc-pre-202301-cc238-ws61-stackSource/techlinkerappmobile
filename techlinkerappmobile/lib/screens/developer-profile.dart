@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/developer_framework_item.dart';
+import 'package:techlinkerappmobile/models/developer_project_item.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
+import 'package:techlinkerappmobile/widgets/developer_project.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -18,11 +20,14 @@ class DeveloperProfile extends StatefulWidget {
 
 class _DeveloperProfileState extends State<DeveloperProfile> {
   final urlPostImages = [];
+  final urlProjects = [];
   bool isLoading = true;
   bool usersIconisLoading = true;
+  bool projectsIconisLoading = true;
   final companyPosts = PostItem.allCompanyPosts();
   final developerFrameworks =
       DeveloperFrameworkItem.listOfDeveloperFrameworks();
+  final developerProjects = DeveloperProjectItem.developerProjects();
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -61,6 +66,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       setState(() => {
             isLoading = false,
             usersIconisLoading = false,
+            projectsIconisLoading = false
           });
     }
   }
@@ -194,7 +200,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.6,
+                  viewportFraction: 0.5,
 
                   // Add more options as needed
                 ),
@@ -223,21 +229,22 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 375, // Adjust the height as per your requirements
+                  height: 270, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: true, // Enable automatic sliding
-                  viewportFraction: 1,
+                  viewportFraction: 0.7,
 
                   // Add more options as needed
                 ),
-                items: companyPosts
-                    .map((item) => isLoading && usersIconisLoading
+                items: developerProjects
+                    .map((item) => projectsIconisLoading
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(item: item))
+                        : DeveloperProject(
+                            project: item, projectIcon: item.iconUrl!))
                     .toList(),
               ),
               const SizedBox(
