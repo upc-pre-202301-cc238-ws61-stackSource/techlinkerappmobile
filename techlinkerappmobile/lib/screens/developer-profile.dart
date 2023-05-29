@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/models/developer_framework_item.dart';
 import 'package:techlinkerappmobile/models/developer_project_item.dart';
+import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
 import '../models/company_unique_post.dart';
@@ -24,10 +26,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool isLoading = true;
   bool usersIconisLoading = true;
   bool projectsIconisLoading = true;
+  bool certificatesIconisLoading = true;
   final companyPosts = PostItem.allCompanyPosts();
   final developerFrameworks =
       DeveloperFrameworkItem.listOfDeveloperFrameworks();
   final developerProjects = DeveloperProjectItem.developerProjects();
+  final developerCertificates =
+      DeveloperCertificateItem.developerCertificates();
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -66,7 +71,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       setState(() => {
             isLoading = false,
             usersIconisLoading = false,
-            projectsIconisLoading = false
+            projectsIconisLoading = false,
+            certificatesIconisLoading = false
           });
     }
   }
@@ -261,22 +267,22 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 200, // Adjust the height as per your requirements
+                  height: 240, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
                   viewportFraction: 0.6,
 
                   // Add more options as needed
                 ),
-                items: developerFrameworks
-                    .map((item) => isLoading && usersIconisLoading
+                items: developerCertificates
+                    .map((item) => certificatesIconisLoading
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : DeveloperFramework(
-                            framework: item, frameworkIcon: item.iconLink!))
+                        : DeveloperCertificate(
+                            certificate: item, certificateIcon: item.iconUrl!))
                     .toList(),
               ),
               const SizedBox(
