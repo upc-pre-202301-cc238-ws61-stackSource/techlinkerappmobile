@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/filter_developer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 import '../models/developer_unique_item.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
@@ -14,23 +16,25 @@ class CompanyHome extends StatefulWidget {
 }
 
 class _CompanyHomeState extends State<CompanyHome> {
-  final developersItem = DeveloperUniqueItem.developerItems();
   List<dynamic> selectedSpecialityType = [];
   List<dynamic> selectedYearsOfExperience = [];
   List<dynamic> selectedFramework = [];
   List<dynamic> selectedProgrammingLanguage = [];
   List<dynamic> selectedDatabase = [];
+  List<Developer> developers = [];
 
   bool isLoding = true;
 
-  final urlDevelopersImages = [];
+  Map<String, String> urlDevelopersImages = {};
 
   @override
   void initState() {
     super.initState();
 
-    getDevelopersImageUrls();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getAllDevelopers().then((value) {
+      getDevelopersImageUrls();
+      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    });
   }
 
   Future loadData() async {
@@ -38,8 +42,8 @@ class _CompanyHomeState extends State<CompanyHome> {
       setState(() => isLoding = true);
     }
 
-    await Future.wait(urlDevelopersImages
-        .map((urlImage) => cacheImage(context, urlImage))
+    await Future.wait(urlDevelopersImages.entries
+        .map((urlImage) => cacheImage(context, urlImage.value))
         .toList());
 
     if (mounted) {
@@ -51,14 +55,14 @@ class _CompanyHomeState extends State<CompanyHome> {
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
   void getDevelopersImageUrls() {
-    for (var item in developersItem) {
-      urlDevelopersImages.add(item.image!);
+    for (var item in developers) {
+      urlDevelopersImages[item.id!.toString()] = item.image!;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final filterDevelopersList = filterDevelopers();
+    //final filterDevelopersList = filterDevelopers();
 
     return Scaffold(
         backgroundColor: primaryColor,
@@ -171,32 +175,48 @@ class _CompanyHomeState extends State<CompanyHome> {
             const SizedBox(
               height: 10,
             ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 23),
-              child: ListView.builder(
-                  itemCount: filterDevelopersList.length,
-                  itemBuilder: (context, index) {
-                    final developer = filterDevelopersList[index];
+            developers.isEmpty
+                ? //create progress indicator while loading data
+                Expanded(
+                    child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23),
+                    child: ListView.builder(
+                        itemCount: 6,
+                        itemBuilder: (context, index) {
+                          return Shimmer.fromColors(
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
+                              child: buildSkeleton(context));
+                        }),
+                  ))
+                : Expanded(
+                    child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23),
+                    child: ListView.builder(
+                        itemCount: developers.length,
+                        itemBuilder: (context, index) {
+                          final developer = developers[index];
 
-                    return isLoding
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: buildSkeleton(context))
-                        : DeveloperItem(
-                            item: developer,
-                            urlImage: urlDevelopersImages[index],
-                          );
-                  }),
-            ))
+                          return isLoding
+                              ? Shimmer.fromColors(
+                                  baseColor:
+                                      Color.fromARGB(255, 219, 221, 225)!,
+                                  highlightColor: Colors.grey[200]!,
+                                  child: buildSkeleton(context))
+                              : DeveloperItem(
+                                  item: developer,
+                                  urlImage: urlDevelopersImages[
+                                      developer.id!.toString()]!,
+                                );
+                        }),
+                  ))
           ]),
         ));
   }
 
   Widget buildSkeleton(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 13),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Color.fromARGB(126, 255, 255, 255),
@@ -247,30 +267,54 @@ class _CompanyHomeState extends State<CompanyHome> {
     );
   }
 
-  List<dynamic> filterDevelopers() {
-    List<dynamic> filteredDevelopers1 = developersItem.where((specialzation) {
-      return selectedSpecialityType.isEmpty ||
-          selectedSpecialityType.contains(specialzation.specialityType);
-    }).toList();
+  // List<dynamic> filterDevelopers() {
+  //   List<dynamic> filteredDevelopers1 = developersItem.where((specialzation) {
+  //     return selectedSpecialityType.isEmpty ||
+  //         selectedSpecialityType.contains(specialzation.specialityType);
+  //   }).toList();
 
-    List<dynamic> filteredDevelopers2 = filteredDevelopers1.where((developer) {
-      return selectedFramework.isEmpty ||
-          selectedFramework
-              .every((framework) => developer.frameworks.contains(framework));
-    }).toList();
+  //   List<dynamic> filteredDevelopers2 = filteredDevelopers1.where((developer) {
+  //     return selectedFramework.isEmpty ||
+  //         selectedFramework
+  //             .every((framework) => developer.frameworks.contains(framework));
+  //   }).toList();
 
-    List<dynamic> filteredDevelopers3 = filteredDevelopers2.where((developer) {
-      return selectedProgrammingLanguage.isEmpty ||
-          selectedProgrammingLanguage.every(
-              (language) => developer.programmingLanguage.contains(language));
-    }).toList();
+  //   List<dynamic> filteredDevelopers3 = filteredDevelopers2.where((developer) {
+  //     return selectedProgrammingLanguage.isEmpty ||
+  //         selectedProgrammingLanguage.every(
+  //             (language) => developer.programmingLanguage.contains(language));
+  //   }).toList();
 
-    List<dynamic> filteredDevelopers4 = filteredDevelopers3.where((developer) {
-      return selectedDatabase.isEmpty ||
-          selectedDatabase
-              .every((database) => developer.database.contains(database));
-    }).toList();
+  //   List<dynamic> filteredDevelopers4 = filteredDevelopers3.where((developer) {
+  //     return selectedDatabase.isEmpty ||
+  //         selectedDatabase
+  //             .every((database) => developer.database.contains(database));
+  //   }).toList();
 
-    return filteredDevelopers4;
+  //   return filteredDevelopers4;
+  // }
+
+  Future<void> getAllDevelopers() async {
+    try {
+      final developersData = await DeveloperService.getAllDevelopers();
+      if (mounted) {
+        //convert json data to list of developers
+        final developers = developersData
+            .map((developer) => Developer.fromJson(developer))
+            .toList();
+
+        //print all developers
+        for (var developer in developers) {
+          print(developer.firstName);
+        }
+        setState(() {
+          this.developers = developers;
+        });
+
+        print(this.developers.length);
+      }
+    } catch (e) {
+      print('Failed to fetch developers data. Error: $e');
+    }
   }
 }

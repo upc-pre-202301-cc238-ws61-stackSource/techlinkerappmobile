@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
 
 class DeveloperItem extends StatelessWidget {
-  final DeveloperUniqueItem item;
+  final Developer item;
   final String urlImage;
   const DeveloperItem({super.key, required this.item, required this.urlImage});
 
@@ -46,7 +47,7 @@ class DeveloperItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name!,
+                '${item.firstName!} + ${item.lastName!}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -54,7 +55,7 @@ class DeveloperItem extends StatelessWidget {
                 ),
               ),
               Text(
-                "${item.specialityType!} Developer",
+                item.description!,
                 style: const TextStyle(
                   color: secondaryCardText,
                   fontSize: 16,
@@ -76,7 +77,7 @@ class DeveloperItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                item.yearsOfExperience!.toString(),
+                item.id!.toString(),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
