@@ -30,11 +30,11 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
   ];
   final programmingLanguageOptions = [
     'JavaScript',
+    'TypeScript',
     'Python',
     'Java',
     'C#',
     'C++',
-    'TypeScript'
   ];
   final databaseOptions = [
     'MySQL',
@@ -142,7 +142,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             SizedBox(height: verticalWith),
             Row(
               children: frameworkOptions
-                  .take(4)
+                  .take(3)
                   .map((framework) => Container(
                         margin: const EdgeInsets.only(right: 8),
                         child: FilterChip(
@@ -163,7 +163,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             ),
             Row(
               children: frameworkOptions
-                  .skip(4)
+                  .skip(3)
                   .map((framework) => Container(
                         margin: const EdgeInsets.only(right: 8),
                         child: FilterChip(
@@ -195,7 +195,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             SizedBox(height: verticalWith),
             Row(
               children: programmingLanguageOptions
-                  .take(5)
+                  .take(3)
                   .map((programmingLanguage) => Container(
                         margin: const EdgeInsets.only(right: 8),
                         child: FilterChip(
@@ -219,7 +219,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             ),
             Row(
               children: programmingLanguageOptions
-                  .skip(5)
+                  .skip(3)
                   .map((programmingLanguage) => Container(
                         margin: const EdgeInsets.only(right: 8),
                         child: FilterChip(

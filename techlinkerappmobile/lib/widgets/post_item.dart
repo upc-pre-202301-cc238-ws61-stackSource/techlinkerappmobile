@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
 
+import '../screens/applicants_developer_list.dart';
+
 class CompanyPost extends StatelessWidget {
   final PostItem item;
-  const CompanyPost({super.key, required this.item});
+  final String urlImage;
+  const CompanyPost({super.key, required this.urlImage, required this.item});
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -17,17 +21,13 @@ class CompanyPost extends StatelessWidget {
         children: [
           Container(
             height: 150,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                fit: BoxFit.cover,
-                image: const NetworkImage(
-                  "https://static.vecteezy.com/system/resources/previews/002/223/229/large_2x/abstract-technology-hi-tech-background-banner-template-with-copy-space-vector.jpg",
-                ),
-              ),
+                  fit: BoxFit.cover, image: NetworkImage(urlImage)),
             ),
           ),
           Padding(
@@ -38,18 +38,18 @@ class CompanyPost extends StatelessWidget {
                 Text(
                   item.title!,
                   style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: mainCardText),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   item.description!,
                   textAlign: TextAlign.justify,
                   style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: secondaryCardText),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -70,8 +70,8 @@ class CompanyPost extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 10,
-                              backgroundImage:
-                                  NetworkImage(item.companyProfileImage!),
+                              backgroundImage: NetworkImage(
+                                  item.companyUniqueItem!.bannerImage!),
                             ),
                             const SizedBox(width: 8),
                             const Text('Remote'),
@@ -80,9 +80,43 @@ class CompanyPost extends StatelessWidget {
                       ],
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: buttonColor),
-                      onPressed: () {},
-                      child: const Text('Apply'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ApplicantsList()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors
+                            .transparent, // Set the background color to transparent
+                        elevation: 0, // Remove the button's shadow
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF39BCFD),
+                              Color(0xFF4F93E9),
+                              Color(0xFF7176EE),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            'Applicants',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 )
