@@ -154,7 +154,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
                               child: buildSkeletonUserIcon(context),
                             )
                           : buildDeveloperIcons(),
-                    ]),
+                    ],
+                    ),
               ),
               const SizedBox(
                 height: 25,
@@ -351,16 +352,33 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ],
           ),
         ),
-        const SizedBox(
-          width: 10,
+        SizedBox(
+          width: 10
         ),
         const Text(
-          "+50 Developers in charge",
+          "+50 Developers",
           style: TextStyle(
               color: mainTextInBackground,
               fontSize: 17,
               fontWeight: FontWeight.w500),
-        )
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        MaterialButton(
+          onPressed: () {},
+          color: buttonColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Text(
+            "Create post",
+            style: TextStyle(
+              fontSize: 15,
+              color: buttonTextColor,),
+          ),
+        ),
+        
       ],
     );
   }

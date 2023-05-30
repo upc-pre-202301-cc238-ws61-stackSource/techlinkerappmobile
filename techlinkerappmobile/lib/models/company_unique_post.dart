@@ -121,7 +121,7 @@ class PostItem {
           title: "Need a Full Stack Developer",
           description: "Need a Full Stack Developer ",
           imageUrl:
-              "https://img.freepik.com/vector-premium/plantilla-pagina-inicio-desarrollador-web-independiente-ilustracion-sitio-web-codificacion-hombres_115338-22.jpg?w=2000",
+              "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/202946464/original/51d81428d4cf9e08c5cf35709b9c54ab9ba41238/compile-and-test-your-code.jpeg",
           companyUniqueItem: CompanyUniqueItem(
               id: "03",
               firstName: "Robert",
