@@ -47,7 +47,7 @@ class DeveloperItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${item.firstName!} + ${item.lastName!}',
+                '${item.firstName!} ${item.lastName!}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
