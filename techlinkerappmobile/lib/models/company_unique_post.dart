@@ -94,7 +94,7 @@ class PostItem {
               city: "Quito")),
       PostItem(
           id: "04",
-          title: "Need a Full Stack Developer",
+          title: "Full Stack Developer",
           description: "Need a Full Stack Developer ",
           imageUrl:
               "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/202946464/original/51d81428d4cf9e08c5cf35709b9c54ab9ba41238/compile-and-test-your-code.jpeg",
