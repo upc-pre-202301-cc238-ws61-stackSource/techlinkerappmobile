@@ -179,7 +179,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                           )
                         : CompanyPost(
                             item: item,
-                            urlImage: urlPostImages[int.parse(item.id!) - 1]))
+                            urlImage: urlPostImages[item.id! - 1]))
                     .toList(),
               ),
               const SizedBox(

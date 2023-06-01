@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/company_unique_item.dart';
+import 'package:techlinkerappmobile/models/company_unique_post.dart';
+import 'package:techlinkerappmobile/services/company_service.dart';
 
 class CompanyCreatePost extends StatefulWidget {
   const CompanyCreatePost({super.key});
@@ -8,18 +10,29 @@ class CompanyCreatePost extends StatefulWidget {
   State<CompanyCreatePost> createState() => _CompanyCreatePostState();
 }
 
- enum Title { BackendDeveloper, FrontendDeveloper, FullStackDeveloper, MobileDeveloper, UXUIDesigner, DataScientist, Other }
+enum Title { BackendDeveloper, FrontendDeveloper, FullStackDeveloper, MobileDeveloper, UXUIDesigner, DataScientist, Other }
 
 class _CompanyCreatePostState extends State<CompanyCreatePost> {
  
   String titlePost = '';
   String descriptionPost = '';
   String imageUrlPost = '';
-  //CompanyUniqueItem companyUniqueItem = this.getCompanyUniqueItem();
+  
   Title _titleSelected = Title.BackendDeveloper;
 
   final formKey = GlobalKey<FormState>();
-
+  void createPost(String id) async {
+    final company = await CompanyService.getCompanyById(id);
+    print(company);
+    final postJob = PostItem(
+      id: 0,
+      title: titlePost,
+      description: descriptionPost,
+      imageUrl: imageUrlPost,
+      companyUniqueItem: CompanyUniqueItem.fromJson(company),
+    );
+    await CompanyService.setCompanyPost(postJob);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +200,8 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                     formKey.currentState!.save();
                     print(titlePost);
                     print(descriptionPost);
+                    createPost('11');
+                    
                   }
                 },
                 child: Text('Submit'),
