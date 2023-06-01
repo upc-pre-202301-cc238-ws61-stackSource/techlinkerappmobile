@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/company_unique_item.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
+import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
+
+import '../constants/colors.dart';
 
 class CompanyCreatePost extends StatefulWidget {
   const CompanyCreatePost({super.key});
@@ -14,16 +17,16 @@ enum Title { BackendDeveloper, FrontendDeveloper, FullStackDeveloper, MobileDeve
 
 class _CompanyCreatePostState extends State<CompanyCreatePost> {
  
-  String titlePost = '';
+  String titlePost = 'Backend Developer';
   String descriptionPost = '';
   String imageUrlPost = '';
   
   Title _titleSelected = Title.BackendDeveloper;
 
   final formKey = GlobalKey<FormState>();
+
   void createPost(String id) async {
     final company = await CompanyService.getCompanyById(id);
-    print(company);
     final postJob = PostItem(
       id: 0,
       title: titlePost,
@@ -31,18 +34,19 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
       imageUrl: imageUrlPost,
       companyUniqueItem: CompanyUniqueItem.fromJson(company),
     );
-    await CompanyService.setCompanyPost(postJob);
+    final post = await CompanyService.setCompanyPost(postJob);
+    if(post != null){
+      descriptionPost = '';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Create a Post of Job',
           style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
-
-
           ),
       ),
       body: Padding(
@@ -54,9 +58,11 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 "Select developer's you need",
                 style: TextStyle(color: Colors.black, fontSize: 20.0)),
+              const SizedBox(height: 16.0),
               ListTile(
                 title: const Text('Backend Developer'),
                 leading: Radio<Title>(
@@ -154,12 +160,11 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                   },
                 ),
               ),
-        
               if (_titleSelected == Title.Other)
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
                   child: TextFormField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Specify developer type',
                       border: OutlineInputBorder(),
                     ),
@@ -174,11 +179,11 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                     },
                   ),
                 ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
                 child: TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Description',
                     border: OutlineInputBorder(),
                   ),
@@ -193,23 +198,32 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                   },
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     formKey.currentState!.save();
-                    print(titlePost);
-                    print(descriptionPost);
-                    createPost('11');
+                    //Send to API
+                    //createPost('11');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: FlashCorrectMessageWidget(message: 'Post created successfully'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0.0,
+                        
+                      ),
+                    );
+                    Navigator.pop(context);
                     
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               ),
             ],
           ),
-            ),
-          ]
+          ),
+          ],
         ),
       ),
     );
