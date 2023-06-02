@@ -74,7 +74,7 @@ class _CompanyHomeState extends State<CompanyHome> {
         backgroundColor: primaryColor,
         body: Container(
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
