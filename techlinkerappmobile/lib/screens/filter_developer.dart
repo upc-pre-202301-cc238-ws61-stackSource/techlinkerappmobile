@@ -51,7 +51,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 35),
+            const SizedBox(height: 35),
 
             const Text(
               'Years of experience',
@@ -280,7 +280,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text('Filter Developers',
-                            style: TextStyle(color: textColor, fontSize: 17))
+                            style: TextStyle(color: cardColor, fontSize: 17))
                       ])),
             ),
             const SizedBox(height: 20),
@@ -295,7 +295,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
-        leading: SizedBox(height: 5),
+        leading: const SizedBox(height: 5),
         title: Row(
           children: [
             const Align(
