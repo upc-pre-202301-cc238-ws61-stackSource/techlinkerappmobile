@@ -89,8 +89,13 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
           children: [
             Expanded(
               child: ListView(
-                children: [
-                  SizedBox(height: 20),
+                children: <Widget>[
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     child: Text(
@@ -287,22 +292,27 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: ElevatedButton(
+                      
                         onPressed: () {
                           imageUrlLoad();
                           if(formKey.currentState!.validate()){
                             formKey.currentState!.save();
 
-                            //print('Career: $career');
-                            //print('Study Center: $nameStudyCenter');
-                            //print('Entry Date: $entryDate');
-                            //print('Graduation Date: $graduationDate');
-                            //print('Description of career: $description');
-                            //print('Progress: $progress');
+                            print('Career: $career');
+                            print('Study Center: $nameStudyCenter');
+                            print('Entry Date: $entryDate');
+                            print('Graduation Date: $graduationDate');
+                            print('Description of career: $description');
+                            print('Progress: $progress');
                           }
                         },
                         child: Text('Publish'),
                     ),
                   ),
+                      ]
+                    ),
+                  )
+                  
                 ],
               ),
             )
