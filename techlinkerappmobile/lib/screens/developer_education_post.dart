@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'dart:math';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import  'package:techlinkerappmobile/services/developer_service.dart';
+
+import 'common/flash-correct-message-widget.dart';
 
 class DeveloperEducationPost extends StatefulWidget {
   const DeveloperEducationPost({super.key});
@@ -11,15 +14,17 @@ class DeveloperEducationPost extends StatefulWidget {
   State<DeveloperEducationPost> createState() => _DeveloperEducationPostState();
 }
 
+enum Progress { InProgress, Finished }
 class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
 
   String career = '';
   String iconUrl = '';
   String nameStudyCenter = '';
-  String entryDate = '';
-  String graduationDate = '';
+  DateTime entryDate = DateTime.now();
+  DateTime graduationDate = DateTime.now();
   String description = '';
-  String progress = '';
+  int progress = 0;
+  Progress _progressSelected = Progress.InProgress;
 
   final formKey = GlobalKey<FormState>();
 
@@ -34,9 +39,16 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     }
   }
 
-
   void publishEducation(String id) async {
-
+    final digitalProfile = await DeveloperService.getDigitalProfileByDeveloperId(id);
+    final education = Education(
+        career: career,
+        digitalProfile: DigitalProfile.fromJson(digitalProfile),
+        id : 0,
+    );
+    final publishEducation = await DeveloperService.setEducationPublish(education);
+    print(publishEducation);
+    }
   }
 
   @override
@@ -103,211 +115,211 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                     ),
                   ),
                 ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Name of Career',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a name of career';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                career = value!;
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Text(
-              "Name of Study Center",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Study Center',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a name of study center';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                nameStudyCenter = value!;
-              },
-            ),
-          ),
-          SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Name of Career',
+                      hintStyle: TextStyle(color: textColor),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value){
+                      if(value !.isEmpty) {
+                        return 'Please enter a name of career';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      career = value!;
+                    },
+                  ),
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Text(
+                    "Name of Study Center",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Study Center',
+                      hintStyle: TextStyle(color: textColor),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value){
+                      if(value !.isEmpty) {
+                        return 'Please enter a name of study center';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      nameStudyCenter = value!;
+                    },
+                  ),
+                ),
+                SizedBox(height: 20),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Text(
-              "Entry Date",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Entry Date',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a entry date';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                entryDate = value!;
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Text(
-              "Graduation Date",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Graduation Date',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a graduation date';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                graduationDate = value!;
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Text(
-              "Description of career",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Description of career',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a description of career';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                description = value!;
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Text(
-              "Progress",
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Progress',
-                hintStyle: TextStyle(color: textColor),
-                border: OutlineInputBorder(),
-              ),
-              validator: (value){
-                if(value !.isEmpty) {
-                  return 'Please enter a progress';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                progress = value!;
-              },
-            ),
-          ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Text(
+                    "Entry Date",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TableCalendar(
+                    firstDay: DateTime.utc(1950, 1, 1),
+                    lastDay: DateTime.utc(2023, 12, 31),
+                    focusedDay: entryDate,
+                    selectedDayPredicate: (day) => isSameDay(entryDate, day),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        entryDate = selectedDay;
+                      });
+                    },
+                  )
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Text(
+                    "Graduation Date",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TableCalendar(
+                    firstDay: DateTime.utc(1950, 1, 1),
+                    lastDay: DateTime.utc(2023, 12, 31),
+                    focusedDay: graduationDate,
+                    selectedDayPredicate: (day) => isSameDay(graduationDate, day),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        graduationDate = selectedDay;
+                      });
+                    },
+                  )
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Text(
+                    "Description of career",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Description of career',
+                      hintStyle: TextStyle(color: textColor),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value){
+                      if(value !.isEmpty) {
+                        return 'Please enter a description of career';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      description = value!;
+                    },
+                  ),
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  child: Text(
+                    "Progress",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: ElevatedButton(
-              
-                onPressed: () {
-                  
-                  if(formKey.currentState!.validate()){
-                    formKey.currentState!.save();
-                    imageUrlLoad();
-                    print('Career: $career');
-                    print('Study Center: $nameStudyCenter');
-                    print('Entry Date: $entryDate');
-                    print('Graduation Date: $graduationDate');
-                    print('Description of career: $description');
-                    print('Progress: $progress');
-                  }
-                },
-                child: Text('Publish'),
-            ),
-          ),
+                ListTile(
+                  title: const Text('In progress'),
+                  leading: Radio(
+                    value: Progress.InProgress,
+                    groupValue: _progressSelected,
+                    onChanged: (Progress? value) {
+                      setState(() {
+                        _progressSelected = value!;
+                        progress = 0;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text('Finished'),
+                  leading: Radio(
+                    value: Progress.Finished,
+                    groupValue: _progressSelected,
+                    onChanged: (Progress? value) {
+                      setState(() {
+                        _progressSelected = value!;
+                        progress = 1;
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      publishEducation('4');
+                      if(formKey.currentState!.validate()){
+                        formKey.currentState!.save();
+                        imageUrlLoad();
+
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: FlashCorrectMessageWidget(message: 'Education added successfully'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text('Publish'),
+                  ),
+                ),
               ]
             ),
           )
-          
         ],
       ),
     );

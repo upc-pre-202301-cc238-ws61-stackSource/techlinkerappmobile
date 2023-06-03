@@ -6,18 +6,38 @@ class DeveloperService {
   static const String baseUrl =
       'https://stacksourcewebservice.azurewebsites.net/api/v1';
 
-  static setEducationPublish(StudyCenterUniqueItem education) async {
-    final url = Uri.parse('$baseUrl/study-centers/${education.id}');
+  static getDigitalProfileByDeveloperId(String id) async {
+    final url = Uri.parse('$baseUrl/digital_profiles/$id');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to fetch digital profile data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch digital profile data. Error: $e');
+    }
+  }
+
+  static setEducationPublish(Education education) async {
+    final url = Uri.parse('$baseUrl/educations/${education.digitalProfile!.id}');
     print(url);
     try {
       final response = await http.post(
         url,
         headers: {'content-type': 'application/json'},
         body: jsonEncode({
+          'career': education.career,
+          'digitalProfile': education.digitalProfile!.toJson(),
           'id': education.id,
-          'name': education.name,
-          'description': education.description,
-          'graduationDate': education.graduationDate,
         }),
       );
 
@@ -32,7 +52,6 @@ class DeveloperService {
       throw Exception('Failed to create education. Error: $e');
     }
   }
-
 
   static getEducationById(String id) async {
     final url = Uri.parse('$baseUrl/educations/$id');

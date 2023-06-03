@@ -18,4 +18,12 @@ class DigitalProfile {
       name: json['name'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'developer': developer.toJson(),
+      'id': id,
+      'name': name,
+    };
+  }
 }
