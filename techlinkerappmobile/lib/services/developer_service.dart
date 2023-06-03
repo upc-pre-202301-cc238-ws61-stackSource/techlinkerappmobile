@@ -1,9 +1,81 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 
 class DeveloperService {
   static const String baseUrl =
       'https://stacksourcewebservice.azurewebsites.net/api/v1';
+
+  static setEducationPublish(StudyCenterUniqueItem education) async {
+    final url = Uri.parse('$baseUrl/study-centers/${education.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'id': education.id,
+          'name': education.name,
+          'description': education.description,
+          'graduationDate': education.graduationDate,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create education. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create education. Error: $e');
+    }
+  }
+
+
+  static getEducationById(String id) async {
+    final url = Uri.parse('$baseUrl/educations/$id');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to fetch education data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch education data. Error: $e');
+    }
+  }
+
+
+  static getDeveloperById(String id) async {
+    final url = Uri.parse('$baseUrl/developers/$id');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to fetch developer data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch developer data. Error: $e');
+    }
+  }
 
   static Future<List<dynamic>> getAllDevelopers() async {
     final url = Uri.parse('$baseUrl/developers');
