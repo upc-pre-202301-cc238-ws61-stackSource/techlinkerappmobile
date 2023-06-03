@@ -1,10 +1,12 @@
 
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
+import 'package:http/http.dart' as http;
 
 
 
@@ -22,10 +24,12 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
   String DescriptionCertificate = "";
   String IconURL = "";
   String ObtainDate ="";
+  bool _isSubmitting = false;
+
   void createPost(String id) async {
     final developer = await DeveloperService.getDeveloperById(id);
     final postCertificate = DeveloperCertificateItem(
-        id: id,
+        id: "0",
         title: TittleCertificate,
         description: DescriptionCertificate,
         iconUrl: IconURL,
@@ -36,7 +40,52 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
       DescriptionCertificate = "";
     }
   }
+  void _submitForm() async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
 
+      setState(() {
+        _isSubmitting = true;
+      });
+
+      // Enviar los datos a la API
+      final response = await sendPostToAPI();
+
+      setState(() {
+        _isSubmitting = false;
+      });
+
+      if (response.statusCode == 200) {
+        // Solicitud exitosa
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Post created successfully'),
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        // Solicitud con error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create post. Please try again.'),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<http.Response> sendPostToAPI() {
+    final url = 'https://stacksourcewebservice.azurewebsites.net/api/v1/certificates'; // Reemplazar con la URL real de la API
+    final headers = {'Content-Type': 'application/json'};
+    final body = {
+      'title': TittleCertificate,
+      'description': DescriptionCertificate,
+      'iconUrl': IconURL,
+      'obtainedDate': ObtainDate,
+    };
+
+    return http.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,25 +199,10 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      formKey.currentState!.save();
-                      //Send to API
-                      //createPost('11');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: FlashCorrectMessageWidget(message: 'Post created successfully'),
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.transparent,
-                          elevation: 0.0,
-
-                        ),
-                      );
-                      Navigator.pop(context);
-
-                    }
-                  },
-                  child: const Text('Submit'),
+                  onPressed: _isSubmitting ? null : () => _submitForm(),
+                  child: _isSubmitting
+                      ? CircularProgressIndicator()
+                      : Text('Submit'),
                 ),
               ],
             ),)
