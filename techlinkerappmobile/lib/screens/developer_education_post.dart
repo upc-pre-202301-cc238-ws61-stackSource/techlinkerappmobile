@@ -48,7 +48,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     );
     final publishEducation = await DeveloperService.setEducationPublish(education);
     print(publishEducation);
-    }
+
   }
 
   @override
