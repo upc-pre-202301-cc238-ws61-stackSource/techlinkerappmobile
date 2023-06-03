@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
 import 'package:techlinkerappmobile/screens/notifications_company.dart';
-
+import 'package:techlinkerappmobile/screens/Profile_AddProjectDeveloper.dart';
 import '../constants/colors.dart';
 import 'home_company.dart';
 
@@ -20,7 +20,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     CompanyHome(),
     CompanyMessage(),
     CompanyNotifications(),
-    CompanyProfile(),
+    AddProjectDeveloper(),
   ];
 
   @override
