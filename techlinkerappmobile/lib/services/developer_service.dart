@@ -247,7 +247,6 @@ class DeveloperService {
     }
   }
 
-
   //get all databases
   static Future<List<dynamic>> getAllDatabases() async {
     final url = Uri.parse('$baseUrl/databases');
@@ -271,6 +270,7 @@ class DeveloperService {
       throw Exception('Failed to fetch databases data. Error: $e');
     }
   }
+
   static Future<List<dynamic>> getAllCertificate() async {
     final url = Uri.parse('$baseUrl/certificates');
 
@@ -291,32 +291,6 @@ class DeveloperService {
       }
     } catch (e) {
       throw Exception('Failed to fetch certificates data. Error: $e');
-    }
-  }
- 
-  static setCompanyPost(DeveloperCertificateItem postCert) async {
-    final url = Uri.parse('$baseUrl/posts/${postCert.id}');
-    print(url);
-    try {
-      final response = await http.post(
-        url,
-        headers: {'content-type': 'application/json'},
-        body: jsonEncode({
-          'description': postCert.description,
-          'id': postCert.id,
-          'imageUrl': postCert.iconUrl,
-          'title': postCert.title,
-        }),
-      );
-      if (response.statusCode == 201) {
-        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        return jsonData;
-      } else {
-        throw Exception(
-            'Failed to create post. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to create post. Error: $e');
     }
   }
 }
