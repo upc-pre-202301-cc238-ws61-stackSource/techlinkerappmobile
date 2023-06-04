@@ -1,5 +1,5 @@
 class DeveloperCertificateItem {
-  String? id;
+  int? id;
   String? title;
   String? description;
   String? iconUrl;
@@ -16,14 +16,14 @@ class DeveloperCertificateItem {
   static List<DeveloperCertificateItem> developerCertificates() {
     return [
       DeveloperCertificateItem(
-          id: "01",
+          id: 1,
           title: "React Certificate",
           description: "Soportyed by Facebook",
           iconUrl:
               "https://www.uplers.com/wp-content/uploads/2022/05/AngularJs-Frameworks-891x505.jpg",
           obtainedDate: "2023-05-29T17:11:06.780Z"),
       DeveloperCertificateItem(
-          id: "02",
+          id: 2,
           title: "Angular Certificate",
           description: "Sopoorted by Google",
           iconUrl:

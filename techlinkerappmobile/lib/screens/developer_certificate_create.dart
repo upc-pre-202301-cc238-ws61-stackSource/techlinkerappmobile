@@ -1,7 +1,4 @@
-
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
