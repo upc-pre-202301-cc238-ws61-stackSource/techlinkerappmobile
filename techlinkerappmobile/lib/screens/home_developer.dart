@@ -111,26 +111,27 @@ class _DeveloperHomeState extends State<DeveloperHome> {
             const SizedBox(
               height: 20,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: ListView.builder(
-                  itemCount: companyPosts.length,
-                  itemBuilder: (context, index) => Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: isLoading
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
-                        : CompanyPost(
-                            item: companyPosts[index],
-                            urlImage: urlPostImages[index]),
-                  ),
-                ),
-              ),
-            ),
+
+            // Expanded(
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 24),
+            //     child: ListView.builder(
+            //       itemCount: companyPosts.length,
+            //       itemBuilder: (context, index) => Container(
+            //         margin: const EdgeInsets.only(bottom: 16),
+            //         child: isLoading
+            //             ? Shimmer.fromColors(
+            //                 baseColor: Color.fromARGB(255, 219, 221, 225)!,
+            //                 highlightColor: Colors.grey[200]!,
+            //                 child: skeletonPostItem(context),
+            //               )
+            //             : CompanyPost(
+            //                 item: companyPosts[index],
+            //                 urlImage: urlPostImages[index]),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ]),
         ));
   }

@@ -482,7 +482,6 @@ class DeveloperService {
       );
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as List<dynamic>;
-
         return jsonData;
       } else if (response.statusCode == 204) {
         return [];

@@ -26,7 +26,7 @@ class Developer {
   //empty constructor
   factory Developer.empty() {
     return Developer(
-      id: 0,
+      id: 1,
       firstName: '',
       lastName: '',
       email: '',
@@ -38,8 +38,6 @@ class Developer {
       bannerImage: '',
     );
   }
-
-  
 
   factory Developer.fromJson(Map<String, dynamic> json) {
     return Developer(
