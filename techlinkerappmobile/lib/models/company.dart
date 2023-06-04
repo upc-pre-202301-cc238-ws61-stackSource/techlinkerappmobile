@@ -35,6 +35,7 @@ class Company {
     this.city,
   });
 
+ 
   factory Company.empty() {
     return Company(
       id: 2,
@@ -55,7 +56,7 @@ class Company {
       city: '',
     );
   }
-
+ 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
       id: json['id'],

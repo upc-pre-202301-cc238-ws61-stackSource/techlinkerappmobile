@@ -16,7 +16,6 @@ class DeveloperEducationPost extends StatefulWidget {
 enum Progress { InProgress, Finished }
 class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
 
-  String career = '';
   String iconUrl = '';
   String nameStudyCenter = '';
   DateTime entryDate = DateTime.now();
@@ -39,20 +38,11 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
   }
 
   Future publishEducation(String id) async {
-    final digitalProfile = await DeveloperService.getDigitalProfileByDeveloperId(id);
-    final education = Education(
-        career: career,
-        digitalProfile: DigitalProfile.fromJson(digitalProfile),
-        id : 0,
-    );
-    final publishEducation = await DeveloperService.setEducationPublish(education);
-    print(publishEducation);
-
-    final education2 = await DeveloperService.getEducationByDigitalProfileId(id);
+    final education = await DeveloperService.getEducationByDigitalProfileId(id);
     print(education);    
     final studyCenter = StudyCenterUniqueItem(
       description: description,
-      education: Education.fromJson(education2),
+      education: Education.fromJson(education),
       entryDate: entryDate,
       graduationDate: graduationDate,
       iconUrl: iconUrl,
@@ -114,39 +104,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
             key: formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: Text(
-                    "Career",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                    color: textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Name of Career',
-                      hintStyle: TextStyle(color: textColor),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value){
-                      if(value !.isEmpty) {
-                        return 'Please enter a name of career';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      career = value!;
-                    },
-                  ),
-                ),
+              children: <Widget>[          
                 SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -313,7 +271,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                       if(formKey.currentState!.validate()){
                         formKey.currentState!.save();
                         imageUrlLoad();
-                        publishEducation('3');
+                        publishEducation('1');
                         
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

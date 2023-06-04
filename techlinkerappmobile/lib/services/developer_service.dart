@@ -295,6 +295,7 @@ class DeveloperService {
       throw Exception('Failed to fetch certificates data. Error: $e');
     }
   }
+ 
 
   static setCompanyPost(DeveloperCertificateItem postCert) async {
     final url = Uri.parse('$baseUrl/posts/${postCert.id}');
@@ -493,4 +494,5 @@ class DeveloperService {
       throw Exception('Failed to fetch certifications data. Error: $e');
     }
   }
+ 
 }
