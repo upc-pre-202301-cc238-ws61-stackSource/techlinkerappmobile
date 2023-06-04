@@ -48,14 +48,12 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     );
     final publishEducation = await DeveloperService.setEducationPublish(education);
     print(publishEducation);
-  }
 
-  Future publishStudyCenter(String id) async {
-    final education = await DeveloperService.getEducationByDigitalProfileId(id);
+    final education2 = await DeveloperService.getEducationByDigitalProfileId(id);
     print(education);    
     final studyCenter = StudyCenterUniqueItem(
       description: description,
-      education: Education.fromJson(education),
+      education: Education.fromJson(education2),
       entryDate: entryDate,
       graduationDate: graduationDate,
       iconUrl: iconUrl,
@@ -65,7 +63,6 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     );
     final publishStudyCenter = await DeveloperService.postStudyCenter(studyCenter);
     print(publishStudyCenter);
-    
   }
 
   @override
@@ -200,8 +197,8 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TableCalendar(
-                    firstDay: DateTime.utc(1950, 1, 1),
-                    lastDay: DateTime.utc(2023, 12, 31),
+                    firstDay: DateTime.parse('1950-01-01T00:00:00.000Z'),
+                    lastDay: DateTime.parse('2023-12-31T00:00:00.000Z'),
                     focusedDay: entryDate,
                     selectedDayPredicate: (day) => isSameDay(entryDate, day),
                     onDaySelected: (selectedDay, focusedDay) {
@@ -227,8 +224,8 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TableCalendar(
-                    firstDay: DateTime.utc(1950, 1, 1),
-                    lastDay: DateTime.utc(2023, 12, 31),
+                    firstDay: DateTime.parse('1950-01-01T00:00:00.000Z'),
+                    lastDay: DateTime.parse('2023-12-31T00:00:00.000Z'),
                     focusedDay: graduationDate,
                     selectedDayPredicate: (day) => isSameDay(graduationDate, day),
                     onDaySelected: (selectedDay, focusedDay) {
@@ -317,8 +314,8 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                       if(formKey.currentState!.validate()){
                         formKey.currentState!.save();
                         imageUrlLoad();
-                        //publishEducation('1');
-                        publishStudyCenter('1');
+                        publishEducation('3');
+                        
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(message: 'Education added successfully'),

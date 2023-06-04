@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
 
+
 class DeveloperService {
   static const String baseUrl =
       'https://stacksourcewebservice.azurewebsites.net/api/v1';
@@ -16,8 +17,8 @@ class DeveloperService {
         body: jsonEncode({
           'description': studyCenter.description,
           'education': studyCenter.education!.toJson(),
-          'entryDate': studyCenter.entryDate.toString(),
-          'graduationDate': studyCenter.graduationDate.toString(),
+          'entryDate': studyCenter.entryDate!.toIso8601String(),
+          'graduationDate': studyCenter.graduationDate!.toIso8601String(),
           'iconUrl': studyCenter.iconUrl,
           'id': studyCenter.id,
           'name': studyCenter.name,
