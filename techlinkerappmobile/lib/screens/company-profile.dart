@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/screens/company-create-post.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -154,7 +155,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
                               child: buildSkeletonUserIcon(context),
                             )
                           : buildDeveloperIcons(),
-                    ]),
+                    ],
+                    ),
               ),
               const SizedBox(
                 height: 25,
@@ -177,7 +179,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                           )
                         : CompanyPost(
                             item: item,
-                            urlImage: urlPostImages[int.parse(item.id!) - 1]))
+                            urlImage: urlPostImages[item.id! - 1]))
                     .toList(),
               ),
               const SizedBox(
@@ -351,16 +353,35 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ],
           ),
         ),
-        const SizedBox(
-          width: 10,
+        SizedBox(
+          width: 10
         ),
         const Text(
-          "+50 Developers in charge",
+          "+50 Developers",
           style: TextStyle(
               color: mainTextInBackground,
               fontSize: 17,
               fontWeight: FontWeight.w500),
-        )
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => CompanyCreatePost()));
+          },
+          color: secondaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Text(
+            "Create post",
+            style: TextStyle(
+              fontSize: 15,
+              color: buttonTextColor,),
+          ),
+        ),
+        
       ],
     );
   }
