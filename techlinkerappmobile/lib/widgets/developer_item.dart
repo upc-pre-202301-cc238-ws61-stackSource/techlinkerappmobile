@@ -1,21 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
+import '../services/developer_service.dart';
 
 class DeveloperItem extends StatelessWidget {
-  final DeveloperUniqueItem item;
+  final Developer item;
   final String urlImage;
   const DeveloperItem({super.key, required this.item, required this.urlImage});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DeveloperProfile();
-        }))
+      onTap: () async {
+        await getDeveloperById(item.id.toString()).then((value) => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DeveloperProfile(
+                    developer: value,
+                  ),
+                ),
+              ),
+            }); // navigateToDeveloperProfile(context)
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
@@ -46,7 +55,7 @@ class DeveloperItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name!,
+                '${item.firstName!} ${item.lastName!}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -54,7 +63,7 @@ class DeveloperItem extends StatelessWidget {
                 ),
               ),
               Text(
-                "${item.specialityType!} Developer",
+                item.description!,
                 style: const TextStyle(
                   color: secondaryCardText,
                   fontSize: 16,
@@ -76,7 +85,7 @@ class DeveloperItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                item.yearsOfExperience!.toString(),
+                item.id!.toString(),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -95,5 +104,31 @@ class DeveloperItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void navigateToDeveloperProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeveloperProfile(
+          developer: Developer(),
+        ),
+      ),
+    );
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      if (developerData != null) {
+        final developer = Developer.fromJson(developerData);
+        print("This is the developer $developerData");
+        return developer;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer();
   }
 }

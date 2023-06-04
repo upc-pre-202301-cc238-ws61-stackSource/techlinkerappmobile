@@ -16,7 +16,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../widgets/job_offer_item.dart';
 
 class DeveloperProfile extends StatefulWidget {
-  const DeveloperProfile({super.key});
+  final Developer developer;
+  const DeveloperProfile({required this.developer, super.key});
 
   @override
   State<DeveloperProfile> createState() => _DeveloperProfileState();
