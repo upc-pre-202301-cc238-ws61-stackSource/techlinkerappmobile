@@ -3,7 +3,7 @@ import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
 import 'package:techlinkerappmobile/screens/notifications_company.dart';
-
+import 'package:techlinkerappmobile/screens/Profile_AddProjectDeveloper.dart';
 import '../constants/colors.dart';
 import '../models/company.dart';
 import 'home_company.dart';
@@ -42,6 +42,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
       country: "Ecuador",
       city: "Quito",
     )),
+ 
   ];
 
   @override

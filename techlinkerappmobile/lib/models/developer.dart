@@ -53,4 +53,18 @@ class Developer {
       bannerImage: json['bannerImage'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'role': role,
+      'description': description,
+      'image': image,
+      'bannerImage': bannerImage,
+    };
+  }
 }
