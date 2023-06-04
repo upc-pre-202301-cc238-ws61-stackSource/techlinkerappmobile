@@ -179,7 +179,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                           )
                         : CompanyPost(
                             item: item,
-                            urlImage: urlPostImages[int.parse(item.id!) - 1]))
+                            urlImage: urlPostImages[item.id! - 1]))
                     .toList(),
               ),
               const SizedBox(
@@ -370,7 +370,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => CompanyCreatePost()));
           },
-          color: buttonColor,
+          color: secondaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

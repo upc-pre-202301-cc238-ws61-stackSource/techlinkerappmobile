@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/certificate.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/developer_certificate_item.dart';
-
 class DeveloperCertificate extends StatelessWidget {
-  final DeveloperCertificateItem certificate;
+  final Certificate certificate;
   final String certificateIcon;
 
   const DeveloperCertificate(
@@ -52,7 +51,7 @@ class DeveloperCertificate extends StatelessWidget {
                 const SizedBox(height: 5),
                 //text that shows the date of the certificate
                 Text(
-                  certificate.obtainedDate!.substring(0, 10).toString(),
+                  certificate!.obtainedDate.toString().substring(0, 10),
                   style: const TextStyle(
                       fontWeight: FontWeight.w400, fontSize: 16),
                 ),
