@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/models/study_center.dart';
 
 class DeveloperStudyCenter extends StatelessWidget {
-  final StudyCenterUniqueItem studyCenter;
+  final StudyCenter studyCenter;
   final String studyCenterIcon;
 
   const DeveloperStudyCenter(
@@ -49,7 +49,7 @@ class DeveloperStudyCenter extends StatelessWidget {
                 const SizedBox(height: 5),
                 //text that shows the date of the studyCenter
                 Text(
-                  studyCenter.graduationDate!,
+                  studyCenter.graduationDate.toString()!.substring(0, 4),
                   style: const TextStyle(
                       fontWeight: FontWeight.w400, fontSize: 16),
                 ),
