@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/screens/applicants_developer_list.dart';
+import 'package:techlinkerappmobile/screens/company-create-post.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -16,7 +16,7 @@ class CompanyProfile extends StatefulWidget {
 
 class _CompanyProfileState extends State<CompanyProfile> {
   final urlPostImages = [];
-  bool isLoding = true;
+  bool isLoading = true;
   bool usersIconisLoading = true;
   final companyPosts = PostItem.allCompanyPosts();
 
@@ -37,28 +37,27 @@ class _CompanyProfileState extends State<CompanyProfile> {
   }
 
   Future loadData() async {
-    if (mounted) {
-      setState(() => isLoding = true);
-    }
+    if (!mounted) return; // Check if the state is mounted
+
+    setState(() => isLoading = true);
 
     await Future.delayed(const Duration(seconds: 1));
 
-    if (mounted) {
-      await Future.wait(urlPostImages
-          .map((urlImage) => cacheImage(context, urlImage))
-          .toList());
+    if (!mounted) return; // Check if the state is still mounted
 
-      await Future.wait(urlUserIcons
-          .map((urlImage) => cacheImage(context, urlImage))
-          .toList());
-    }
+    await Future.wait(urlPostImages
+        .map((urlImage) => cacheImage(context, urlImage))
+        .toList());
 
-    if (mounted) {
-      setState(() => {
-            isLoding = false,
-            usersIconisLoading = false,
-          });
-    }
+    await Future.wait(
+        urlUserIcons.map((urlImage) => cacheImage(context, urlImage)).toList());
+
+    if (!mounted) return; // Check if the state is still mounted
+
+    setState(() {
+      isLoading = false;
+      usersIconisLoading = false;
+    });
   }
 
   Future cacheImage(BuildContext context, String urlImage) =>
@@ -68,6 +67,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -83,7 +87,15 @@ class _CompanyProfileState extends State<CompanyProfile> {
             children: [
               Container(
                 decoration: const BoxDecoration(
-                  color: buttonColor,
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF39BCFD),
+                      Color(0xFF4F93E9),
+                      Color(0xFF7176EE),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
@@ -91,13 +103,13 @@ class _CompanyProfileState extends State<CompanyProfile> {
                 ),
                 child: Column(children: [
                   const SizedBox(
-                    height: 70,
+                    height: 60,
                   ),
                   const Center(
                     child: Text(
                       "Profile",
                       style: TextStyle(
-                          color: textColor,
+                          color: cardColor,
                           fontSize: 25,
                           fontWeight: FontWeight.w600),
                     ),
@@ -105,7 +117,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   const SizedBox(
                     height: 17,
                   ),
-                  Center(child: buildProfileCard()),
+                  Center(
+                      child: isLoading
+                          ? Shimmer.fromColors(
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
+                              child: buildSkeletonCard(context),
+                            )
+                          : buildProfileCard()),
                   const SizedBox(
                     height: 30,
                   ),
@@ -117,26 +136,27 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
                       const Text(
                           "Is the world’s leading blockchain and cryptocurrency infrastructure provider with a financial product suite that includes the largest digital asset exchange by volume.",
                           textAlign: TextAlign.justify,
                           style: TextStyle(
-                              color: textColor,
-                              fontSize: 20,
+                              color: secondaryTextInBackground,
+                              fontSize: 19,
                               fontWeight: FontWeight.normal)),
                       const SizedBox(
                         height: 30,
                       ),
-                      usersIconisLoading && isLoding
+                      usersIconisLoading && isLoading
                           ? Shimmer.fromColors(
-                              baseColor: secondaryColor!,
-                              highlightColor: loadingColor,
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
                               child: buildSkeletonUserIcon(context),
                             )
                           : buildDeveloperIcons(),
-                    ]),
+                    ],
+                    ),
               ),
               const SizedBox(
                 height: 25,
@@ -151,15 +171,15 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   // Add more options as needed
                 ),
                 items: companyPosts
-                    .map((item) => isLoding && usersIconisLoading
+                    .map((item) => isLoading && usersIconisLoading
                         ? Shimmer.fromColors(
-                            baseColor: secondaryColor!,
-                            highlightColor: loadingColor,
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
                         : CompanyPost(
                             item: item,
-                            urlImage: urlPostImages[int.parse(item.id!) - 1]))
+                            urlImage: urlPostImages[item.id! - 1]))
                     .toList(),
               ),
               const SizedBox(
@@ -208,8 +228,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   Widget buildSkeletonUserIcon(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
-      padding: EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.only(bottom: 10, top: 10),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: loadingColor),
       height: 30,
@@ -237,23 +257,58 @@ class _CompanyProfileState extends State<CompanyProfile> {
               backgroundImage: NetworkImage(urlUserIcons[0]),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Company Name',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
-            const SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'john.doe@example.com',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: textColor,
               ),
             ),
+            const SizedBox(height: 8),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildSkeletonCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 65),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Color.fromARGB(152, 255, 255, 255),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 10, top: 10),
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              color: loadingColor,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            width: 150,
+            height: 18,
+            color: loadingColor,
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 200,
+            height: 16,
+            color: loadingColor,
+          ),
+        ],
       ),
     );
   }
@@ -298,14 +353,35 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ],
           ),
         ),
-        const SizedBox(
-          width: 10,
+        SizedBox(
+          width: 10
         ),
         const Text(
-          "+50 Developers in charge",
+          "+50 Developers",
           style: TextStyle(
-              color: textColor, fontSize: 17, fontWeight: FontWeight.w500),
-        )
+              color: mainTextInBackground,
+              fontSize: 17,
+              fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => CompanyCreatePost()));
+          },
+          color: secondaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Text(
+            "Create post",
+            style: TextStyle(
+              fontSize: 15,
+              color: buttonTextColor,),
+          ),
+        ),
+        
       ],
     );
   }

@@ -1,20 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/screens/message_company_inbox.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:techlinkerappmobile/widgets/message_item.dart';
 
+import '../constants/colors.dart';
 import '../models/developer_unique_item.dart';
+import '../widgets/message_item.dart';
+import 'message_company_inbox.dart';
 
-class CompanyMessage extends StatefulWidget {
-  const CompanyMessage({super.key});
+class DeveloperMessages extends StatefulWidget {
+  const DeveloperMessages({super.key});
 
   @override
-  State<CompanyMessage> createState() => _CompanyMessageState();
+  State<DeveloperMessages> createState() => _DeveloperMessagesState();
 }
 
-class _CompanyMessageState extends State<CompanyMessage> {
+class _DeveloperMessagesState extends State<DeveloperMessages> {
   bool isLoding = true;
 
   final urlMessagesIcons = [];
@@ -76,7 +76,7 @@ class _CompanyMessageState extends State<CompanyMessage> {
                 height: 40,
               ),
               Text(
-                "Company",
+                "Developer",
                 style: TextStyle(
                     color: cardColor,
                     fontSize: 40,

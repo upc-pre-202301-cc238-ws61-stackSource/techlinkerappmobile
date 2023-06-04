@@ -28,17 +28,17 @@ class _ApplicantsListState extends State<ApplicantsList> {
           child: Column(
             children: [
               searchBar(),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: filteredDevelopers.length,
-                      itemBuilder: (context, index) {
-                        final developer = filteredDevelopers[index];
+              // Expanded(
+              //     child: ListView.builder(
+              //         itemCount: filteredDevelopers.length,
+              //         itemBuilder: (context, index) {
+              //           final developer = filteredDevelopers[index];
 
-                        return DeveloperItem(
-                          item: developer,
-                          urlImage: developer.image!,
-                        );
-                      }))
+              //           return DeveloperItem(
+              //             item: developer,
+              //             urlImage: developer.image!,
+              //           );
+              //         }))
             ],
           ),
         ));
@@ -63,6 +63,13 @@ class _ApplicantsListState extends State<ApplicantsList> {
         ),
       ),
       centerTitle: true,
+      flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+        Color(0xFF39BCFD),
+        Color(0xFF4F93E9),
+        Color(0xFF7176EE),
+      ]))),
     );
   }
 

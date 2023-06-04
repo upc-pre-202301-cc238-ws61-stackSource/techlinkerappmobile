@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/screens/company-profile.dart';
-import 'package:techlinkerappmobile/screens/messages_company.dart';
-import 'package:techlinkerappmobile/screens/notifications_company.dart';
-
+import 'package:techlinkerappmobile/models/developer.dart';
+import 'package:techlinkerappmobile/screens/developer-profile.dart';
+import 'package:techlinkerappmobile/screens/messages_developer.dart';
+import 'package:techlinkerappmobile/screens/notifications_developer.dart';
 import '../constants/colors.dart';
-import 'home_company.dart';
+import '../screens/home_developer.dart';
 
-class MainCompanyPage extends StatefulWidget {
-  const MainCompanyPage({super.key});
+class MainDeveloperPage extends StatefulWidget {
+  const MainDeveloperPage({super.key});
 
   @override
-  State<MainCompanyPage> createState() => _MainCompanyPageState();
+  State<MainDeveloperPage> createState() => _MainDeveloperPageState();
 }
 
-class _MainCompanyPageState extends State<MainCompanyPage> {
+class _MainDeveloperPageState extends State<MainDeveloperPage> {
   int index = 0;
 
   final screens = [
-    CompanyHome(),
-    CompanyMessage(),
-    CompanyNotifications(),
-    CompanyProfile(),
+    DeveloperHome(),
+    DeveloperMessages(),
+    DeveloperNotifications(),
+    DeveloperProfile(
+      developer: Developer.empty(),
+    ),
   ];
 
   @override
@@ -34,7 +36,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
             const IconThemeData(color: textColor),
           ),
           labelTextStyle: MaterialStateProperty.all(
-            const TextStyle(
+            TextStyle(
               color: textColor,
               fontSize: 12,
               fontWeight: FontWeight.w500,
@@ -50,11 +52,11 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
                 offset: Offset(0, -2),
               ),
             ],
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               colors: [
-                Color(0xFF39BCFD),
-                Color(0xFF4F93E9),
-                Color(0xFF7176EE),
+                const Color(0xFF39BCFD),
+                const Color(0xFF4F93E9),
+                const Color(0xFF7176EE),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
