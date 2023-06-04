@@ -9,7 +9,7 @@ class DeveloperService {
       'https://stacksource.azurewebsites.net/api/v1';
 
   static postCertificate(DeveloperCertificateItem certificate) async {
-    final url = Uri.parse('$baseUrl/certificates/${certificate.id}');
+    final url = Uri.parse('$baseUrl/certificates/education/${certificate.education!.id}');
     print(url);
     try {
       final response = await http.post(
@@ -20,6 +20,7 @@ class DeveloperService {
           'education': certificate.education!.toJson(),
           'iconUrl': certificate.iconUrl,
           'id': certificate.id,
+          'obtainedDate': certificate.obtainedDate!.toIso8601String(),
           'title': certificate.title,
         }),
       );

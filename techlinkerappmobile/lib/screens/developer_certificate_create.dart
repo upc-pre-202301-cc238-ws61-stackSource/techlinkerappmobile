@@ -1,10 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:http/http.dart' as http;
+import '../constants/colors.dart';
+import 'common/flash-correct-message-widget.dart';
 
 
 
@@ -24,7 +25,7 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
   DateTime ObtainDate = DateTime.now();
   bool _isSubmitting = false;
 
-  Future<DeveloperCertificateItem> postCertificateToDataBase(String id) async {
+  Future postCertificateToDataBase(String id) async {
     final education = await DeveloperService.getEducationByDigitalProfileId(id);
     print(education);
     final postCertificate = DeveloperCertificateItem(
@@ -38,39 +39,6 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
 
     final post = await DeveloperService.postCertificate(postCertificate);
     print(post);
-    return post;
-  }
-  
-  void _submitForm(String id) async {
-
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
-
-      setState(() {
-        _isSubmitting = true;
-      });
-      // Enviar los datos a la API
-      final response = await postCertificateToDataBase(id);
-      setState(() {
-        _isSubmitting = false;
-      });
-      if (response != null) {
-        // Solicitud exitosa
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Certificate created successfully'),
-          ),
-        );
-        Navigator.pop(context);
-      } else {
-        // Solicitud con error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to create post. Please try again.'),
-          ),
-        );
-      }
-    }
   }
 
 
@@ -87,112 +55,123 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: <Widget>[
-            Form(key:formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Tittle',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a title';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      TittleCertificate = value!;
-                    },
+          Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Tittle',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    TittleCertificate = value!;
+                  },
                 ),
-                const SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a description';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      DescriptionCertificate = value!;
-                    },
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    DescriptionCertificate = value!;
+                  },
                 ),
-                const SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Picture',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a url of picture from certificate';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      IconURL = value!;
-                    },
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Icon Certificate URL',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a URL';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    IconURL = value!;
+                  },
                 ),
-
-                TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Date',
-                      ),
-                      style: 
-                        TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.black,
-                        ),
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
+                child: Text(
+                  'Select date of Obtained Certificate',
+                  textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
                     ),
-                
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
-                  child: InkWell(
-                    onTap: () {
-                      DatePicker.showDatePicker(
-                        context,
-                        showTitleActions: true,
-                        minTime: DateTime(2000),
-                        maxTime: DateTime(2100),
-                        onConfirm: (date) {
-                          String formattedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-                          setState(() {
-                            _obtainedDateController.text = formattedDate;
-                          });
-                        },
-                        currentTime: DateTime.now(),
-                        locale: LocaleType.en,
-                      );
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TableCalendar(
+                    firstDay: DateTime.parse('1950-01-01T00:00:00.000Z'),
+                    lastDay: DateTime.parse('2023-12-31T00:00:00.000Z'),
+                    focusedDay: ObtainDate,
+                    selectedDayPredicate: (day) => isSameDay(ObtainDate, day),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        ObtainDate = selectedDay;
+                      });
                     },
-                  ),
+                  )
                 ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _isSubmitting ? null : () => _submitForm('1'),
-                  child: _isSubmitting
-                      ? CircularProgressIndicator()
-                      : Text('Submit'),
-                ),
-              ],
-            ),)
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    //Send to API
+                    postCertificateToDataBase('1');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: FlashCorrectMessageWidget(message: 'Certificate added successfully'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
+                        );
+                    Navigator.pop(context);
+                    
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+          ),
           ],
         ),
-      ),
+
+        ),
     );
   }
 }
