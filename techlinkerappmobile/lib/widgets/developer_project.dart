@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../models/developer_project_item.dart';
+import 'package:techlinkerappmobile/models/project.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeveloperProject extends StatelessWidget {
-  final DeveloperProjectItem project;
+  final Project project;
   final String projectIcon;
 
   const DeveloperProject(

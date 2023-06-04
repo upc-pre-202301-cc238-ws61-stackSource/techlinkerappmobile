@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/framework.dart';
+import 'package:techlinkerappmobile/models/database.dart';
 
-class DeveloperFramework extends StatelessWidget {
-  final Framework framework;
-  final String frameworkIcon;
+class DeveloperDatabase extends StatelessWidget {
+  final Database database;
+  final String databaseIcon;
 
-  const DeveloperFramework(
-      {required this.frameworkIcon, required this.framework, super.key});
+  const DeveloperDatabase(
+      {required this.databaseIcon, required this.database, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class DeveloperFramework extends StatelessWidget {
               ),
               image: DecorationImage(
                 fit: BoxFit.contain,
-                image: NetworkImage(frameworkIcon),
+                image: NetworkImage(databaseIcon),
               ),
             ),
           ),
@@ -39,12 +39,12 @@ class DeveloperFramework extends StatelessWidget {
               children: [
                 Center(
                     child: Text(
-                  framework.name!,
+                  database.name!,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 18),
                 )),
                 Center(
-                    child: Text(framework.description!,
+                    child: Text(database.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],

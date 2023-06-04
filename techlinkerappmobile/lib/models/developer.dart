@@ -23,6 +23,22 @@ class Developer {
     required this.bannerImage,
   });
 
+  //empty constructor
+  factory Developer.empty() {
+    return Developer(
+      id: 1,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      role: '',
+      description: '',
+      image: '',
+      bannerImage: '',
+    );
+  }
+
   factory Developer.fromJson(Map<String, dynamic> json) {
     return Developer(
       id: json['id'],

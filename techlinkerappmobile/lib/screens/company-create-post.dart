@@ -41,7 +41,7 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
