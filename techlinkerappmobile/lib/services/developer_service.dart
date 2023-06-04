@@ -247,7 +247,6 @@ class DeveloperService {
     }
   }
 
-
   //get all databases
   static Future<List<dynamic>> getAllDatabases() async {
     final url = Uri.parse('$baseUrl/databases');
@@ -271,6 +270,7 @@ class DeveloperService {
       throw Exception('Failed to fetch databases data. Error: $e');
     }
   }
+ 
   static Future<List<dynamic>> getAllCertificate() async {
     final url = Uri.parse('$baseUrl/certificates');
 
@@ -319,4 +319,5 @@ class DeveloperService {
       throw Exception('Failed to create post. Error: $e');
     }
   }
+ 
 }

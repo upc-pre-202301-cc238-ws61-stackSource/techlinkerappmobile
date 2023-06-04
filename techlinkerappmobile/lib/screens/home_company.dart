@@ -159,7 +159,7 @@ class _CompanyHomeState extends State<CompanyHome> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(children: const [
                       Icon(Icons.filter_list, color: cardColor),
                       Text('Filter Developers',
@@ -451,4 +451,5 @@ class _CompanyHomeState extends State<CompanyHome> {
 
     return [];
   }
+
 }
