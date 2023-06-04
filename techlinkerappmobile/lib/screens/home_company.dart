@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/company.dart';
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/models/digital_profile.dart';
 import 'package:techlinkerappmobile/models/framework.dart';
 import 'package:techlinkerappmobile/screens/filter_developer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
 import '../models/database.dart';
-import '../models/developer_unique_item.dart';
+import '../models/developer.dart';
 import '../models/programming_language.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
@@ -36,9 +35,10 @@ class _CompanyHomeState extends State<CompanyHome> {
     super.initState();
 
     getAllDevelopers().then((value) {
-      getDevelopersImageUrls();
-      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-      filteredDevelopers = developers;
+      getDevelopersImageUrls(value).then((value) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+        filteredDevelopers = developers;
+      });
     });
 
     getAllFrameworks();
@@ -61,10 +61,15 @@ class _CompanyHomeState extends State<CompanyHome> {
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
-  void getDevelopersImageUrls() {
-    for (var item in developers) {
+  Future<Map<String, String>> getDevelopersImageUrls(
+      List<Developer> backDevelopers) async {
+    for (var item in backDevelopers) {
       urlDevelopersImages[item.id!.toString()] = item.image!;
     }
+
+    setState(() {});
+
+    return urlDevelopersImages;
   }
 
   @override
@@ -284,7 +289,7 @@ class _CompanyHomeState extends State<CompanyHome> {
     Map<int, List<Framework>> frameworksByDeveloper = {};
 
     for (var framework in frameworks) {
-      int digitalProfileId = framework.digitalProfile.id!;
+      int digitalProfileId = framework.digitalProfile!.id;
 
       if (frameworksByDeveloper.containsKey(digitalProfileId)) {
         frameworksByDeveloper[digitalProfileId]!.add(framework);
@@ -401,22 +406,28 @@ class _CompanyHomeState extends State<CompanyHome> {
     return [];
   }
 
-  Future<void> getAllDevelopers() async {
+  Future<List<Developer>> getAllDevelopers() async {
     try {
       final developersData = await DeveloperService.getAllDevelopers();
       if (mounted) {
         //convert json data to list of developers
-        final developers = developersData
+        final backDevelopers = developersData
             .map((developer) => Developer.fromJson(developer))
             .toList();
 
         setState(() {
-          this.developers = developers;
+          developers = backDevelopers;
         });
+
+        print('Developers: $backDevelopers');
+
+        return backDevelopers;
       }
     } catch (e) {
       print('Failed to fetch developers data. Error: $e');
     }
+
+    return [];
   }
 
   Future<List<ProgrammingLanguage>> getAllProgrammingLanguages() async {

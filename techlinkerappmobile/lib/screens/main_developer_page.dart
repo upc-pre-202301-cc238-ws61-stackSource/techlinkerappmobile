@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_developer.dart';
 import 'package:techlinkerappmobile/screens/notifications_developer.dart';
@@ -21,7 +21,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
     DeveloperMessages(),
     DeveloperNotifications(),
     DeveloperProfile(
-      developer: Developer(),
+      developer: Developer.empty(),
     ),
   ];
 

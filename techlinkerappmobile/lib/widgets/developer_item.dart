@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
+import '../models/developer.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
 import '../services/developer_service.dart';
@@ -111,7 +111,7 @@ class DeveloperItem extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => DeveloperProfile(
-          developer: Developer(),
+          developer: Developer.empty(),
         ),
       ),
     );
@@ -129,6 +129,6 @@ class DeveloperItem extends StatelessWidget {
       print('Failed to fetch developer data. Error: $e');
     }
 
-    return Developer();
+    return Developer.empty();
   }
 }

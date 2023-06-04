@@ -2,18 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
-import 'package:techlinkerappmobile/models/developer_framework_item.dart';
-import 'package:techlinkerappmobile/models/developer_project_item.dart';
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/models/database.dart';
+import 'package:techlinkerappmobile/models/programming_language.dart';
+import 'package:techlinkerappmobile/models/study_center.dart';
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
+import 'package:techlinkerappmobile/widgets/developer_database.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
+import 'package:techlinkerappmobile/widgets/developer_programming_language.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
-import 'package:techlinkerappmobile/widgets/developer_study_center.dart';
+import '../models/certificate.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '../widgets/job_offer_item.dart';
+import '../models/developer.dart';
+import '../models/education.dart';
+import '../models/framework.dart';
+import '../models/project.dart';
+import '../services/developer_service.dart';
+import '../widgets/developer_study_center.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final Developer developer;
@@ -33,12 +39,12 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool studyCenterIconisLoading = true;
 
   final companyPosts = PostItem.allCompanyPosts();
-  final developerFrameworks =
-      DeveloperFrameworkItem.listOfDeveloperFrameworks();
-  final developerProjects = DeveloperProjectItem.developerProjects();
-  final developerCertificates =
-      DeveloperCertificateItem.developerCertificates();
-  final developerStudyCenters = StudyCenterUniqueItem.studyCenters();
+  List<Framework> developerFrameworks = [];
+  List<Database> developerDatabases = [];
+  List<Project> developerProjects = [];
+  List<ProgrammingLanguage> developerProgrammingLanguages = [];
+  List<Certificate> developerCertificates = [];
+  List<StudyCenter> developerStudyCenters = [];
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -51,6 +57,23 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     super.initState();
 
     //create delay to show shimmer 2 seconds
+
+    getEducationByDigitalProfileId(widget.developer.id!.toString())
+        .then((value) async {
+      developerStudyCenters = await getStudyCentersByEducation(value);
+      developerProjects =
+          await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+      developerFrameworks = await getFrameworksByDigitalProfileId(
+          widget.developer.id!.toString());
+      developerDatabases = await getDatabasesByDigitalProfileId(//error
+          widget.developer.id!.toString());
+      developerProgrammingLanguages =
+          await getProgrammingLanguagesByDigitalProfileId(
+              widget.developer.id!.toString());
+      developerCertificates = await getCertficationsByEducationId(value);
+
+      setState(() {});
+    });
 
     getPostImages();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
@@ -149,21 +172,20 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(children: const [
-                  SizedBox(
+                child: Column(children: [
+                  const SizedBox(
                     height: 20,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                        "This is a developer profile decription, here you can see the developer's skills, education, experience, projects and certificates.",
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(widget.developer.description!,
                         textAlign: TextAlign.justify,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: textColor,
                             fontSize: 20,
                             fontWeight: FontWeight.normal)),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                 ]),
@@ -181,13 +203,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 options: CarouselOptions(
                   height: 250, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
-                  autoPlay: true, // Enable automatic sliding
+                  autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.8,
 
                   // Add more options as needed
                 ),
                 items: developerStudyCenters
-                    .map((item) => studyCenterIconisLoading
+                    .map((item) => developerStudyCenters.isEmpty
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
@@ -202,7 +224,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Tools / Skills",
+                child: Text("Frameworks",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                         color: textColor,
@@ -219,7 +241,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   // Add more options as needed
                 ),
                 items: developerFrameworks
-                    .map((item) => isLoading && usersIconisLoading
+                    .map((item) => developerFrameworks.isEmpty
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
@@ -227,6 +249,71 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           )
                         : DeveloperFramework(
                             framework: item, frameworkIcon: item.iconLink!))
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text("Databases",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  // Enable automatic sliding
+                  viewportFraction: 0.5,
+
+                  // Add more options as needed
+                ),
+                items: developerDatabases
+                    .map((item) => developerDatabases.isEmpty
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : DeveloperDatabase(
+                            database: item, databaseIcon: item.iconLink!))
+                    .toList(),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text("Programming Languages",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200, // Adjust the height as per your requirements
+                  enableInfiniteScroll: true, // Enable infinite scrolling
+                  // Enable automatic sliding
+                  viewportFraction: 0.5,
+
+                  // Add more options as needed
+                ),
+                items: developerProgrammingLanguages
+                    .map((item) => developerProgrammingLanguages.isEmpty
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : DeveloperProgrammingLanguage(
+                            programmingLanguage: item,
+                            programmingLanguageIcon: item.iconLink!))
                     .toList(),
               ),
               const SizedBox(
@@ -245,13 +332,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 options: CarouselOptions(
                   height: 270, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
-                  autoPlay: true, // Enable automatic sliding
+                  autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.7,
 
                   // Add more options as needed
                 ),
                 items: developerProjects
-                    .map((item) => projectsIconisLoading
+                    .map((item) => developerProjects.isEmpty
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
@@ -283,7 +370,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   // Add more options as needed
                 ),
                 items: developerCertificates
-                    .map((item) => certificatesIconisLoading
+                    .map((item) => developerCertificates.isEmpty
                         ? Shimmer.fromColors(
                             baseColor: Color.fromARGB(255, 219, 221, 225)!,
                             highlightColor: Colors.grey[200]!,
@@ -354,7 +441,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 50),
+        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
@@ -365,18 +452,18 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(urlUserIcons[0]),
+              backgroundImage: NetworkImage(widget.developer.image!),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Company Name',
-              style: TextStyle(
+            Text(
+              '${widget.developer.firstName!} ${widget.developer.lastName!}',
+              style: const TextStyle(
                   fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'john.doe@example.com',
-              style: TextStyle(
+            Text(
+              widget.developer.email!,
+              style: const TextStyle(
                 fontSize: 16,
                 color: textColor,
               ),
@@ -422,5 +509,134 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         ],
       ),
     );
+  }
+
+  //get education by digital profile id
+  Future<String> getEducationByDigitalProfileId(String id) async {
+    try {
+      final educationData =
+          await DeveloperService.getEducationByDigitalProfileId(id);
+      if (mounted) {
+        final education = Education.fromJson(educationData);
+        return education.id.toString();
+      }
+    } catch (e) {
+      print('Failed to fetch education data. Error: $e');
+    }
+
+    return "";
+  }
+
+  // get study centers by education id
+  Future<List<StudyCenter>> getStudyCentersByEducation(
+      String educationId) async {
+    try {
+      final studyCentersData =
+          await DeveloperService.getStudyCentersByEducationId(educationId);
+      if (mounted) {
+        final studyCenters = studyCentersData
+            .map<StudyCenter>(
+                (studyCenter) => StudyCenter.fromJson(studyCenter))
+            .toList();
+        return studyCenters;
+      }
+    } catch (e) {
+      print('Failed to fetch study centers data. Error: $e');
+    }
+
+    return [];
+  }
+
+  //get projects by digital profile id
+  Future<List<Project>> getProjectsByDigitalProfileId(String id) async {
+    try {
+      final projectsData =
+          await DeveloperService.getProjectsByDigitalProfileId(id);
+      if (mounted) {
+        final projects = projectsData
+            .map<Project>((project) => Project.fromJson(project))
+            .toList();
+        return projects;
+      }
+    } catch (e) {
+      print('Failed to fetch projects data. Error: $e');
+    }
+
+    return [];
+  }
+
+  //get frameworks by digital profile id
+  Future<List<Framework>> getFrameworksByDigitalProfileId(String id) async {
+    try {
+      final frameworksData =
+          await DeveloperService.getFrameworksByDigitalProfileId(id);
+      if (mounted) {
+        final frameworks = frameworksData
+            .map<Framework>((framework) => Framework.fromJson(framework))
+            .toList();
+        return frameworks;
+      }
+    } catch (e) {
+      print('Failed to fetch frameworks data. Error: $e');
+    }
+
+    return [];
+  }
+
+  //get databases by digital profile id
+  Future<List<Database>> getDatabasesByDigitalProfileId(String id) async {
+    try {
+      final databasesData =
+          await DeveloperService.getDatabasesByDigitalProfileId(id);
+      if (mounted) {
+        final databases = databasesData
+            .map<Database>((database) => Database.fromJson(database))
+            .toList();
+        return databases;
+      }
+    } catch (e) {
+      print('Failed to fetch databases data. Error: $e');
+    }
+
+    return [];
+  }
+
+  //get programming languages by digital profile id
+  Future<List<ProgrammingLanguage>> getProgrammingLanguagesByDigitalProfileId(
+      String id) async {
+    try {
+      final programmingLanguagesData =
+          await DeveloperService.getProgrammingLanguagesByDigitalProfileId(id);
+      if (mounted) {
+        final programmingLanguages = programmingLanguagesData
+            .map<ProgrammingLanguage>((programmingLanguage) =>
+                ProgrammingLanguage.fromJson(programmingLanguage))
+            .toList();
+        return programmingLanguages;
+      }
+    } catch (e) {
+      print('Failed to fetch programming languages data. Error: $e');
+    }
+
+    return [];
+  }
+
+  //get certifications by digital profile id
+  Future<List<Certificate>> getCertficationsByEducationId(String id) async {
+    try {
+      final certificationsData =
+          await DeveloperService.getCertificationsByEducationId(id);
+      if (mounted) {
+        final certifications = certificationsData
+            .map<Certificate>(
+                (certificate) => Certificate.fromJson(certificate))
+            .toList();
+        return certifications;
+      }
+    } catch (e) {
+      print('Failed to fetch certifications data. Error: $e');
+    }
+
+    return [];
   }
 }
