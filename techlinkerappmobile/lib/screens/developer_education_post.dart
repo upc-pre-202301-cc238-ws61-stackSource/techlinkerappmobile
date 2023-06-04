@@ -39,7 +39,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     }
   }
 
-  void publishEducation(String id) async {
+  Future publishEducation(String id) async {
     final digitalProfile = await DeveloperService.getDigitalProfileByDeveloperId(id);
     final education = Education(
         career: career,
@@ -48,7 +48,24 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
     );
     final publishEducation = await DeveloperService.setEducationPublish(education);
     print(publishEducation);
+  }
 
+  Future publishStudyCenter(String id) async {
+    final education = await DeveloperService.getEducationByDigitalProfileId(id);
+    print(education);    
+    final studyCenter = StudyCenterUniqueItem(
+      description: description,
+      education: Education.fromJson(education),
+      entryDate: entryDate,
+      graduationDate: graduationDate,
+      iconUrl: iconUrl,
+      id: 0,
+      name: nameStudyCenter,
+      progress: progress,
+    );
+    final publishStudyCenter = await DeveloperService.postStudyCenter(studyCenter);
+    print(publishStudyCenter);
+    
   }
 
   @override
@@ -297,12 +314,11 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: ElevatedButton(
                     onPressed: () {
-                      publishEducation('4');
                       if(formKey.currentState!.validate()){
                         formKey.currentState!.save();
                         imageUrlLoad();
-
-
+                        //publishEducation('1');
+                        publishStudyCenter('1');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(message: 'Education added successfully'),
