@@ -77,9 +77,9 @@ class CompanyUniqueItem {
     return [
       CompanyUniqueItem(
           id: 1,
-          firstName: "John",
-          lastName: "Doe",
-          email: "john@gmail.com",
+          firstName: "Tomas",
+          lastName: "Pastor",
+          email: "tomas@gmail.com",
           phone: "0987654321",
           password: "123456",
           role: "company",
