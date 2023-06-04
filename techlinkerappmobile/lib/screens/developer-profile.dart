@@ -6,6 +6,7 @@ import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/models/developer_framework_item.dart';
 import 'package:techlinkerappmobile/models/developer_project_item.dart';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
@@ -310,15 +311,39 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 20,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Certificates & Awards",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    Text(
+                      "Certificates & Awards",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                      GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DeveloperCertificateRegister(),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
+              
               CarouselSlider(
                 options: CarouselOptions(
                   height: 240, // Adjust the height as per your requirements

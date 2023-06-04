@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
+import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
@@ -20,24 +21,27 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
   String TittleCertificate = "";
   String DescriptionCertificate = "";
   String IconURL = "";
-  String ObtainDate ="";
+  DateTime ObtainDate = DateTime.now();
   bool _isSubmitting = false;
 
-  void createPost(String id) async {
-    final developer = await DeveloperService.getDeveloperById(id);
+  Future<DeveloperCertificateItem> postCertificateToDataBase(String id) async {
+    final education = await DeveloperService.getEducationByDigitalProfileId(id);
+    print(education);
     final postCertificate = DeveloperCertificateItem(
-        id: 0,
-        title: TittleCertificate,
-        description: DescriptionCertificate,
-        iconUrl: IconURL,
-        obtainedDate: ObtainDate);
+      id: 0,
+      title: TittleCertificate,
+      description: DescriptionCertificate,
+      iconUrl: IconURL,
+      obtainedDate: ObtainDate,
+      education: Education.fromJson(education),
+    );
 
-    final post = await DeveloperService.setCompanyPost(postCertificate);
-    if(post!=null){
-      DescriptionCertificate = "";
-    }
+    final post = await DeveloperService.postCertificate(postCertificate);
+    print(post);
+    return post;
   }
-  void _submitForm() async {
+  
+  void _submitForm(String id) async {
 
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
@@ -46,15 +50,15 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
         _isSubmitting = true;
       });
       // Enviar los datos a la API
-      final response = await sendPostToAPI();
+      final response = await postCertificateToDataBase(id);
       setState(() {
         _isSubmitting = false;
       });
-      if (response.statusCode == 200) {
+      if (response != null) {
         // Solicitud exitosa
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Post created successfully'),
+            content: Text('Certificate created successfully'),
           ),
         );
         Navigator.pop(context);
@@ -69,18 +73,7 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
     }
   }
 
-  Future<http.Response> sendPostToAPI(DeveloperCertificateItem developerCertificateItem) {
 
-    final url = 'https://stacksource.azurewebsites.net/api/v1/certificates/education/${developerCertificateItem.education!.id}'; // Reemplazar con la URL real de la API
-    final headers = {'Content-Type': 'application/json'};
-    final body = {
-      'title': TittleCertificate,
-      'description': DescriptionCertificate,
-      'iconUrl': IconURL,
-      'obtainedDate': ObtainDate,
-    };
-    return http.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +139,7 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter a picture from certificate';
+                        return 'Please enter a url of picture from certificate';
                       }
                       return null;
                     },
@@ -155,6 +148,18 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                     },
                   ),
                 ),
+
+                TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                      ),
+                      style: 
+                        TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.black,
+                        ),
+                    ),
+                
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
                   child: InkWell(
@@ -174,27 +179,11 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                         locale: LocaleType.en,
                       );
                     },
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Date',
-                      ),
-                      controller: _obtainedDateController,
-                      readOnly: true,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a date';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        ObtainDate = value!;
-                      },
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: _isSubmitting ? null : () => _submitForm(),
+                  onPressed: _isSubmitting ? null : () => _submitForm('1'),
                   child: _isSubmitting
                       ? CircularProgressIndicator()
                       : Text('Submit'),

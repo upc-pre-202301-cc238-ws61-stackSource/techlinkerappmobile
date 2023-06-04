@@ -6,7 +6,35 @@ import 'package:techlinkerappmobile/models/developer_study_center.dart';
 
 class DeveloperService {
   static const String baseUrl =
-      'https://stacksourcewebservice.azurewebsites.net/api/v1';
+      'https://stacksource.azurewebsites.net/api/v1';
+
+  static postCertificate(DeveloperCertificateItem certificate) async {
+    final url = Uri.parse('$baseUrl/certificates/${certificate.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'description': certificate.description,
+          'education': certificate.education!.toJson(),
+          'iconUrl': certificate.iconUrl,
+          'id': certificate.id,
+          'title': certificate.title,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create certificate. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create certificate. Error: $e');
+    }
+  }
+
   static postStudyCenter(StudyCenterUniqueItem studyCenter) async {
     final url = Uri.parse('$baseUrl/study-centers/${studyCenter.education!.id}');
     print(url);
