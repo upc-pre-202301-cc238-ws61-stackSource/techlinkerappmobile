@@ -29,7 +29,7 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
   void createPost(String id) async {
     final developer = await DeveloperService.getDeveloperById(id);
     final postCertificate = DeveloperCertificateItem(
-        id: "0",
+        id: 0,
         title: TittleCertificate,
         description: DescriptionCertificate,
         iconUrl: IconURL,
