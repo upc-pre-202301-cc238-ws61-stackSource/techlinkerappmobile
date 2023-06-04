@@ -2,8 +2,8 @@
 class StudyCenterUniqueItem {
   String? description;
   Education? education;
-  String? entryDate;
-  String? graduationDate;
+  DateTime? entryDate;
+  DateTime? graduationDate;
   String? iconUrl;
   int? id;
   String? name;
@@ -51,8 +51,8 @@ class StudyCenterUniqueItem {
     return [
       StudyCenterUniqueItem(
         description: 'Description of School',
-        entryDate: '2010',
-        graduationDate: '2015',
+        entryDate: DateTime.now(),
+        graduationDate: DateTime.now(),
         iconUrl:
             'https://i0.wp.com/blog.webtraining.zone/wp-content/uploads/2018/01/curso-profesional-vue.jpg?resize=825%2C510&ssl=1',
         name: 'School',
@@ -60,8 +60,8 @@ class StudyCenterUniqueItem {
       ),
       StudyCenterUniqueItem(
         description: 'Description of Secondary School',
-        entryDate: '2015',
-        graduationDate: '2020',
+        entryDate: DateTime.now(),
+        graduationDate: DateTime.now(),
         iconUrl:
             'https://i0.wp.com/blog.webtraining.zone/wp-content/uploads/2018/01/curso-profesional-vue.jpg?resize=825%2C510&ssl=1',
         id: 2,
@@ -70,8 +70,8 @@ class StudyCenterUniqueItem {
       ),
       StudyCenterUniqueItem(
         description: 'Description of University',
-        entryDate: '2020',
-        graduationDate: '2024',
+        entryDate: DateTime.now(),
+        graduationDate: DateTime.now(),
         iconUrl:
             'https://i0.wp.com/blog.webtraining.zone/wp-content/uploads/2018/01/curso-profesional-vue.jpg?resize=825%2C510&ssl=1',
         id: 3,
@@ -92,16 +92,16 @@ class Education {
   Education.fromJson(Map<String, dynamic> json) {
     career = json['career'];
     digitalProfile = json['digitalProfile'] != null
-        ? new DigitalProfile.fromJson(json['digitalProfile'])
+        ? DigitalProfile.fromJson(json['digitalProfile'])
         : null;
     id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['career'] = this.career;
-    if (this.digitalProfile != null) {
-      data['digitalProfile'] = this.digitalProfile!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['career'] = career;
+    if (digitalProfile != null) {
+      data['digitalProfile'] = digitalProfile!.toJson();
     }
     data['id'] = this.id;
     return data;

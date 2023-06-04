@@ -28,17 +28,17 @@ class _ApplicantsListState extends State<ApplicantsList> {
           child: Column(
             children: [
               searchBar(),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: filteredDevelopers.length,
-                      itemBuilder: (context, index) {
-                        final developer = filteredDevelopers[index];
+              // Expanded(
+              //     child: ListView.builder(
+              //         itemCount: filteredDevelopers.length,
+              //         itemBuilder: (context, index) {
+              //           final developer = filteredDevelopers[index];
 
-                        return DeveloperItem(
-                          item: developer,
-                          urlImage: developer.image!,
-                        );
-                      }))
+              //           return DeveloperItem(
+              //             item: developer,
+              //             urlImage: developer.image!,
+              //           );
+              //         }))
             ],
           ),
         ));

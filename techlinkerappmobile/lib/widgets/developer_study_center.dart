@@ -49,7 +49,7 @@ class DeveloperStudyCenter extends StatelessWidget {
                 const SizedBox(height: 5),
                 //text that shows the date of the studyCenter
                 Text(
-                  studyCenter.graduationDate!,
+                  studyCenter.graduationDate.toString(),
                   style: const TextStyle(
                       fontWeight: FontWeight.w400, fontSize: 16),
                 ),

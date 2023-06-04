@@ -1,5 +1,5 @@
 class CompanyUniqueItem {
-  String? id;
+  int? id;
   String? firstName;
   String? lastName;
   String? email;
@@ -33,10 +33,50 @@ class CompanyUniqueItem {
     required this.city,
   });
 
+  factory CompanyUniqueItem.fromJson(Map<String, dynamic> json) {
+    return CompanyUniqueItem(
+      id: json['id'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      email: json['email'],
+      phone: json['phone'],
+      password: json['password'],
+      role: json['role'],
+      description: json['description'],
+      bannerImage: json['bannerImage'],
+      ruc: json['ruc'],
+      owner: json['owner'],
+      companyName: json['companyName'],
+      address: json['address'],
+      country: json['country'],
+      city: json['city'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+  return {
+    'id': id,
+    'firstName': firstName,
+    'lastName': lastName,
+    'email': email,
+    'phone': phone,
+    'password': password,
+    'role': role,
+    'description': description,
+    'bannerImage': bannerImage,
+    'ruc': ruc,
+    'owner': owner,
+    'companyName': companyName,
+    'address': address,
+    'country': country,
+    'city': city,
+  };
+}
+
   static List<CompanyUniqueItem> developerItems() {
     return [
       CompanyUniqueItem(
-          id: "01",
+          id: 1,
           firstName: "John",
           lastName: "Doe",
           email: "john@gmail.com",
@@ -53,7 +93,9 @@ class CompanyUniqueItem {
           country: "Ecuador",
           city: "Quito"),
       CompanyUniqueItem(
-          id: "02",
+          id: 2
+          
+          ,
           firstName: "Jane",
           lastName: "Smith",
           email: "jane@gmail.com",
@@ -70,7 +112,7 @@ class CompanyUniqueItem {
           country: "Ecuador",
           city: "Quito"),
       CompanyUniqueItem(
-          id: "03",
+          id: 3,
           firstName: "Robert",
           lastName: "Johnson",
           email: "robert@gmail.com",

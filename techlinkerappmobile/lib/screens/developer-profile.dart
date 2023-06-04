@@ -6,6 +6,7 @@ import 'package:techlinkerappmobile/models/developer_certificate_item.dart';
 import 'package:techlinkerappmobile/models/developer_framework_item.dart';
 import 'package:techlinkerappmobile/models/developer_project_item.dart';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
+import 'package:techlinkerappmobile/screens/developer_education_post.dart';
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
@@ -167,14 +168,37 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                 ]),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Education",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    Text(
+                      "Education",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                      GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DeveloperEducationPost(),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -199,14 +223,37 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Tools / Skills",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    Text(
+                      "Tools / Skills",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DeveloperEducationPost(),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
