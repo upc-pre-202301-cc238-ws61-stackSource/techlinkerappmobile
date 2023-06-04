@@ -24,34 +24,9 @@ class PostItem {
       companyUniqueItem: CompanyUniqueItem.fromJson(json['companyUniqueItem']),
     );
   }
-  
+
   static List<PostItem> allCompanyPosts() {
     return [
-      PostItem(
-          id: 1,
-          title: "Backend Developer",
-          description:
-              "We are looking for a Back-End Web Developer responsible for managing.",
-          imageUrl:
-              "https://www.simplilearn.com/ice9/free_resources_article_thumb/How_to_Become_a_Back_End_Developer.jpg",
-          companyUniqueItem: CompanyUniqueItem(
-              id: 1,
-              firstName: "John",
-              lastName: "Doe",
-              email: "john@gmail.com",
-              phone: "0987654321",
-              password: "123456",
-              role: "company",
-              description:
-                  "Experience as a manager of agile proyects. I work in Facebook meta. Every day is a challenge.",
-              bannerImage:
-                  "https://pbs.twimg.com/profile_images/1374076420566224899/wSZ6S8vW_400x400.jpg",
-              ruc: "1234567890",
-              owner: "John Doe",
-              companyName: "Google",
-              address: "San Isidro, 243",
-              country: "Ecuador",
-              city: "Quito")),
       PostItem(
           id: 2,
           title: "Frontend Developer",
@@ -176,5 +151,4 @@ class PostItem {
               city: "Quito")),
     ];
   }
-
 }

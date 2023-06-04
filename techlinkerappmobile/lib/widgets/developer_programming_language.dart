@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/framework.dart';
+import '../models/programming_language.dart';
 
-class DeveloperFramework extends StatelessWidget {
-  final Framework framework;
-  final String frameworkIcon;
+class DeveloperProgrammingLanguage extends StatelessWidget {
+  final ProgrammingLanguage programmingLanguage;
+  final String programmingLanguageIcon;
 
-  const DeveloperFramework(
-      {required this.frameworkIcon, required this.framework, super.key});
+  const DeveloperProgrammingLanguage(
+      {required this.programmingLanguageIcon,
+      required this.programmingLanguage,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class DeveloperFramework extends StatelessWidget {
               ),
               image: DecorationImage(
                 fit: BoxFit.contain,
-                image: NetworkImage(frameworkIcon),
+                image: NetworkImage(programmingLanguageIcon),
               ),
             ),
           ),
@@ -39,12 +41,12 @@ class DeveloperFramework extends StatelessWidget {
               children: [
                 Center(
                     child: Text(
-                  framework.name!,
+                  programmingLanguage.name!,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 18),
                 )),
                 Center(
-                    child: Text(framework.description!,
+                    child: Text(programmingLanguage.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],

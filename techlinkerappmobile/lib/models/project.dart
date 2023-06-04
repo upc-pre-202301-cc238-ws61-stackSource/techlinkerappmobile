@@ -1,28 +1,30 @@
+import 'digital_profile.dart';
 
-import 'package:techlinkerappmobile/models/digital_profile.dart';
-
-class Database {
+class Project {
   String description;
   DigitalProfile digitalProfile;
-  String iconLink;
+  String iconUrl;
   int id;
   String name;
+  String projectUrl;
 
-  Database({
+  Project({
     required this.description,
     required this.digitalProfile,
-    required this.iconLink,
+    required this.iconUrl,
     required this.id,
     required this.name,
+    required this.projectUrl,
   });
 
-  factory Database.fromJson(Map<String, dynamic> json) {
-    return Database(
+  factory Project.fromJson(Map<String, dynamic> json) {
+    return Project(
       description: json['description'],
       digitalProfile: DigitalProfile.fromJson(json['digitalProfile']),
-      iconLink: json['iconLink'],
+      iconUrl: json['iconUrl'],
       id: json['id'],
       name: json['name'],
+      projectUrl: json['projectUrl'],
     );
   }
 }
