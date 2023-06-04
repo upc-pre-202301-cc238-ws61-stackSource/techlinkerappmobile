@@ -27,7 +27,13 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
 
   void createPost(String id) async {
     final company = await CompanyService.getCompanyById(id);
-    final postJob =
+    final postJob = PostItem(
+      id: 0,
+      title: titlePost,
+      description: descriptionPost,
+      imageUrl: imageUrlPost,
+      companyUniqueItem: CompanyUniqueItem.fromJson(company),
+    );
     final post = await CompanyService.setCompanyPost(postJob);
     if(post != null){
       descriptionPost = '';
