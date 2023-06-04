@@ -11,7 +11,6 @@ class DeveloperFilter extends StatefulWidget {
 
 class _DeveloperFilterState extends State<DeveloperFilter> {
   // State for selected options
-  final selectedSpecialityType = [];
   final selectedYearsOfExperience = [];
   final selectedFramework = [];
   final selectedProgrammingLanguage = [];
@@ -19,7 +18,6 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
   double ticknessWidth = 0.7;
   double verticalWith = 10;
 
-  final specialityTypeOptions = ['Frontend', 'Backend', 'Mobile', 'FullStack'];
   final yearsOfExperienceOptions = ['Intern', '1 - 2', '3 - 5', '5+'];
   final frameworkOptions = [
     'Angular',
@@ -53,45 +51,8 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 35),
-            const Text(
-              'Speciality Type',
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
-            ),
-            SizedBox(height: verticalWith),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: specialityTypeOptions
-                    .map((specialityType) => Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(specialityType),
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  selectedSpecialityType.clear();
-                                  selectedSpecialityType.add(specialityType);
-                                } else {
-                                  selectedSpecialityType.remove(specialityType);
-                                }
-                              });
-                            },
-                            selected:
-                                selectedSpecialityType.contains(specialityType),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ),
-            SizedBox(height: verticalWith),
-            Divider(
-              thickness: ticknessWidth,
-              color: textColor,
-            ),
+            const SizedBox(height: 35),
 
-            SizedBox(height: verticalWith),
             const Text(
               'Years of experience',
               style: TextStyle(
@@ -300,9 +261,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             SizedBox(height: verticalWith),
             ElevatedButton(
               onPressed: () {
-                print(selectedSpecialityType);
                 Navigator.of(context).pop({
-                  'selectedSpecialityType': selectedSpecialityType,
                   'selectedFramework': selectedFramework,
                   'selectedProgrammingLanguage': selectedProgrammingLanguage,
                   'selectedDatabase': selectedDatabase,
@@ -321,7 +280,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text('Filter Developers',
-                            style: TextStyle(color: textColor, fontSize: 17))
+                            style: TextStyle(color: cardColor, fontSize: 17))
                       ])),
             ),
             const SizedBox(height: 20),
@@ -336,7 +295,7 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
-        leading: SizedBox(height: 5),
+        leading: const SizedBox(height: 5),
         title: Row(
           children: [
             const Align(

@@ -1,11 +1,11 @@
 import 'package:techlinkerappmobile/models/company_unique_item.dart';
 
 class PostItem {
-  String? id;
+  int? id;
   String? title;
   String? description;
   String? imageUrl;
-  CompanyUniqueItem? companyUniqueItem;
+  CompanyUniqueItem companyUniqueItem;
 
   PostItem({
     required this.id,
@@ -15,17 +15,27 @@ class PostItem {
     required this.companyUniqueItem,
   });
 
+  factory PostItem.fromJson(Map<String, dynamic> json) {
+    return PostItem(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      imageUrl: json['imageUrl'],
+      companyUniqueItem: CompanyUniqueItem.fromJson(json['companyUniqueItem']),
+    );
+  }
+  
   static List<PostItem> allCompanyPosts() {
     return [
       PostItem(
-          id: "01",
+          id: 1,
           title: "Backend Developer",
           description:
               "We are looking for a Back-End Web Developer responsible for managing.",
           imageUrl:
               "https://www.simplilearn.com/ice9/free_resources_article_thumb/How_to_Become_a_Back_End_Developer.jpg",
           companyUniqueItem: CompanyUniqueItem(
-              id: "01",
+              id: 1,
               firstName: "John",
               lastName: "Doe",
               email: "john@gmail.com",
@@ -43,14 +53,14 @@ class PostItem {
               country: "Ecuador",
               city: "Quito")),
       PostItem(
-          id: "02",
+          id: 2,
           title: "Frontend Developer",
           description:
               "We are looking for a Front-End Web Developer who is motivated to combine the art of design.",
           imageUrl:
               "https://media.licdn.com/dms/image/D5612AQG2wFDFDltiNg/article-cover_image-shrink_720_1280/0/1675322684139?e=2147483647&v=beta&t=R_9OphmuNCHhnP3GTyVyOtlHqxxF8CFBIdJTyGz98Rw",
           companyUniqueItem: CompanyUniqueItem(
-              id: "02",
+              id: 2,
               firstName: "Jane",
               lastName: "Smith",
               email: "jane@gmail.com",
@@ -68,14 +78,14 @@ class PostItem {
               country: "Ecuador",
               city: "Quito")),
       PostItem(
-          id: "03",
+          id: 3,
           title: "Fullstack Developer",
           description:
               "We are looking for a Full Stack Developer to produce scalable software solutions.",
           imageUrl:
               "https://thetapacademy.com/wp-content/uploads/2022/10/full-stack-web-developer-1024x1024.jpg",
           companyUniqueItem: CompanyUniqueItem(
-              id: "03",
+              id: 3,
               firstName: "Robert",
               lastName: "Johnson",
               email: "robert@gmail.com",
@@ -93,13 +103,13 @@ class PostItem {
               country: "Ecuador",
               city: "Quito")),
       PostItem(
-          id: "04",
+          id: 4,
           title: "Full Stack Developer",
           description: "Need a Full Stack Developer ",
           imageUrl:
               "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/202946464/original/51d81428d4cf9e08c5cf35709b9c54ab9ba41238/compile-and-test-your-code.jpeg",
           companyUniqueItem: CompanyUniqueItem(
-              id: "03",
+              id: 3,
               firstName: "Robert",
               lastName: "Johnson",
               email: "robert@gmail.com",
@@ -117,13 +127,13 @@ class PostItem {
               country: "Ecuador",
               city: "Quito")),
       PostItem(
-          id: "05",
+          id: 5,
           title: "Need a Full Stack Developer",
           description: "Need a Full Stack Developer ",
           imageUrl:
               "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/202946464/original/51d81428d4cf9e08c5cf35709b9c54ab9ba41238/compile-and-test-your-code.jpeg",
           companyUniqueItem: CompanyUniqueItem(
-              id: "03",
+              id: 3,
               firstName: "Robert",
               lastName: "Johnson",
               email: "robert@gmail.com",
@@ -141,13 +151,13 @@ class PostItem {
               country: "Ecuador",
               city: "Quito")),
       PostItem(
-          id: "06",
+          id: 6,
           title: "Need a Full Stack Developer",
           description: "Need a Full Stack Developer ",
           imageUrl:
               "https://thetapacademy.com/wp-content/uploads/2022/10/full-stack-web-developer-1024x1024.jpg",
           companyUniqueItem: CompanyUniqueItem(
-              id: "03",
+              id: 3,
               firstName: "Robert",
               lastName: "Johnson",
               email: "robert@gmail.com",
@@ -166,4 +176,5 @@ class PostItem {
               city: "Quito")),
     ];
   }
+
 }
