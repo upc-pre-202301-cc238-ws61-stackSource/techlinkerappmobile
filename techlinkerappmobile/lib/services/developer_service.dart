@@ -279,7 +279,6 @@ class DeveloperService {
           'title': postCert.title,
         }),
       );
-
       if (response.statusCode == 201) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;

@@ -38,20 +38,18 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
     }
   }
   void _submitForm() async {
+
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
       setState(() {
         _isSubmitting = true;
       });
-
       // Enviar los datos a la API
       final response = await sendPostToAPI();
-
       setState(() {
         _isSubmitting = false;
       });
-
       if (response.statusCode == 200) {
         // Solicitud exitosa
         ScaffoldMessenger.of(context).showSnackBar(
@@ -71,8 +69,9 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
     }
   }
 
-  Future<http.Response> sendPostToAPI() {
-    final url = 'https://stacksourcewebservice.azurewebsites.net/api/v1/certificates'; // Reemplazar con la URL real de la API
+  Future<http.Response> sendPostToAPI(DeveloperCertificateItem developerCertificateItem) {
+
+    final url = 'https://stacksource.azurewebsites.net/api/v1/certificates/education/${developerCertificateItem.education!.id}'; // Reemplazar con la URL real de la API
     final headers = {'Content-Type': 'application/json'};
     final body = {
       'title': TittleCertificate,
@@ -80,7 +79,6 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
       'iconUrl': IconURL,
       'obtainedDate': ObtainDate,
     };
-
     return http.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
   }
   @override

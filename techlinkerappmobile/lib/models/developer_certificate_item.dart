@@ -1,16 +1,19 @@
+import 'developer_study_center.dart';
+
 class DeveloperCertificateItem {
   int? id;
   String? title;
   String? description;
   String? iconUrl;
   String? obtainedDate;
-
+  Education? education;
   DeveloperCertificateItem({
     required this.id,
     required this.title,
     required this.description,
     required this.iconUrl,
     required this.obtainedDate,
+    this.education
   });
 
   static List<DeveloperCertificateItem> developerCertificates() {
