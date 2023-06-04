@@ -4,6 +4,7 @@ import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
+import '../services/developer_service.dart';
 
 class DeveloperItem extends StatelessWidget {
   final Developer item;
@@ -13,10 +14,17 @@ class DeveloperItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DeveloperProfile();
-        }))
+      onTap: () async {
+        await getDeveloperById(item.id.toString()).then((value) => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DeveloperProfile(
+                    developer: value,
+                  ),
+                ),
+              ),
+            }); // navigateToDeveloperProfile(context)
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
@@ -96,5 +104,31 @@ class DeveloperItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void navigateToDeveloperProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DeveloperProfile(
+          developer: Developer(),
+        ),
+      ),
+    );
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      if (developerData != null) {
+        final developer = Developer.fromJson(developerData);
+        print("This is the developer $developerData");
+        return developer;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer();
   }
 }

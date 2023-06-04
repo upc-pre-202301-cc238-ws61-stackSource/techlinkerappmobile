@@ -99,4 +99,30 @@ class DeveloperService {
       throw Exception('Failed to fetch databases data. Error: $e');
     }
   }
+
+  //get developer by id
+  static Future<dynamic> getDeveloperById(String id) async {
+    final url = Uri.parse('$baseUrl/developers/$id');
+
+    print(url);
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch developer data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch developer data. Error: $e');
+    }
+  }
 }

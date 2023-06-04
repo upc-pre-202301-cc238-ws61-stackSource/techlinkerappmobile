@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/models/framework.dart';
 import 'package:techlinkerappmobile/screens/filter_developer.dart';
@@ -74,7 +75,7 @@ class _CompanyHomeState extends State<CompanyHome> {
         backgroundColor: primaryColor,
         body: Container(
           child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -451,8 +452,4 @@ class _CompanyHomeState extends State<CompanyHome> {
 
     return [];
   }
-
-
-  Future<>
-
 }
