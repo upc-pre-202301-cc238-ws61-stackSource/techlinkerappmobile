@@ -7,7 +7,7 @@ import 'package:techlinkerappmobile/widgets/job_offer_item.dart';
 import '../models/company_unique_post.dart';
 
 class CompanyService {
-  static const String baseUrl = 'https://stacksourcewebservice.azurewebsites.net/api/v1';
+  static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
 
   static setCompanyPost(PostItem postJob) async {
     final url = Uri.parse('$baseUrl/posts/${postJob.companyUniqueItem.id}');

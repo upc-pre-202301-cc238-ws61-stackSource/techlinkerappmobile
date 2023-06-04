@@ -52,7 +52,7 @@ class DeveloperCertificate extends StatelessWidget {
                 const SizedBox(height: 5),
                 //text that shows the date of the certificate
                 Text(
-                  certificate.obtainedDate!.substring(0, 10).toString(),
+                  certificate.obtainedDate!.toString(),
                   style: const TextStyle(
                       fontWeight: FontWeight.w400, fontSize: 16),
                 ),
