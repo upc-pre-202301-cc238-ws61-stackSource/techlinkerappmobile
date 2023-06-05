@@ -1,14 +1,10 @@
 import 'package:http/http.dart' as http;
-import 'package:techlinkerappmobile/models/company_unique_item.dart';
 import 'dart:convert';
-
-import 'package:techlinkerappmobile/widgets/job_offer_item.dart';
 
 import '../models/company_unique_post.dart';
 
 class CompanyService {
-  static const String baseUrl =
-      'https://stacksourcewebservice.azurewebsites.net/api/v1';
+  static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
   static setCompanyPost(PostItem postJob) async {
     final url = Uri.parse('$baseUrl/posts/${postJob.companyUniqueItem.id}');
     print(url);
@@ -61,6 +57,29 @@ class CompanyService {
   // get posts by company id
   static getPostsByCompanyId(String id) async {
     final url = Uri.parse('$baseUrl/posts/company/$id');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
+  static getAllPosts() async {
+    final url = Uri.parse('$baseUrl/posts');
     print(url);
     try {
       final response = await http.get(

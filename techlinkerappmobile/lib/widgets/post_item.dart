@@ -28,7 +28,7 @@ class CompanyPost extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(urlImage)),
+                  scale: 0.5, fit: BoxFit.cover, image: NetworkImage(urlImage)),
             ),
           ),
           Padding(

@@ -24,7 +24,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     CompanyNotifications(),
     CompanyProfile(
         company: Company(
-      id: 2,
+      id: 4,
       firstName: "Tomas",
       lastName: "Pastor",
       email: "tomas@gmail.com",
@@ -42,7 +42,6 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
       country: "Ecuador",
       city: "Quito",
     )),
- 
   ];
 
   @override

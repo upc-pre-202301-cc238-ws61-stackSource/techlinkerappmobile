@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:techlinkerappmobile/models/post.dart';
+import 'package:techlinkerappmobile/services/company_service.dart';
 import '../models/company_unique_post.dart';
 import '../widgets/post_item.dart';
 import '../constants/colors.dart';
@@ -17,16 +19,19 @@ class _DeveloperHomeState extends State<DeveloperHome> {
 
   bool isLoading = true;
 
-  final companyPosts = PostItem.allCompanyPosts();
+  List<Post> companyPosts = [];
 
   @override
   void initState() {
     super.initState();
 
     //create delay to show shimmer 2 seconds
-
-    getPostImages();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getAllCompanyPosts().then((value) {
+      companyPosts = value;
+      getPostImages();
+      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+      setState(() {});
+    });
   }
 
   Future loadData() async {
@@ -65,7 +70,6 @@ class _DeveloperHomeState extends State<DeveloperHome> {
 
   @override
   Widget build(BuildContext context) {
-    final companyPosts = PostItem.allCompanyPosts();
     return Scaffold(
         backgroundColor: primaryColor,
         body: Container(
@@ -111,27 +115,26 @@ class _DeveloperHomeState extends State<DeveloperHome> {
             const SizedBox(
               height: 20,
             ),
-
-            // Expanded(
-            //   child: Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 24),
-            //     child: ListView.builder(
-            //       itemCount: companyPosts.length,
-            //       itemBuilder: (context, index) => Container(
-            //         margin: const EdgeInsets.only(bottom: 16),
-            //         child: isLoading
-            //             ? Shimmer.fromColors(
-            //                 baseColor: Color.fromARGB(255, 219, 221, 225)!,
-            //                 highlightColor: Colors.grey[200]!,
-            //                 child: skeletonPostItem(context),
-            //               )
-            //             : CompanyPost(
-            //                 item: companyPosts[index],
-            //                 urlImage: urlPostImages[index]),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: ListView.builder(
+                  itemCount: companyPosts.length,
+                  itemBuilder: (context, index) => Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: companyPosts.isEmpty
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: skeletonPostItem(context),
+                          )
+                        : CompanyPost(
+                            item: companyPosts[index],
+                            urlImage: companyPosts[index].imageUrl!),
+                  ),
+                ),
+              ),
+            ),
           ]),
         ));
   }
@@ -170,5 +173,22 @@ class _DeveloperHomeState extends State<DeveloperHome> {
         ],
       ),
     );
+  }
+
+  //get all company posts
+  Future<List<Post>> getAllCompanyPosts() async {
+    try {
+      final companyPostsData = await CompanyService.getAllPosts();
+      if (mounted) {
+        final companyPosts = companyPostsData
+            .map<Post>((companyPost) => Post.fromJson(companyPost))
+            .toList();
+        return companyPosts;
+      }
+    } catch (e) {
+      print('Failed to fetch company posts data. Error: $e');
+    }
+
+    return [];
   }
 }

@@ -20,7 +20,6 @@ class CompanyProfile extends StatefulWidget {
 }
 
 class _CompanyProfileState extends State<CompanyProfile> {
-  final urlPostImages = [];
   bool isLoading = true;
   bool usersIconisLoading = true;
   List<Post> companyPosts = [];
@@ -39,7 +38,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
     getPostByCompanyId(widget.company.id.toString()).then((value) {
       companyPosts = value;
       setState(() {});
-      getPostImages();
+      //getPostImages();
       WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
     });
   }
@@ -53,9 +52,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     if (!mounted) return; // Check if the state is still mounted
 
-    await Future.wait(urlPostImages
-        .map((urlImage) => cacheImage(context, urlImage))
-        .toList());
+    // await Future.wait(urlPostImages
+    //     .map((urlImage) => cacheImage(context, urlImage))
+    //     .toList());
 
     await Future.wait(
         urlUserIcons.map((urlImage) => cacheImage(context, urlImage)).toList());
@@ -71,11 +70,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
-  void getPostImages() {
-    for (var item in companyPosts) {
-      urlPostImages.add(item.imageUrl!);
-    }
-  }
+  // void getPostImages() {
+  //   for (var item in companyPosts) {
+  //     urlPostImages.add(item.imageUrl!);
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -371,8 +370,10 @@ class _CompanyProfileState extends State<CompanyProfile> {
         ),
         MaterialButton(
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => CompanyCreatePost()));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => CompanyCreatePost(
+                      companyId: widget.company.id.toString(),
+                    )));
           },
           color: secondaryColor,
           shape: RoundedRectangleBorder(
