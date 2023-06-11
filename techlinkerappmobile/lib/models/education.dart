@@ -18,4 +18,15 @@ class Education {
       id: json['id'],
     );
   }
+
+
+//create a toJson method
+  Map<String, dynamic> toJson() {
+    return {
+      'career': career,
+      'digitalProfile': digitalProfile,
+      'id': id,
+    };
+  }
+
 }

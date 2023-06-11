@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
+import 'package:techlinkerappmobile/models/post.dart';
 
 import '../screens/applicants_developer_list.dart';
 
 class CompanyPost extends StatelessWidget {
-  final PostItem item;
+  final Post item;
   final String urlImage;
   const CompanyPost({super.key, required this.urlImage, required this.item});
 
@@ -27,7 +28,7 @@ class CompanyPost extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(urlImage)),
+                  scale: 0.5, fit: BoxFit.cover, image: NetworkImage(urlImage)),
             ),
           ),
           Padding(
@@ -70,8 +71,7 @@ class CompanyPost extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 10,
-                              backgroundImage: NetworkImage(
-                                  item.companyUniqueItem!.bannerImage!),
+                              backgroundImage: NetworkImage(item.imageUrl),
                             ),
                             const SizedBox(width: 8),
                             const Text('Remote'),

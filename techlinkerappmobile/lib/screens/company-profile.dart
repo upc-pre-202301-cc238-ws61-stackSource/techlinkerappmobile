@@ -4,21 +4,25 @@ import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/screens/company-create-post.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
+import '../models/company.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../models/post.dart';
+import '../services/company_service.dart';
+
 class CompanyProfile extends StatefulWidget {
-  const CompanyProfile({super.key});
+  final Company company;
+  const CompanyProfile({required this.company, super.key});
 
   @override
   State<CompanyProfile> createState() => _CompanyProfileState();
 }
 
 class _CompanyProfileState extends State<CompanyProfile> {
-  final urlPostImages = [];
   bool isLoading = true;
   bool usersIconisLoading = true;
-  final companyPosts = PostItem.allCompanyPosts();
+  List<Post> companyPosts = [];
 
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -31,9 +35,12 @@ class _CompanyProfileState extends State<CompanyProfile> {
     super.initState();
 
     //create delay to show shimmer 2 seconds
-
-    getPostImages();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getPostByCompanyId(widget.company.id.toString()).then((value) {
+      companyPosts = value;
+      setState(() {});
+      //getPostImages();
+      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    });
   }
 
   Future loadData() async {
@@ -45,9 +52,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     if (!mounted) return; // Check if the state is still mounted
 
-    await Future.wait(urlPostImages
-        .map((urlImage) => cacheImage(context, urlImage))
-        .toList());
+    // await Future.wait(urlPostImages
+    //     .map((urlImage) => cacheImage(context, urlImage))
+    //     .toList());
 
     await Future.wait(
         urlUserIcons.map((urlImage) => cacheImage(context, urlImage)).toList());
@@ -63,11 +70,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
-  void getPostImages() {
-    for (var item in companyPosts) {
-      urlPostImages.add(item.imageUrl!);
-    }
-  }
+  // void getPostImages() {
+  //   for (var item in companyPosts) {
+  //     urlPostImages.add(item.imageUrl!);
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -133,30 +140,29 @@ class _CompanyProfileState extends State<CompanyProfile> {
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Text(
-                          "Is the world’s leading blockchain and cryptocurrency infrastructure provider with a financial product suite that includes the largest digital asset exchange by volume.",
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              color: secondaryTextInBackground,
-                              fontSize: 19,
-                              fontWeight: FontWeight.normal)),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      usersIconisLoading && isLoading
-                          ? Shimmer.fromColors(
-                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                              highlightColor: Colors.grey[200]!,
-                              child: buildSkeletonUserIcon(context),
-                            )
-                          : buildDeveloperIcons(),
-                    ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
+                    Text(widget.company.description!,
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(
+                            color: secondaryTextInBackground,
+                            fontSize: 19,
+                            fontWeight: FontWeight.normal)),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    usersIconisLoading && isLoading
+                        ? Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: buildSkeletonUserIcon(context),
+                          )
+                        : buildDeveloperIcons(),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 25,
@@ -177,9 +183,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(
-                            item: item,
-                            urlImage: urlPostImages[item.id! - 1]))
+                        : CompanyPost(item: item, urlImage: item.imageUrl))
                     .toList(),
               ),
               const SizedBox(
@@ -254,18 +258,18 @@ class _CompanyProfileState extends State<CompanyProfile> {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(urlUserIcons[0]),
+              backgroundImage: NetworkImage(widget.company.image!),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Company Name',
-              style: TextStyle(
+            Text(
+              '${widget.company.firstName!} ${widget.company.lastName!}',
+              style: const TextStyle(
                   fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'john.doe@example.com',
-              style: TextStyle(
+            Text(
+              widget.company.email!,
+              style: const TextStyle(
                 fontSize: 16,
                 color: textColor,
               ),
@@ -353,9 +357,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
             ],
           ),
         ),
-        SizedBox(
-          width: 10
-        ),
+        SizedBox(width: 10),
         const Text(
           "+50 Developers",
           style: TextStyle(
@@ -368,7 +370,10 @@ class _CompanyProfileState extends State<CompanyProfile> {
         ),
         MaterialButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => CompanyCreatePost()));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => CompanyCreatePost(
+                      companyId: widget.company.id.toString(),
+                    )));
           },
           color: secondaryColor,
           shape: RoundedRectangleBorder(
@@ -378,11 +383,28 @@ class _CompanyProfileState extends State<CompanyProfile> {
             "Create post",
             style: TextStyle(
               fontSize: 15,
-              color: buttonTextColor,),
+              color: buttonTextColor,
+            ),
           ),
         ),
-        
       ],
     );
+  }
+
+  //get posts by company id
+  Future<List<Post>> getPostByCompanyId(String id) async {
+    try {
+      final postsData = await CompanyService.getPostsByCompanyId(id);
+      if (mounted) {
+        final posts =
+            postsData.map<Post>((post) => Post.fromJson(post)).toList();
+        companyPosts = posts;
+        return posts;
+      }
+    } catch (e) {
+      print('Failed to fetch posts data. Error: $e');
+    }
+
+    return [];
   }
 }

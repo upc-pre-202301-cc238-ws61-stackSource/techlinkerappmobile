@@ -26,7 +26,7 @@ class Developer {
   //empty constructor
   factory Developer.empty() {
     return Developer(
-      id: 0,
+      id: 1,
       firstName: '',
       lastName: '',
       email: '',
@@ -38,8 +38,6 @@ class Developer {
       bannerImage: '',
     );
   }
-
-  
 
   factory Developer.fromJson(Map<String, dynamic> json) {
     return Developer(
@@ -54,5 +52,19 @@ class Developer {
       image: json['image'],
       bannerImage: json['bannerImage'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'role': role,
+      'description': description,
+      'image': image,
+      'bannerImage': bannerImage,
+    };
   }
 }
