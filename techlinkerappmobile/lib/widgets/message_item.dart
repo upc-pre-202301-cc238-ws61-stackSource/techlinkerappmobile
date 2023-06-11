@@ -26,7 +26,7 @@ class MessageItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           child: CachedNetworkImage(
             imageUrl: urlImage,
-            width: 64,
+            width: 55,
             height: 64,
             fit: BoxFit.cover,
           ),

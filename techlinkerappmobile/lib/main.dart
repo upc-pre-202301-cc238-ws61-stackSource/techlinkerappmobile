@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:techlinkerappmobile/screens/main_developer_page.dart';
 import 'package:techlinkerappmobile/screens/main_company_page.dart';
 
 void main() {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
       home: MainCompanyPage(),

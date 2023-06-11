@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/digital_profile.dart';
+import 'package:techlinkerappmobile/models/framework.dart';
 import 'package:techlinkerappmobile/screens/filter_developer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/developer_unique_item.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
+import '../models/database.dart';
+import '../models/developer.dart';
+import '../models/programming_language.dart';
 import '../widgets/developer_item.dart';
 import '../constants/colors.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,23 +19,29 @@ class CompanyHome extends StatefulWidget {
 }
 
 class _CompanyHomeState extends State<CompanyHome> {
-  final developersItem = DeveloperUniqueItem.developerItems();
-  List<dynamic> selectedSpecialityType = [];
   List<dynamic> selectedYearsOfExperience = [];
   List<dynamic> selectedFramework = [];
   List<dynamic> selectedProgrammingLanguage = [];
   List<dynamic> selectedDatabase = [];
+  List<Developer> developers = [];
+  List<Developer> filteredDevelopers = [];
 
-  bool isLoding = false;
+  bool isLoding = true;
 
-  final urlDevelopersImages = [];
+  Map<String, String> urlDevelopersImages = {};
 
   @override
   void initState() {
     super.initState();
 
-    getDevelopersImageUrls();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getAllDevelopers().then((value) {
+      getDevelopersImageUrls(value).then((value) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+        filteredDevelopers = developers;
+      });
+    });
+
+    getAllFrameworks();
   }
 
   Future loadData() async {
@@ -38,8 +49,8 @@ class _CompanyHomeState extends State<CompanyHome> {
       setState(() => isLoding = true);
     }
 
-    await Future.wait(urlDevelopersImages
-        .map((urlImage) => cacheImage(context, urlImage))
+    await Future.wait(urlDevelopersImages.entries
+        .map((urlImage) => cacheImage(context, urlImage.value))
         .toList());
 
     if (mounted) {
@@ -50,137 +61,471 @@ class _CompanyHomeState extends State<CompanyHome> {
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
-  void getDevelopersImageUrls() {
-    for (var item in developersItem) {
-      urlDevelopersImages.add(item.image!);
+  Future<Map<String, String>> getDevelopersImageUrls(
+      List<Developer> backDevelopers) async {
+    for (var item in backDevelopers) {
+      urlDevelopersImages[item.id!.toString()] = item.image!;
     }
+
+    setState(() {});
+
+    return urlDevelopersImages;
   }
 
   @override
   Widget build(BuildContext context) {
-    final filterDevelopersList = filterDevelopers();
+    //final filterDevelopersList = filterDevelopers();
 
     return Scaffold(
         backgroundColor: primaryColor,
         body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(
-              height: 34,
-            ),
-            const Text(
-              "Polular",
-              style: TextStyle(
-                  color: textColor, fontSize: 44, fontWeight: FontWeight.w800),
-            ),
-            const Text(
-              "Developers",
-              style: TextStyle(
-                  color: textColor, fontSize: 44, fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(
-              height: 17,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DeveloperFilter()))
-                    .then((value) => {
-                          if (value != null)
-                            {
-                              setState(() {
-                                selectedSpecialityType =
-                                    value['selectedSpecialityType'];
-                                selectedFramework = value['selectedFramework'];
-                                selectedDatabase = value['selectedDatabase'];
-                                selectedProgrammingLanguage =
-                                    value['selectedProgrammingLanguage'];
-                                selectedYearsOfExperience =
-                                    value['selectedYearsOfExperience'];
-                              })
-                            }
-                        });
-              },
-              child: Row(children: [
-                const Icon(Icons.filter_list, color: textColor),
-                const Text('Filter Developers',
-                    style: TextStyle(color: textColor, fontSize: 17))
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF39BCFD),
+                    Color(0xFF4F93E9),
+                    Color(0xFF7176EE),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Column(children: const [
+                SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  "Polular",
+                  style: TextStyle(
+                      color: cardColor,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w800),
+                ),
+                Text(
+                  "Developers",
+                  style: TextStyle(
+                      color: cardColor,
+                      fontSize: 41,
+                      fontWeight: FontWeight.w800),
+                ),
+                SizedBox(
+                  height: 25,
+                )
               ]),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: secondaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            ),
+            const SizedBox(height: 15),
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    isLoding = true;
+                  });
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DeveloperFilter())).then((value) => {
+                        if (value != null)
+                          {
+                            setState(() {
+                              selectedFramework = value['selectedFramework'];
+                              selectedDatabase = value['selectedDatabase'];
+                              selectedProgrammingLanguage =
+                                  value['selectedProgrammingLanguage'];
+                              selectedYearsOfExperience =
+                                  value['selectedYearsOfExperience'];
+                              //convert filters to lower case
+                              selectedFramework = selectedFramework
+                                  .map((framework) => framework.toLowerCase())
+                                  .toList();
+                              selectedDatabase = selectedDatabase
+                                  .map((database) => database.toLowerCase())
+                                  .toList();
+                              selectedProgrammingLanguage =
+                                  selectedProgrammingLanguage
+                                      .map((language) => language.toLowerCase())
+                                      .toList();
+                              selectedYearsOfExperience =
+                                  selectedYearsOfExperience
+                                      .map((experience) =>
+                                          experience.toString().toLowerCase())
+                                      .toList();
+                            })
+                          },
+                      });
+                  filterDevelopers();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors
+                      .transparent, // Set the background color to transparent
+                  elevation: 0, // Remove the button's shadow
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF39BCFD),
+                        Color(0xFF4F93E9),
+                        Color(0xFF7176EE),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(children: const [
+                      Icon(Icons.filter_list, color: cardColor),
+                      Text('Filter Developers',
+                          style: TextStyle(color: cardColor, fontSize: 17)),
+                    ]),
+                  ),
                 ),
               ),
             ),
             const SizedBox(
               height: 10,
             ),
-            const Text("All Developers",
-                style: TextStyle(
-                    color: textColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 5),
+              child: Text("All Developers",
+                  style: TextStyle(
+                      color: mainTextInBackground,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700)),
+            ),
             const SizedBox(
               height: 10,
             ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: filterDevelopersList.length,
-                    itemBuilder: (context, index) {
-                      final developer = filterDevelopersList[index];
+            isLoding
+                ? //create progress indicator while loading data
+                Expanded(
+                    child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23),
+                    child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Shimmer.fromColors(
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
+                              child: buildSkeleton(context));
+                        }),
+                  ))
+                : filteredDevelopers.isEmpty
+                    ? Container(
+                        padding: EdgeInsets.only(top: 120),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            //create a button to assign all data from developers to filtered developers
+                            const Center(
+                              child: Text(
+                                'No developers found',
+                                style: TextStyle(
+                                  color: cardTextColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  filteredDevelopers = developers;
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF39BCFD),
+                                      Color(0xFF4F93E9),
+                                      Color(0xFF7176EE),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Text(
+                                    'Show all developers',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Expanded(
+                        child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 23),
+                        child: ListView.builder(
+                            itemCount: filteredDevelopers.length,
+                            itemBuilder: (context, index) {
+                              final developer = filteredDevelopers[index];
 
-                      return isLoding
-                          ? Shimmer.fromColors(
-                              baseColor: secondaryColor,
-                              highlightColor: loadingColor,
-                              child: buildSkeleton(context))
-                          : DeveloperItem(
-                              item: developer,
-                              urlImage: urlDevelopersImages[index],
-                            );
-                    }))
+                              return isLoding
+                                  ? Shimmer.fromColors(
+                                      baseColor:
+                                          Color.fromARGB(255, 219, 221, 225)!,
+                                      highlightColor: Colors.grey[200]!,
+                                      child: buildSkeleton(context))
+                                  : DeveloperItem(
+                                      item: developer,
+                                      urlImage: urlDevelopersImages[
+                                          developer.id!.toString()]!,
+                                    );
+                            }),
+                      )),
           ]),
         ));
   }
 
   Widget buildSkeleton(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
-      padding: EdgeInsets.symmetric(vertical: 15),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+      padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: loadingColor),
+        color: Color.fromARGB(126, 255, 255, 255),
+        borderRadius: BorderRadius.circular(10),
+      ),
       height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            //create a circle for simulating the image of avatar
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    width: 150,
+                    height: 13,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
-  List<dynamic> filterDevelopers() {
-    List<dynamic> filteredDevelopers1 = developersItem.where((specialzation) {
-      return selectedSpecialityType.isEmpty ||
-          selectedSpecialityType.contains(specialzation.specialityType);
-    }).toList();
+  void filterDevelopers() async {
+    List<Framework> frameworks = await getAllFrameworks();
+    List<ProgrammingLanguage> programmingLanguages =
+        await getAllProgrammingLanguages();
+    List<Database> databases = await getAllDatabases();
 
-    List<dynamic> filteredDevelopers2 = filteredDevelopers1.where((developer) {
-      return selectedFramework.isEmpty ||
-          selectedFramework
-              .every((framework) => developer.frameworks.contains(framework));
-    }).toList();
+    //to lower case
+    frameworks = frameworks
+        .map((framework) => Framework(
+              description: framework.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(framework.digitalProfile!.toJson()),
+              iconLink: framework.iconLink,
+              id: framework.id,
+              name: framework.name!.toLowerCase(),
+            ))
+        .toList();
 
-    List<dynamic> filteredDevelopers3 = filteredDevelopers2.where((developer) {
-      return selectedProgrammingLanguage.isEmpty ||
-          selectedProgrammingLanguage.every(
-              (language) => developer.programmingLanguage.contains(language));
-    }).toList();
+    programmingLanguages = programmingLanguages
+        .map((language) => ProgrammingLanguage(
+              description: language.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(language.digitalProfile!.toJson()),
+              iconLink: language.iconLink,
+              id: language.id,
+              name: language.name!.toLowerCase(),
+            ))
+        .toList();
 
-    List<dynamic> filteredDevelopers4 = filteredDevelopers3.where((developer) {
-      return selectedDatabase.isEmpty ||
-          selectedDatabase
-              .every((database) => developer.database.contains(database));
-    }).toList();
+    databases = databases
+        .map((database) => Database(
+              description: database.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(database.digitalProfile!.toJson()),
+              iconLink: database.iconLink,
+              id: database.id,
+              name: database.name!.toLowerCase(),
+            ))
+        .toList();
 
-    return filteredDevelopers4;
+    List<int> filteredDeveloperIds =
+        developers.map((developer) => developer.id).toList();
+
+    if (selectedFramework.isNotEmpty) {
+      // Apply framework filter
+
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<Framework> developerFrameworks = frameworks
+            .where((framework) => framework.digitalProfile!.id == developerId)
+            .toList();
+        return selectedFramework.every((selectedFramework) =>
+            developerFrameworks
+                .any((framework) => framework.name == selectedFramework));
+      }).toList();
+    }
+
+    if (selectedProgrammingLanguage.isNotEmpty) {
+      // Apply programming language filter
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<ProgrammingLanguage> developerLanguages = programmingLanguages
+            .where((language) => language.digitalProfile.id == developerId)
+            .toList();
+        return selectedProgrammingLanguage.every((selectedLanguage) =>
+            developerLanguages
+                .any((language) => language.name == selectedLanguage));
+      }).toList();
+    }
+
+    if (selectedDatabase.isNotEmpty) {
+      // Apply database filter
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<Database> developerDatabases = databases
+            .where((database) => database.digitalProfile.id == developerId)
+            .toList();
+        return selectedDatabase.every((selectedDatabase) => developerDatabases
+            .any((database) => database.name == selectedDatabase));
+      }).toList();
+    }
+
+    setState(() {
+      //check if there is not any filter and set filter developers with all developer if thats the case
+
+      if (selectedFramework.isEmpty &&
+          selectedProgrammingLanguage.isEmpty &&
+          selectedDatabase.isEmpty) {
+        filteredDevelopers = developers;
+        isLoding = false;
+        return;
+      }
+
+      filteredDevelopers = developers
+          .where((developer) => filteredDeveloperIds.contains(developer.id))
+          .toList();
+      print('Filtered developers: $filteredDevelopers');
+      isLoding = false;
+    });
+  }
+
+  Future<List<Framework>> getAllFrameworks() async {
+    try {
+      final frameworksData = await DeveloperService.getAllFrameworks();
+      if (mounted) {
+        final frameworks = frameworksData
+            .map<Framework>((framework) => Framework(
+                  description: framework['description'],
+                  digitalProfile:
+                      DigitalProfile.fromJson(framework['digitalProfile']),
+                  iconLink: framework['iconLink'],
+                  id: framework['id'],
+                  name: framework['name'],
+                ))
+            .toList();
+        return frameworks;
+      }
+    } catch (e) {
+      print('Failed to fetch frameworks data. Error: $e');
+    }
+
+    return [];
+  }
+
+  Future<List<Developer>> getAllDevelopers() async {
+    try {
+      final developersData = await DeveloperService.getAllDevelopers();
+      if (mounted) {
+        //convert json data to list of developers
+        final backDevelopers = developersData
+            .map((developer) => Developer.fromJson(developer))
+            .toList();
+
+        setState(() {
+          developers = backDevelopers;
+        });
+
+        print('Developers: $backDevelopers');
+
+        return backDevelopers;
+      }
+    } catch (e) {
+      print('Failed to fetch developers data. Error: $e');
+    }
+
+    return [];
+  }
+
+  Future<List<ProgrammingLanguage>> getAllProgrammingLanguages() async {
+    try {
+      final programmingLanguagesData =
+          await DeveloperService.getAllProgrammingLanguages();
+      if (mounted) {
+        final programmingLanguages = programmingLanguagesData
+            .map<ProgrammingLanguage>((programmingLanguage) =>
+                ProgrammingLanguage.fromJson(programmingLanguage))
+            .toList();
+        return programmingLanguages;
+      }
+    } catch (e) {
+      print('Failed to fetch programming languages data. Error: $e');
+    }
+
+    return [];
+  }
+
+  Future<List<Database>> getAllDatabases() async {
+    try {
+      final databasesData = await DeveloperService.getAllDatabases();
+      if (mounted) {
+        final databases = databasesData
+            .map<Database>((database) => Database.fromJson(database))
+            .toList();
+        return databases;
+      }
+    } catch (e) {
+      print('Failed to fetch databases data. Error: $e');
+    }
+
+    return [];
   }
 }
