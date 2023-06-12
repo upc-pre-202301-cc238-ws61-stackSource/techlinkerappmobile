@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer_x_message.dart';
 
 import '../constants/colors.dart';
 import '../models/developer_unique_item.dart';
 
 class MessageItem extends StatelessWidget {
-  final DeveloperUniqueItem item;
+  final DeveloperMessage item;
   final String urlImage;
   final Function onPressed;
   const MessageItem(
@@ -26,7 +27,7 @@ class MessageItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           child: CachedNetworkImage(
             imageUrl: urlImage,
-            width: 64,
+            width: 55,
             height: 64,
             fit: BoxFit.cover,
           ),
@@ -35,13 +36,15 @@ class MessageItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              item.name!,
+              '${item.developer.firstName} ${item.developer.lastName!}',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
             ),
             SizedBox(height: 5),
             Text(
-              "${item.name!} Developer",
+              item.message.message.length < 22
+                  ? "${item.message.message}"
+                  : "${item.message.message.substring(0, 22)}...",
               style: const TextStyle(
                 color: textColor,
                 fontSize: 16,
@@ -51,21 +54,21 @@ class MessageItem extends StatelessWidget {
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Text(
-              'Date',
+              'Today',
               style: TextStyle(
                 color: textColor,
                 fontSize: 16,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 7,
             ),
             CircleAvatar(
               backgroundColor: warningColor,
               radius: 12,
-              child: Text('2', style: TextStyle(color: Colors.white)),
+              child: Text('1', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
-import '../models/job_offer.dart';
+import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import '../constants/colors.dart';
 
-class JobOfferItem extends StatelessWidget{
-  final JobOffer item;
+class CompanyPost extends StatelessWidget {
+  final PostItem item;
 
-  const JobOfferItem({super.key, required this.item});
+  const CompanyPost({super.key, required this.item});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
+      margin: EdgeInsets.all(15),
       padding: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: primaryColor),
-        color: secondaryColor,
+        color: Colors.white,
       ),
-
       child: Center(
         child: ListTile(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding (
+              Padding(
                 padding: EdgeInsets.all(1.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    item.image!,
+                    item.imageUrl!,
                     height: 150,
                     width: 350,
                     fit: BoxFit.cover,
@@ -49,10 +48,19 @@ class JobOfferItem extends StatelessWidget{
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left:6.0, top: 2.0),
+                padding: EdgeInsets.only(left: 6.0, top: 2.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      item.description!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
                     Row(
                       children: [
                         Icon(
@@ -61,27 +69,25 @@ class JobOfferItem extends StatelessWidget{
                           color: Colors.white,
                         ),
                         Text(
-                          item.location!,
+                          item.companyUniqueItem!.address!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,
                           ),
                         ),
-                        Expanded (
+                        Expanded(
                             child: Align(
-                              alignment: Alignment.centerRight,
-                              child: ElevatedButton(
-                                onPressed: (){
-                                },
-                                child: Text('Apply for', style: TextStyle(color: buttonTextColor)),
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(100, 20),
-                                  backgroundColor: buttonColor,
-                                ),
-                              ),
-                            )
-                        ),
-
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text('Apply for',
+                                style: TextStyle(color: buttonTextColor)),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(100, 20),
+                              backgroundColor: buttonColor,
+                            ),
+                          ),
+                        )),
                       ],
                     ),
                     Row(
@@ -92,7 +98,7 @@ class JobOfferItem extends StatelessWidget{
                           color: Colors.white,
                         ),
                         Text(
-                          item.company!,
+                          item.companyUniqueItem!.companyName!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,

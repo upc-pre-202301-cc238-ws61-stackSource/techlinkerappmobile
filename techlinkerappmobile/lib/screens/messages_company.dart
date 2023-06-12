@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/company.dart';
+import 'package:techlinkerappmobile/models/developer_x_message.dart';
 import 'package:techlinkerappmobile/screens/message_company_inbox.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:techlinkerappmobile/widgets/message_item.dart';
 
+import '../models/developer.dart';
 import '../models/developer_unique_item.dart';
+import '../models/message.dart';
+import '../services/company_service.dart';
+import '../services/developer_service.dart';
 
 class CompanyMessage extends StatefulWidget {
-  const CompanyMessage({super.key});
+  final Company company;
+  const CompanyMessage({required this.company, super.key});
 
   @override
   State<CompanyMessage> createState() => _CompanyMessageState();
@@ -18,6 +25,7 @@ class _CompanyMessageState extends State<CompanyMessage> {
   bool isLoding = true;
 
   final urlMessagesIcons = [];
+  List<DeveloperMessage> developerContacts = <DeveloperMessage>[];
 
   @override
   void initState() {
@@ -25,6 +33,7 @@ class _CompanyMessageState extends State<CompanyMessage> {
 
     getDevelopersImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getMessagesByCompanyId(widget.company.id.toString());
   }
 
   Future loadData() async {
@@ -53,59 +62,86 @@ class _CompanyMessageState extends State<CompanyMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: primaryColor,
-        body: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 34,
+      backgroundColor: primaryColor,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF39BCFD),
+                  Color(0xFF4F93E9),
+                  Color(0xFF7176EE),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const Text(
+            ),
+            child: Column(children: const [
+              SizedBox(
+                height: 40,
+              ),
+              Text(
                 "Company",
                 style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
+                    color: cardColor,
+                    fontSize: 40,
                     fontWeight: FontWeight.w800),
               ),
-              const Text(
+              Text(
                 "Messages",
                 style: TextStyle(
-                    color: textColor,
-                    fontSize: 44,
+                    color: cardColor,
+                    fontSize: 41,
                     fontWeight: FontWeight.w800),
               ),
-              const SizedBox(
-                height: 17,
-              ),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: DeveloperUniqueItem.developerItems().length,
-                      itemBuilder: (context, index) {
-                        final developer =
-                            DeveloperUniqueItem.developerItems()[index];
-
-                        return isLoding
-                            ? Shimmer.fromColors(
-                                baseColor: secondaryColor,
-                                highlightColor: loadingColor,
-                                child: buildSkeleton(context))
-                            : MessageItem(
-                                item: developer,
-                                onPressed: () => {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CompanyMessageInbox(
-                                                      item: developer)))
-                                    },
-                                urlImage: urlMessagesIcons[index]);
-                      }))
-            ],
+              SizedBox(
+                height: 25,
+              )
+            ]),
           ),
-        ));
+          const SizedBox(height: 20),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListView.builder(
+                itemCount: developerContacts.length,
+                itemBuilder: (context, index) {
+                  final developer = developerContacts[index];
+
+                  return isLoding
+                      ? Shimmer.fromColors(
+                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                          highlightColor: Colors.grey[200]!,
+                          child: buildSkeleton(context))
+                      : MessageItem(
+                          item: developer,
+                          onPressed: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CompanyMessageInbox(
+                                        companyId: widget.company.id!,
+                                        item: developer),
+                                  ),
+                                ).then((value) {
+                                  setState(() {
+                                    getMessagesByCompanyId(
+                                        widget.company.id.toString());
+                                  });
+                                }),
+                              },
+                          urlImage: developer.developer.image!);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildSkeleton(BuildContext context) {
@@ -134,5 +170,54 @@ class _CompanyMessageState extends State<CompanyMessage> {
         ],
       ),
     );
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      if (developerData != null) {
+        final developer = Developer.fromJson(developerData);
+        return developer;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer.empty();
+  }
+
+  Future getMessagesByCompanyId(String id) async {
+    List<Message> messages = <Message>[];
+    List<Developer> myDevContacts = <Developer>[];
+
+    try {
+      final messagesData = await CompanyService.getLastMessagesByCompanyId(id);
+      if (mounted) {
+        messages.addAll(messagesData
+            .map<Message>((message) => Message.fromJson(message))
+            .toList());
+      }
+    } catch (e) {
+      print('Failed to fetch messages data. Error: $e');
+    }
+
+    //print all messages
+    for (var message in messages) {
+      myDevContacts.add(await getDeveloperById(message.receiverId.toString()));
+    }
+
+    developerContacts.clear();
+
+    //add developers from myDevContacts  and Nessage from  messages to developerContacts, before adding make sure that developer id is similar to message receiver id
+    for (var developer in myDevContacts) {
+      for (var message in messages) {
+        if (developer.id == message.receiverId) {
+          developerContacts
+              .add(DeveloperMessage(developer: developer, message: message));
+        }
+      }
+    }
+
+    setState(() {});
   }
 }

@@ -15,10 +15,20 @@ class NotificationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10, top: 10),
-      padding: EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12), color: secondaryColor),
+        borderRadius: BorderRadius.circular(12),
+        color: cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Shadow color
+            spreadRadius: 1, // Spread radius
+            blurRadius: 2, // Blur radius
+            offset: Offset(0, 0.5), // Offset in the y direction
+          ),
+        ],
+      ),
       child: ListTile(
         onTap: () => {print("Clicked")},
         leading: ClipRRect(
@@ -54,9 +64,9 @@ class NotificationItem extends StatelessWidget {
                 BorderRadius.circular(30), // Adjust the radius as needed
           ),
           child: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.delete,
-              color: textColor,
+              color: Colors.white,
             ),
             onPressed: () {
               // Handle delete button press
