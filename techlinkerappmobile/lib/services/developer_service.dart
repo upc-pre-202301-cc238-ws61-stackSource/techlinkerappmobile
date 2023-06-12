@@ -456,4 +456,55 @@ class DeveloperService {
       throw Exception('Failed to fetch certifications data. Error: $e');
     }
   }
+
+  //getLastMessagesByDeveloperId
+  static Future<List<dynamic>> getLastMessagesByDeveloperId(String id) async {
+    final url = Uri.parse('$baseUrl/users/$id/messages/LastMessageDeveloper');
+
+    print(url);
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch messages data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch messages data. Error: $e');
+    }
+  }
+
+ 
+  static getMessagesByDeveloperAndReciverId(String id, String reciverId) async {
+    final url = Uri.parse('$baseUrl/users/$id/messages/$reciverId');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
 }
