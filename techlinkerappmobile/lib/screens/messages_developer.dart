@@ -103,23 +103,10 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
                 itemBuilder: (context, index) {
                   final developer = DeveloperUniqueItem.developerItems()[index];
 
-                  return isLoding
-                      ? Shimmer.fromColors(
-                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                          highlightColor: Colors.grey[200]!,
-                          child: buildSkeleton(context))
-                      : MessageItem(
-                          item: developer,
-                          onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CompanyMessageInbox(item: developer),
-                                  ),
-                                ),
-                              },
-                          urlImage: urlMessagesIcons[index]);
+                  Shimmer.fromColors(
+                      baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                      highlightColor: Colors.grey[200]!,
+                      child: buildSkeleton(context));
                 },
               ),
             ),
