@@ -127,23 +127,38 @@ class _CompanyHomeState extends State<CompanyHome> {
                     isLoding = true;
                   });
                   await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DeveloperFilter()))
-                      .then((value) => {
-                            if (value != null)
-                              {
-                                setState(() {
-                                  selectedFramework =
-                                      value['selectedFramework'];
-                                  selectedDatabase = value['selectedDatabase'];
-                                  selectedProgrammingLanguage =
-                                      value['selectedProgrammingLanguage'];
-                                  selectedYearsOfExperience =
-                                      value['selectedYearsOfExperience'];
-                                })
-                              },
-                          });
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DeveloperFilter())).then((value) => {
+                        if (value != null)
+                          {
+                            setState(() {
+                              selectedFramework = value['selectedFramework'];
+                              selectedDatabase = value['selectedDatabase'];
+                              selectedProgrammingLanguage =
+                                  value['selectedProgrammingLanguage'];
+                              selectedYearsOfExperience =
+                                  value['selectedYearsOfExperience'];
+                              //convert filters to lower case
+                              selectedFramework = selectedFramework
+                                  .map((framework) => framework.toLowerCase())
+                                  .toList();
+                              selectedDatabase = selectedDatabase
+                                  .map((database) => database.toLowerCase())
+                                  .toList();
+                              selectedProgrammingLanguage =
+                                  selectedProgrammingLanguage
+                                      .map((language) => language.toLowerCase())
+                                      .toList();
+                              selectedYearsOfExperience =
+                                  selectedYearsOfExperience
+                                      .map((experience) =>
+                                          experience.toString().toLowerCase())
+                                      .toList();
+                            })
+                          },
+                      });
                   filterDevelopers();
                 },
                 style: ElevatedButton.styleFrom(
@@ -189,7 +204,7 @@ class _CompanyHomeState extends State<CompanyHome> {
             const SizedBox(
               height: 10,
             ),
-            developers.isEmpty
+            isLoding
                 ? //create progress indicator while loading data
                 Expanded(
                     child: Padding(
@@ -203,27 +218,81 @@ class _CompanyHomeState extends State<CompanyHome> {
                               child: buildSkeleton(context));
                         }),
                   ))
-                : Expanded(
-                    child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 23),
-                    child: ListView.builder(
-                        itemCount: filteredDevelopers.length,
-                        itemBuilder: (context, index) {
-                          final developer = filteredDevelopers[index];
+                : filteredDevelopers.isEmpty
+                    ? Container(
+                        padding: EdgeInsets.only(top: 120),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            //create a button to assign all data from developers to filtered developers
+                            const Center(
+                              child: Text(
+                                'No developers found',
+                                style: TextStyle(
+                                  color: cardTextColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  filteredDevelopers = developers;
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF39BCFD),
+                                      Color(0xFF4F93E9),
+                                      Color(0xFF7176EE),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Text(
+                                    'Show all developers',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Expanded(
+                        child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 23),
+                        child: ListView.builder(
+                            itemCount: filteredDevelopers.length,
+                            itemBuilder: (context, index) {
+                              final developer = filteredDevelopers[index];
 
-                          return isLoding
-                              ? Shimmer.fromColors(
-                                  baseColor:
-                                      Color.fromARGB(255, 219, 221, 225)!,
-                                  highlightColor: Colors.grey[200]!,
-                                  child: buildSkeleton(context))
-                              : DeveloperItem(
-                                  item: developer,
-                                  urlImage: urlDevelopersImages[
-                                      developer.id!.toString()]!,
-                                );
-                        }),
-                  ))
+                              return isLoding
+                                  ? Shimmer.fromColors(
+                                      baseColor:
+                                          Color.fromARGB(255, 219, 221, 225)!,
+                                      highlightColor: Colors.grey[200]!,
+                                      child: buildSkeleton(context))
+                                  : DeveloperItem(
+                                      item: developer,
+                                      urlImage: urlDevelopersImages[
+                                          developer.id!.toString()]!,
+                                    );
+                            }),
+                      )),
           ]),
         ));
   }
@@ -282,103 +351,99 @@ class _CompanyHomeState extends State<CompanyHome> {
   }
 
   void filterDevelopers() async {
-    //aplying framework filter
-
     List<Framework> frameworks = await getAllFrameworks();
-
-    Map<int, List<Framework>> frameworksByDeveloper = {};
-
-    for (var framework in frameworks) {
-      int digitalProfileId = framework.digitalProfile!.id;
-
-      if (frameworksByDeveloper.containsKey(digitalProfileId)) {
-        frameworksByDeveloper[digitalProfileId]!.add(framework);
-      } else {
-        frameworksByDeveloper[digitalProfileId] = [framework];
-      }
-    }
-
-    List<int> devFilterByFramework = frameworksByDeveloper.entries
-        .where((entry) {
-          List<Framework> developerFrameworks = entry.value;
-          return selectedFramework.every((selectedFramework) =>
-              developerFrameworks
-                  .any((framework) => framework.name == selectedFramework));
-        })
-        .map((entry) => entry.key)
-        .toList();
-
-    //aplying programming language filter
-
-    List<ProgrammingLanguage> networkProgrammingLanguages =
+    List<ProgrammingLanguage> programmingLanguages =
         await getAllProgrammingLanguages();
+    List<Database> databases = await getAllDatabases();
 
-    List<ProgrammingLanguage> programmingLanguages = networkProgrammingLanguages
-        .where((programmingLanguage) => devFilterByFramework
-            .contains(programmingLanguage.digitalProfile.id))
+    //to lower case
+    frameworks = frameworks
+        .map((framework) => Framework(
+              description: framework.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(framework.digitalProfile!.toJson()),
+              iconLink: framework.iconLink,
+              id: framework.id,
+              name: framework.name!.toLowerCase(),
+            ))
         .toList();
 
-    Map<int, List<ProgrammingLanguage>> programmingLanguagesByDeveloper = {};
+    programmingLanguages = programmingLanguages
+        .map((language) => ProgrammingLanguage(
+              description: language.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(language.digitalProfile!.toJson()),
+              iconLink: language.iconLink,
+              id: language.id,
+              name: language.name!.toLowerCase(),
+            ))
+        .toList();
 
-    for (var programmingLanguage in programmingLanguages) {
-      int digitalProfileId = programmingLanguage.digitalProfile.id!;
+    databases = databases
+        .map((database) => Database(
+              description: database.description,
+              digitalProfile:
+                  DigitalProfile.fromJson(database.digitalProfile!.toJson()),
+              iconLink: database.iconLink,
+              id: database.id,
+              name: database.name!.toLowerCase(),
+            ))
+        .toList();
 
-      if (programmingLanguagesByDeveloper.containsKey(digitalProfileId)) {
-        programmingLanguagesByDeveloper[digitalProfileId]!
-            .add(programmingLanguage);
-      } else {
-        programmingLanguagesByDeveloper[digitalProfileId] = [
-          programmingLanguage
-        ];
-      }
+    List<int> filteredDeveloperIds =
+        developers.map((developer) => developer.id).toList();
+
+    if (selectedFramework.isNotEmpty) {
+      // Apply framework filter
+
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<Framework> developerFrameworks = frameworks
+            .where((framework) => framework.digitalProfile!.id == developerId)
+            .toList();
+        return selectedFramework.every((selectedFramework) =>
+            developerFrameworks
+                .any((framework) => framework.name == selectedFramework));
+      }).toList();
     }
 
-    List<int> devFilterByProgrammingLanguage = programmingLanguagesByDeveloper
-        .entries
-        .where((entry) {
-          List<ProgrammingLanguage> developerProgrammingLanguages = entry.value;
-          return selectedProgrammingLanguage.every(
-              (selectedProgrammingLanguage) =>
-                  developerProgrammingLanguages.any((programmingLanguage) =>
-                      programmingLanguage.name == selectedProgrammingLanguage));
-        })
-        .map((entry) => entry.key)
-        .toList();
-
-    //aplying database filter
-
-    List<Database> networkDatabases = await getAllDatabases();
-
-    List<Database> databases = networkDatabases
-        .where((database) =>
-            devFilterByProgrammingLanguage.contains(database.digitalProfile.id))
-        .toList();
-
-    Map<int, List<Database>> databasesByDeveloper = {};
-
-    for (var database in databases) {
-      int digitalProfileId = database.digitalProfile.id!;
-
-      if (databasesByDeveloper.containsKey(digitalProfileId)) {
-        databasesByDeveloper[digitalProfileId]!.add(database);
-      } else {
-        databasesByDeveloper[digitalProfileId] = [database];
-      }
+    if (selectedProgrammingLanguage.isNotEmpty) {
+      // Apply programming language filter
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<ProgrammingLanguage> developerLanguages = programmingLanguages
+            .where((language) => language.digitalProfile.id == developerId)
+            .toList();
+        return selectedProgrammingLanguage.every((selectedLanguage) =>
+            developerLanguages
+                .any((language) => language.name == selectedLanguage));
+      }).toList();
     }
 
-    List<int> devFilterByDatabase = databasesByDeveloper.entries
-        .where((entry) {
-          List<Database> developerDatabases = entry.value;
-          return selectedDatabase.every((selectedDatabase) => developerDatabases
-              .any((database) => database.name == selectedDatabase));
-        })
-        .map((entry) => entry.key)
-        .toList();
+    if (selectedDatabase.isNotEmpty) {
+      // Apply database filter
+      filteredDeveloperIds = filteredDeveloperIds.where((developerId) {
+        List<Database> developerDatabases = databases
+            .where((database) => database.digitalProfile.id == developerId)
+            .toList();
+        return selectedDatabase.every((selectedDatabase) => developerDatabases
+            .any((database) => database.name == selectedDatabase));
+      }).toList();
+    }
 
     setState(() {
+      //check if there is not any filter and set filter developers with all developer if thats the case
+
+      if (selectedFramework.isEmpty &&
+          selectedProgrammingLanguage.isEmpty &&
+          selectedDatabase.isEmpty) {
+        filteredDevelopers = developers;
+        isLoding = false;
+        return;
+      }
+
       filteredDevelopers = developers
-          .where((developer) => devFilterByDatabase.contains(developer.id))
+          .where((developer) => filteredDeveloperIds.contains(developer.id))
           .toList();
+      print('Filtered developers: $filteredDevelopers');
       isLoding = false;
     });
   }
@@ -463,5 +528,4 @@ class _CompanyHomeState extends State<CompanyHome> {
 
     return [];
   }
-
 }

@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/company_x_message.dart';
 import 'package:techlinkerappmobile/models/developer_unique_item.dart';
 import 'package:techlinkerappmobile/models/developer_x_message.dart';
 import 'package:techlinkerappmobile/models/message_post.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:techlinkerappmobile/widgets/developer_item.dart';
 import '../constants/colors.dart';
 import '../models/message.dart';
 import '../services/company_service.dart';
 
-class CompanyMessageInbox extends StatefulWidget {
-  final int companyId;
-  final DeveloperMessage item;
-  const CompanyMessageInbox(
-      {super.key, required this.companyId, required this.item});
+class DeveloperMessageInbox extends StatefulWidget {
+  final int developerId;
+  final CompanyMessage item;
+  const DeveloperMessageInbox(
+      {super.key, required this.developerId, required this.item});
 
   @override
-  State<CompanyMessageInbox> createState() => _CompanyMessageInboxState();
+  State<DeveloperMessageInbox> createState() => _DeveloperMessageInboxState();
 }
 
-class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
+class _DeveloperMessageInboxState extends State<DeveloperMessageInbox> {
   final TextEditingController _textController = TextEditingController();
-  List<Message> companyMessages = <Message>[];
   List<Message> developerMessages = <Message>[];
+  List<Message> companyMessages = <Message>[];
 
   final List<Map<String, dynamic>> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    getAllMessagesByReciverId(widget.companyId.toString()).then((value) {
+    getAllMessagesByReciverId(widget.developerId.toString()).then((value) {
       // update _messages with isMe = false, with the company messages data
       for (var message in companyMessages) {
         setState(() {
@@ -67,11 +69,11 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
           children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(widget.item.developer.image!),
+              backgroundImage: NetworkImage(widget.item.company.image!),
             ),
             const SizedBox(width: 15),
             Text(
-              widget.item.developer.firstName!,
+              widget.item.company.firstName!,
               style: const TextStyle(fontSize: 20),
             ),
           ],
@@ -182,8 +184,8 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                     if (_textController.text.trim().isNotEmpty) {
                       insertMessage(
                           _textController.text.trim(),
-                          widget.companyId,
-                          widget.item.developer.id.toString());
+                          widget.developerId,
+                          widget.item.company.id.toString());
 
                       setState(() {
                         //update the messages view (update _messages)
@@ -243,8 +245,8 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
 
     try {
       final messagesData =
-          await CompanyService.getMessagesByCompanyAndReciverId(
-              id, widget.item.developer.id.toString());
+          await DeveloperService.getMessagesByDeveloperAndReciverId(
+              id, widget.item.company.id.toString());
       if (mounted) {
         messages.addAll(messagesData
             .map<Message>((message) => Message.fromJson(message))
@@ -255,7 +257,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
     }
 
     for (var message in messages) {
-      if (message.receiverId.toString() == widget.companyId.toString()) {
+      if (message.receiverId.toString() == widget.developerId.toString()) {
         developerMessages.add(message);
       } else {
         companyMessages.add(message);

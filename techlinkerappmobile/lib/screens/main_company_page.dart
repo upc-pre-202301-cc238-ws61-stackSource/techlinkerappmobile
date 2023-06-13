@@ -17,13 +17,14 @@ class MainCompanyPage extends StatefulWidget {
 
 class _MainCompanyPageState extends State<MainCompanyPage> {
   int index = 0;
+  Company company = Company();
+  List<Widget> screens = [];
 
-  final screens = [
-    CompanyHome(),
-    CompanyMessage(),
-    CompanyNotifications(),
-    CompanyProfile(
-        company: Company(
+  @override
+  void initState() {
+    super.initState();
+
+    company = Company(
       id: 4,
       firstName: "Tomas",
       lastName: "Pastor",
@@ -41,8 +42,15 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
       address: "Av. Amazonas N34-123",
       country: "Ecuador",
       city: "Quito",
-    )),
-  ];
+    );
+
+    screens = [
+      CompanyHome(),
+      CompanyMessage(company: company),
+      CompanyNotifications(),
+      CompanyProfile(company: company),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
