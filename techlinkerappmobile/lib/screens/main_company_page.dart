@@ -9,7 +9,8 @@ import '../models/company.dart';
 import 'home_company.dart';
 
 class MainCompanyPage extends StatefulWidget {
-  const MainCompanyPage({super.key});
+  final int companyId;
+  const MainCompanyPage({super.key, required this.companyId});
 
   @override
   State<MainCompanyPage> createState() => _MainCompanyPageState();
@@ -45,7 +46,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     );
 
     screens = [
-      CompanyHome(),
+      CompanyHome(companyId: widget.companyId,),
       CompanyMessage(company: company),
       CompanyNotifications(),
       CompanyProfile(company: company),
