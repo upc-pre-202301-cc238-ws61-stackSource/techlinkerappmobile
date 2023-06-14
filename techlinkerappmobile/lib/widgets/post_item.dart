@@ -8,9 +8,9 @@ import '../screens/applicants_developer_list.dart';
 import '../screens/common/flash-correct-message-widget.dart';
 
 class CompanyPost extends StatelessWidget {
+  final bool show;
   final Post item;
-  final String urlImage;
-  const CompanyPost({super.key, required this.urlImage, required this.item});
+  const CompanyPost({super.key, required this.show, required this.item});
   Future deletePost(String id) async {
     final response = await CompanyService.deleteCompanyPostById(id);
     print(response);
@@ -33,7 +33,7 @@ class CompanyPost extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                  scale: 0.5, fit: BoxFit.cover, image: NetworkImage(urlImage)),
+                  scale: 0.5, fit: BoxFit.cover, image: NetworkImage(item.imageUrl!)),
             ),
           ),
           Padding(
@@ -65,10 +65,10 @@ class CompanyPost extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Icon(Icons.location_on),
                             SizedBox(width: 8),
-                            Text('New York, NY'),
+                            Text(item.company.address!),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -87,16 +87,31 @@ class CompanyPost extends StatelessWidget {
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        deletePost(item.id!.toString());
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: FlashCorrectMessageWidget(
-                                message: 'Post deleted successfully'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                          ),
-                        );
+                        if (show == true)
+                        {
+                          deletePost(item.id!.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: 'Post deleted successfully'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: 'Notification sent'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                        }
+                        
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -117,13 +132,22 @@ class CompanyPost extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(2.0),
-                          child: Icon(
-                            Icons.delete_forever_outlined,
-                            size: 35,
-                            color: Colors.red,
-                          ),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: show
+                              ? Icon(
+                                  Icons.delete_forever_outlined,
+                                  size: 35,
+                                  color: Colors.white,
+                              )
+                              : Text(
+                                  'Apply',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
                         ),
                       ),
                     ),
