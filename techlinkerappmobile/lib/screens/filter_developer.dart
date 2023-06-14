@@ -317,7 +317,12 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             Spacer(),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop({
+                  'selectedFramework': [],
+                  'selectedProgrammingLanguage': [],
+                  'selectedDatabase': [],
+                  'selectedYearsOfExperience': []
+                });
               },
               child: const Icon(Icons.close, color: textColor, size: 30),
             ),

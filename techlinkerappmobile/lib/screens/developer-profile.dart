@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
 
@@ -201,7 +200,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "Education",
                       textAlign: TextAlign.justify,
                       style: TextStyle(
@@ -220,7 +219,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           ),
                         );
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.add_circle_outline_outlined,
                         color: textColor,
                         size: 30,
@@ -308,14 +307,38 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Databases",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Database",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const DeveloperEducationPost(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -340,14 +363,38 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Programming Languages",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Programming Languages",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const DeveloperEducationPost(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -373,14 +420,38 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 20,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text("Latest projects",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Projects",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const DeveloperEducationPost(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(

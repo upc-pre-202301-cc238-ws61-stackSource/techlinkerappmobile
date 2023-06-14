@@ -1,15 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/company_x_message.dart';
 import 'package:techlinkerappmobile/models/developer_x_message.dart';
 
 import '../constants/colors.dart';
 import '../models/developer_unique_item.dart';
 
-class MessageItem extends StatelessWidget {
-  final DeveloperMessage item;
+class MessageItemCompany extends StatelessWidget {
+  final CompanyMessage item;
   final String urlImage;
   final Function onPressed;
-  const MessageItem(
+  const MessageItemCompany(
       {super.key,
       required this.item,
       required this.onPressed,
@@ -36,7 +37,7 @@ class MessageItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${item.developer.firstName} ${item.developer.lastName!}',
+              '${item.company.firstName} ${item.company.lastName!}',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
             ),

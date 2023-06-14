@@ -18,10 +18,38 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
 
   final screens = [
     DeveloperHome(),
-    DeveloperMessages(),
+    DeveloperMessages(
+      developer: Developer(
+        id: 1,
+        firstName: "Abel",
+        lastName: "Cierto",
+        email: "cierto@gmail.com",
+        phone: "993293832",
+        password: "1234",
+        role: "developer",
+        description: "I am a developer",
+        image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc2vCxWbhMybswANW-CJCUniq5exRc020V-h43Vrf9-ihDUD0KxeJyDn5biuwI9iL3IIA&usqp=CAU",
+        bannerImage:
+            "https://img.freepik.com/free-vector/programming-concept-illustration_114360-1351.jpg",
+      ),
+    ),
     DeveloperNotifications(),
     DeveloperProfile(
-      developer: Developer.empty(),
+      developer: Developer(
+        id: 1,
+        firstName: "Abel",
+        lastName: "Cierto",
+        email: "cierto@gmail.com",
+        phone: "993293832",
+        password: "1234",
+        role: "developer",
+        description: "I am a developer",
+        image:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc2vCxWbhMybswANW-CJCUniq5exRc020V-h43Vrf9-ihDUD0KxeJyDn5biuwI9iL3IIA&usqp=CAU",
+        bannerImage:
+            "https://img.freepik.com/free-vector/programming-concept-illustration_114360-1351.jpg",
+      ),
     ),
   ];
 
