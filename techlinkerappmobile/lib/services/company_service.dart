@@ -178,4 +178,25 @@ class CompanyService {
       throw Exception('Failed to create post. Error: $e');
     }
   }
+
+  //delete a post by id
+  static deleteCompanyPostById(String id) async {
+    final url = Uri.parse('$baseUrl/posts/$id');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to delete post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete post. Error: $e');
+    }
+  }
 }

@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import 'package:techlinkerappmobile/models/post.dart';
+import 'package:techlinkerappmobile/services/company_service.dart';
 
 import '../screens/applicants_developer_list.dart';
+import '../screens/common/flash-correct-message-widget.dart';
 
 class CompanyPost extends StatelessWidget {
   final Post item;
   final String urlImage;
   const CompanyPost({super.key, required this.urlImage, required this.item});
-
+  Future deletePost(String id) async {
+    final response = await CompanyService.deleteCompanyPostById(id);
+    print(response);
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -79,13 +84,20 @@ class CompanyPost extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ApplicantsList()),
+                        deletePost(item.id!.toString());
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: FlashCorrectMessageWidget(
+                                message: 'Post deleted successfully'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
                         );
+
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors
@@ -106,14 +118,11 @@ class CompanyPost extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text(
-                            'Applicants',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          padding: EdgeInsets.all(2.0),
+                          child: Icon(
+                            Icons.delete_forever_outlined,
+                            size: 35,
+                            color: Colors.red,
                           ),
                         ),
                       ),
