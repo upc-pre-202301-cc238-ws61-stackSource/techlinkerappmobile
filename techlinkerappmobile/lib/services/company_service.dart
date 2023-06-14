@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/models/message_post.dart';
 import 'package:techlinkerappmobile/widgets/message_item.dart';
 import 'dart:convert';
@@ -34,7 +35,39 @@ class CompanyService {
       throw Exception('Failed to create post. Error: $e');
     }
   }
+  static updateProfileCompany(Company company) async {
+    final url =
+    Uri.parse('$baseUrl/company/${company.id}');
+    print(url);
+    try {
+      final response = await http.put(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'id': company.id,
+          'firstName': company.firstName,
+          'lastName': company.lastName,
+          'email': company.email,
+          'phone': company.phone,
+          'password': company.password,
+          'role': company.role,
+          'description': company.description,
+          'image': company.image,
+          'bannerImage': company.bannerImage,
+        }),
+      );
 
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to update profile. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to update profile. Error: $e');
+    }
+  }
   static getCompanyById(String id) async {
     final url = Uri.parse('$baseUrl/companies/$id');
     print(url);

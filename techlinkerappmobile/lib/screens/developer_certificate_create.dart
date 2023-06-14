@@ -15,8 +15,7 @@ class DeveloperCertificateRegister extends StatefulWidget {
       _DeveloperCertificateRegisterState();
 }
 
-class _DeveloperCertificateRegisterState
-    extends State<DeveloperCertificateRegister> {
+class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegister> {
   final TextEditingController _obtainedDateController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   String TittleCertificate = "";
