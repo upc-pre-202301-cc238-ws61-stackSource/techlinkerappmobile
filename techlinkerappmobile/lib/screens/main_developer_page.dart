@@ -17,7 +17,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
   int index = 0;
 
   final screens = [
-    DeveloperHome(),
+    DeveloperHome(developerId: 1),
     DeveloperMessages(
       developer: Developer(
         id: 1,

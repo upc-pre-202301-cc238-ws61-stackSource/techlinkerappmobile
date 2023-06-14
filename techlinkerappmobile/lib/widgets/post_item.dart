@@ -4,19 +4,28 @@ import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import 'package:techlinkerappmobile/models/post.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
 
+import '../models/developer.dart';
 import '../screens/applicants_developer_list.dart';
 import '../screens/common/flash-correct-message-widget.dart';
+import '../services/developer_service.dart';
 
 class CompanyPost extends StatelessWidget {
+  final int developerId;
   final bool show;
   final Post item;
-  const CompanyPost({super.key, required this.show, required this.item});
+  const CompanyPost({super.key, required this.developerId, required this.show, required this.item});
   Future deletePost(String id) async {
-    final response = await CompanyService.deleteCompanyPostById(id);
-    print(response);
+    await CompanyService.deleteCompanyPostById(id);
   }
+  Future applyInPostCompany(String id, String idReceiver) async {
+    final dev = await DeveloperService.getDeveloperById(id);
+    Developer developer = Developer.fromJson(dev);
+    await DeveloperService.sendNotificationFromDeveloperToCompany(id, idReceiver, 'Developer ${developer.firstName} is interest in your post ${item!.title}');
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Developer dev;
     return Card(
       color: cardColor,
       shape: RoundedRectangleBorder(
@@ -101,10 +110,12 @@ class CompanyPost extends StatelessWidget {
                           );
                         }
                         else{
+                          applyInPostCompany(developerId!.toString(), item.company.id.toString());
+                          
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
-                                  message: 'Notification sent'),
+                                  message: 'Apply sent Successfully'),
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: Colors.transparent,
                               elevation: 0.0,

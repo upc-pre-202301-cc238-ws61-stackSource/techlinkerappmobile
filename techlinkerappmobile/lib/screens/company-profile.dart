@@ -183,7 +183,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(show: true, item: item))
+                        : CompanyPost(developerId: -1, show: true, item: item))
                     .toList(),
               ),
               const SizedBox(
