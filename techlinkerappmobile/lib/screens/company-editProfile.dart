@@ -3,6 +3,9 @@ import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
 class EditProfileView extends StatefulWidget {
+  final companyId;
+  const EditProfileView({required this.companyId, super.key});
+
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
 }
@@ -22,24 +25,34 @@ class _EditProfileViewState extends State<EditProfileView> {
     _urlController = TextEditingController();
     super.initState();
   }
-  Future UpdateProfile(String id) async{
-    final Profile = await CompanyService.getCompanyById(id);
+
+  Future<void> UpdateProfile(String id) async {
+    final profile = await CompanyService.getCompanyById(id);
+    final updatedCompany = Company.fromJson(profile);
+
+    if (mounted) {
+      setState(() {
+        company = updatedCompany;
+      });
+    }
 
     final updateProfile = Company(
-        id: company.id,
-        firstName: company.firstName,
-        lastName: company.lastName,
-        email: _emailController.text,
-        phone: _phoneController.text,
-        password: _passwordController.text,
-        role: company.role,
-        description: company.description,
-        image: _urlController.text,
-        bannerImage: company.bannerImage);
+      id: updatedCompany.id,
+      firstName: updatedCompany.firstName,
+      lastName: updatedCompany.lastName,
+      email: _emailController.text,
+      phone: _phoneController.text,
+      password: _passwordController.text,
+      role: updatedCompany.role,
+      description: updatedCompany.description,
+      image: _urlController.text,
+      bannerImage: updatedCompany.bannerImage,
+    );
 
     final update = await CompanyService.updateProfileCompany(updateProfile);
+  }
 
-   @override
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -47,6 +60,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     _urlController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,61 +72,56 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Correo electrónico'),
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Contraseña'),
-                  ),
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(labelText: 'Teléfono'),
-                  ),
-                  TextFormField(
-                    controller: _urlController,
-                    decoration: InputDecoration(labelText: 'URL del perfil'),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: (){
-                      if(formKey.currentState!.validate()){
-                        formKey.currentState!.save();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: FlashCorrectMessageWidget(message: "Profiled updated successfully"),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text('Guardar cambios'),
-                  ),
-                ],
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: <Widget>[
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                          labelText: 'Correo electrónico'),
+                    ),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(labelText: 'Contraseña'),
+                    ),
+                    TextFormField(
+                      controller: _phoneController,
+                      decoration: InputDecoration(labelText: 'Teléfono'),
+                    ),
+                    TextFormField(
+                      controller: _urlController,
+                      decoration: InputDecoration(labelText: 'URL del perfil'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
+                          UpdateProfile(widget.companyId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: "Profiled updated successfully"),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Text('Guardar cambios'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        )
+            ],
+          )
       ),
     );
-  }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
   }
 }

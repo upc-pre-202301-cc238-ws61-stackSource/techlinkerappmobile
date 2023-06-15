@@ -10,6 +10,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/post.dart';
 import '../services/company_service.dart';
+import 'company-editProfile.dart';
 
 class CompanyProfile extends StatefulWidget {
   final Company company;
@@ -246,37 +247,67 @@ class _CompanyProfileState extends State<CompanyProfile> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 50),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(widget.company.image!),
+      child: Stack(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 50),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${widget.company.firstName!} ${widget.company.lastName!}',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(widget.company.image!),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '${widget.company.firstName!} ${widget.company.lastName!}',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  widget.company.email!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: textColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.company.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: textColor,
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => EditProfileView(
+                        companyId: widget.company.id.toString(),
+                      )));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue, // Cambia el color del icono aquí
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

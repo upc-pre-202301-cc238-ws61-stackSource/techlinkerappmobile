@@ -24,7 +24,7 @@ class CompanyService {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
@@ -37,7 +37,7 @@ class CompanyService {
   }
   static updateProfileCompany(Company company) async {
     final url =
-    Uri.parse('$baseUrl/company/${company.id}');
+    Uri.parse('$baseUrl/companies/${company.id}');
     print(url);
     try {
       final response = await http.put(
@@ -57,7 +57,7 @@ class CompanyService {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
