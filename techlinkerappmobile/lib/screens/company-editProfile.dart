@@ -5,9 +5,7 @@ import 'package:techlinkerappmobile/services/company_service.dart';
 
 class EditProfileView extends StatefulWidget {
   final companyId;
-
   const EditProfileView({required this.companyId, Key? key}) : super(key: key);
-
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
 }
@@ -51,9 +49,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       image: _urlController.text,
       bannerImage: updatedCompany.bannerImage,
     );
-
     final update = await CompanyService.updateProfileCompany(updateProfile);
-
     return update;
   }
 

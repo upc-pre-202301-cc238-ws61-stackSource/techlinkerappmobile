@@ -390,7 +390,7 @@ class _CompanyHomeState extends State<CompanyHome> {
             ))
         .toList();
 
-    List<int> filteredDeveloperIds =
+    List<int?> filteredDeveloperIds =
         developers.map((developer) => developer.id).toList();
 
     if (selectedFramework.isNotEmpty) {

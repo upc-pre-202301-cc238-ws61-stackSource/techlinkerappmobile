@@ -91,7 +91,7 @@ class DeveloperService {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {

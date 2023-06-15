@@ -30,7 +30,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   Future UpdateProfile(String id) async {
     final profile = await DeveloperService.getDeveloperById(id);
     final updatedDeveloper = Developer.fromJson(profile);
-
     if (mounted) {
       setState(() {
         developer = updatedDeveloper;

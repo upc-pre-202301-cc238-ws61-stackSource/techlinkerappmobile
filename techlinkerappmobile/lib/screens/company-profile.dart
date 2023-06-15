@@ -45,8 +45,6 @@ class _CompanyProfileState extends State<CompanyProfile> {
       });
     });
   }
-
-
   Future loadData() async {
     if (!mounted) return; // Check if the state is mounted
 
@@ -70,7 +68,6 @@ class _CompanyProfileState extends State<CompanyProfile> {
       usersIconisLoading = false;
     });
   }
-
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
