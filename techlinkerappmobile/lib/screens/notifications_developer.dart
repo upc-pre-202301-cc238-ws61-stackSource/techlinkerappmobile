@@ -5,6 +5,9 @@ import 'package:shimmer/shimmer.dart';
 import '../constants/colors.dart';
 import '../models/notification_unique_item.dart';
 import '../widgets/notification_item.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
+import 'package:techlinkerappmobile/models/notification.dart';
+
 
 class DeveloperNotifications extends StatefulWidget {
   const DeveloperNotifications({super.key});
@@ -51,7 +54,6 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
       urlEmittersImages.add(item.emitterIcon);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,5 +176,21 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
         ],
       ),
     );
+  }
+
+
+  Future getNotificationsByDeveloperId(String id) async {
+    List<Notification> companyNotifications = <Notification>[];
+    try {
+      final notificationsData = await DeveloperService.getNotificationsByDeveloperId(id);
+      if(mounted){
+        companyNotifications.addAll(notificationsData
+            .map<Notification>((notification) => Notification.fromJson(notification))
+            .toList());
+      }
+    } catch (e) {
+      print('Failed to get notifications: $e');
+    }
+    return [];
   }
 }

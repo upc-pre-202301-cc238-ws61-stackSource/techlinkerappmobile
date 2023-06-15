@@ -1,19 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/notification_unique_item.dart';
-import 'package:techlinkerappmobile/screens/notifications_company.dart';
 
 import '../constants/colors.dart';
 
-class NotificationItem extends StatelessWidget {
-  final NotificationUniqueItem notification;
+class NotificationItem extends StatefulWidget {
+  final Notification notification;
+  //
   final String emmiterIcon;
 
-  const NotificationItem(
-      {required this.emmiterIcon, required this.notification, super.key});
+  NotificationItem(
+      {required this.emmiterIcon,  required this.notification, super.key});
+
+  @override
+  State<NotificationItem> createState() => _NotificationItemState();
+}
+
+class _NotificationItemState extends State<NotificationItem> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -34,7 +40,7 @@ class NotificationItem extends StatelessWidget {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(34),
           child: CachedNetworkImage(
-            imageUrl: emmiterIcon,
+            imageUrl: widget.emmiterIcon,
             width: 54,
             height: 64,
             fit: BoxFit.cover,
@@ -44,12 +50,12 @@ class NotificationItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              notification.emitter!,
+              widget.notification.emitter!,
               style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
             ),
             Text(
-              notification.content!,
+              widget.notification.content!,
               style: const TextStyle(
                 color: textColor,
                 fontSize: 16,

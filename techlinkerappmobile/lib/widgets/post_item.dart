@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import 'package:techlinkerappmobile/models/post.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
 
 import '../models/developer.dart';
-import '../screens/applicants_developer_list.dart';
 import '../screens/common/flash-correct-message-widget.dart';
 import '../services/developer_service.dart';
 
