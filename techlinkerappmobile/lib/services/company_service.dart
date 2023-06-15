@@ -54,6 +54,12 @@ class CompanyService {
           'description': company.description,
           'image': company.image,
           'bannerImage': company.bannerImage,
+          "ruc": company.ruc,
+          "owner": company.owner,
+          "name": company.name,
+          "address": company.address,
+          "country": company.country,
+          "city": company.city
         }),
       );
 

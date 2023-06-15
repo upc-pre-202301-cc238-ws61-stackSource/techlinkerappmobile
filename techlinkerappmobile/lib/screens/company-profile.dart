@@ -5,7 +5,6 @@ import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/screens/company-create-post.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
 import '../models/company.dart';
-import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/post.dart';
@@ -24,7 +23,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
   bool isLoading = true;
   bool usersIconisLoading = true;
   List<Post> companyPosts = [];
-
+  late Company MyCompany;
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -34,15 +33,19 @@ class _CompanyProfileState extends State<CompanyProfile> {
   @override
   void initState() {
     super.initState();
-
-    //create delay to show shimmer 2 seconds
     getPostByCompanyId(widget.company.id.toString()).then((value) {
       companyPosts = value;
       setState(() {});
-      //getPostImages();
-      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        loadData();
+        getCompanyById(widget.company.id.toString()).then((company) {
+          MyCompany = company;
+          setState(() {});
+        });
+      });
     });
   }
+
 
   Future loadData() async {
     if (!mounted) return; // Check if the state is mounted
@@ -84,6 +87,13 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData = ModalRoute.of(context)?.settings.arguments as bool?;
+    if (shouldUpdateData == true) {
+      getPostByCompanyId(widget.company.id.toString()).then((value) {
+        companyPosts = value;
+        setState(() {});
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -241,7 +251,10 @@ class _CompanyProfileState extends State<CompanyProfile> {
     );
   }
 
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if (MyCompany == null) {
+      return CircularProgressIndicator(); // Muestra un indicador de carga mientras se cargan los datos
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -261,17 +274,17 @@ class _CompanyProfileState extends State<CompanyProfile> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(widget.company.image!),
+                  backgroundImage: NetworkImage(MyCompany!.image!),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '${widget.company.firstName!} ${widget.company.lastName!}',
+                  '${MyCompany!.firstName!} ${MyCompany!.lastName!}',
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  widget.company.email!,
+                  MyCompany!.email!,
                   style: const TextStyle(
                     fontSize: 16,
                     color: textColor,
@@ -291,7 +304,16 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => EditProfileView(
                         companyId: widget.company.id.toString(),
-                      )));
+                      )
+                  )
+                  ).then((value) async {
+                    Map<String,dynamic> MyCompanyUpdatE= value;
+                    if(mounted){
+                      setState(() {
+                        MyCompany = Company.fromJson(MyCompanyUpdatE);
+                      });
+                    }
+                  });
                 },
                 child: Container(
                   padding: EdgeInsets.all(12),
@@ -438,4 +460,20 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     return [];
   }
+  Future<Company> getCompanyById(String id) async {
+    try {
+      final companyData = await CompanyService.getCompanyById(id);
+      if (mounted) {
+        final company = Company.fromJson(companyData);
+        print(company);
+        return company;
+      }
+    } catch (e) {
+      print('Failed to fetch company data. Error: $e');
+    }
+
+    return Company(); // Retornar una instancia vacía de Company en caso de error
+  }
+
+
 }

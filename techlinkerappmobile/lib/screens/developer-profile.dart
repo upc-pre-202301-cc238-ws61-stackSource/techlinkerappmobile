@@ -25,6 +25,7 @@ import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-editProfile.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final Developer developer;
@@ -42,6 +43,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
+  late Developer MyDeveloper;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -583,7 +585,10 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     );
   }
 
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if(MyDeveloper  == null){
+      return CircularProgressIndicator();
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -618,6 +623,41 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
             ),
             const SizedBox(height: 8),
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => EditProfileView(
+                          developerId: widget.developer.id.toString(),
+                        )
+                    )
+                    ).then((value) async {
+                      Map<String,dynamic> MyDeveloperUpdatE= value;
+                      if(mounted){
+                        setState(() {
+                           MyDeveloper= Developer.fromJson(MyDeveloperUpdatE);
+                        });
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.blue, // Cambia el color del icono aquí
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

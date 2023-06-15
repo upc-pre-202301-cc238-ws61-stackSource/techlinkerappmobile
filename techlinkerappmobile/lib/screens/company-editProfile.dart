@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
+
 class EditProfileView extends StatefulWidget {
   final companyId;
-  const EditProfileView({required this.companyId, super.key});
+
+  const EditProfileView({required this.companyId, Key? key}) : super(key: key);
 
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
@@ -17,6 +19,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   late TextEditingController _urlController;
   late Company company;
   final formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     _emailController = TextEditingController();
@@ -26,7 +29,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     super.initState();
   }
 
-  Future<void> UpdateProfile(String id) async {
+  Future UpdateProfile(String id) async {
     final profile = await CompanyService.getCompanyById(id);
     final updatedCompany = Company.fromJson(profile);
 
@@ -50,6 +53,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
 
     final update = await CompanyService.updateProfileCompany(updateProfile);
+
+    return update;
   }
 
   @override
@@ -59,6 +64,46 @@ class _EditProfileViewState extends State<EditProfileView> {
     _phoneController.dispose();
     _urlController.dispose();
     super.dispose();
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an email';
+    }
+    if (!value.contains('@')) {
+      return 'Invalid email format';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain uppercase letters';
+    }
+    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'Password must contain special characters';
+    }
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a phone number';
+    }
+    if (value.length != 9) {
+      return 'Phone number must have 9 digits';
+    }
+    return null;
+  }
+
+  String? validateUrl(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a profile URL';
+    }
+    return null;
   }
 
   @override
@@ -72,55 +117,59 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: <Widget>[
-              Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                          labelText: 'Correo electrónico'),
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(labelText: 'Contraseña'),
-                    ),
-                    TextFormField(
-                      controller: _phoneController,
-                      decoration: InputDecoration(labelText: 'Teléfono'),
-                    ),
-                    TextFormField(
-                      controller: _urlController,
-                      decoration: InputDecoration(labelText: 'URL del perfil'),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
-                          UpdateProfile(widget.companyId);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: FlashCorrectMessageWidget(
-                                  message: "Profiled updated successfully"),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              elevation: 0.0,
-                            ),
-                          );
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Text('Guardar cambios'),
-                    ),
-                  ],
-                ),
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: 'Correo electrónico'),
+                    validator: validateEmail,
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(labelText: 'Contraseña'),
+                    validator: validatePassword,
+                  ),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(labelText: 'Teléfono'),
+                    validator: validatePhone,
+                  ),
+                  TextFormField(
+                    controller: _urlController,
+                    decoration: InputDecoration(labelText: 'URL del perfil'),
+                    validator: validateUrl,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        formKey.currentState!.save();
+                        Map<String, dynamic> updateProfileCompany =
+                        await UpdateProfile(widget.companyId);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: FlashCorrectMessageWidget(
+                                message: "Profile updated successfully"),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
+                        );
+                        Navigator.pop(context, updateProfileCompany);
+                      }
+                    },
+                    child: Text('Guardar cambios'),
+                  ),
+                ],
               ),
-            ],
-          )
+            ),
+          ],
+        ),
       ),
     );
   }
