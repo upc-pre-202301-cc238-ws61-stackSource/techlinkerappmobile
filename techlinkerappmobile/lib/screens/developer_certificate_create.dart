@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:techlinkerappmobile/models/certificate.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import '../constants/colors.dart';
 import '../models/education.dart';
 import 'common/flash-correct-message-widget.dart';
