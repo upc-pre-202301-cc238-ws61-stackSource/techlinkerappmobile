@@ -12,7 +12,8 @@ import '../constants/colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CompanyHome extends StatefulWidget {
-  CompanyHome({super.key});
+  final int companyId;
+  CompanyHome({super.key, required this.companyId});
 
   @override
   State<CompanyHome> createState() => _CompanyHomeState();
@@ -290,6 +291,7 @@ class _CompanyHomeState extends State<CompanyHome> {
                                       item: developer,
                                       urlImage: urlDevelopersImages[
                                           developer.id!.toString()]!,
+                                      companyId: widget.companyId,
                                     );
                             }),
                       )),
