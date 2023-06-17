@@ -67,23 +67,24 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     super.initState();
 
     // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
-
-    getEducationByDigitalProfileId(widget.developer.id!.toString())
-        .then((value) async {
-      getDeveloperById(widget.developer.id.toString()).then((developer) {
-        setState(() {
-          MyDeveloper = developer;
-        });
+    getDeveloperById(widget.developer.id.toString()).then((developer) {
+      setState(() {
+        MyDeveloper = developer;
       });
-      developerStudyCenters = await getStudyCentersByEducation(value);
-      developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-      developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
-      developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
-      developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
-      developerCertificates = await getCertficationsByEducationId(value);
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
 
-      setState(() {});
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
+        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+
+        setState(() {});
+      });
     });
+
 
     getPostImages();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
@@ -94,7 +95,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     await Future.delayed(const Duration(seconds: 1));
-
+    if(!mounted)return;
     if (mounted) {
       await Future.wait(urlPostImages
           .map((urlImage) => cacheImage(context, urlImage))
@@ -124,6 +125,19 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   }
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData = ModalRoute.of(context)?.settings.arguments as bool?;
+    if(shouldUpdateData == true){
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
+        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+        setState(() {});
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -638,7 +652,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     builder: (_) => EditProfileView(
                       developerId: widget.developer.id.toString(),
                     ),
-                  )).then((value) async {
+                  )
+                  ).then((value) async {
                     Map<String, dynamic> MyDeveloperUpdatE = value;
                     if (mounted) {
                       setState(() {
@@ -843,9 +858,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       print('Failed to fetch developer data. Error: $e');
     }
 
-    return Developer(); // Retornar una instancia vacía de Company en caso de error
+    return Developer(); // Retornar una instancia vacía de Developer en caso de error
   }
-
-
-
 }

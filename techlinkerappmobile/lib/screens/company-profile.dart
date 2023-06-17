@@ -471,6 +471,4 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     return Company(); // Retornar una instancia vacía de Company en caso de error
   }
-
-
 }
