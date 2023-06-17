@@ -9,6 +9,7 @@ import '../models/company_unique_post.dart';
 class CompanyService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
 
+
   static sendNotificationFromCompanyToDeveloper(String id, String reciverId, String content) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
     print(url);
