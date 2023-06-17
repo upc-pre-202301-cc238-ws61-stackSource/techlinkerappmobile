@@ -216,7 +216,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(widget.developer.description!,
+                    child: Text(MyDeveloper.description!,
                         textAlign: TextAlign.justify,
                         style: const TextStyle(
                             color: textColor,
@@ -641,11 +641,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(widget.developer.image!),
+                  backgroundImage: NetworkImage(MyDeveloper!.image!),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '${widget.developer.firstName!} ${widget.developer.lastName!}',
+                  '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
                   style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -653,7 +653,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  widget.developer.email!,
+                  MyDeveloper!.email!,
                   style: const TextStyle(
                     fontSize: 16,
                     color: textColor,
