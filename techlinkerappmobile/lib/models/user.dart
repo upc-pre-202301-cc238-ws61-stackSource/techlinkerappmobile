@@ -1,14 +1,14 @@
 class User {
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phone;
-  final String password;
-  final String role;
-  final String description;
-  final String image;
-  final String bannerImage;
+  final int ? id;
+  final String ? firstName;
+  final String ? lastName;
+  final String ? email;
+  final String ? phone;
+  final String ? password;
+  final String ? role;
+  final String ? description;
+  final String ? image;
+  final String ? bannerImage;
 
   User({
     required this.id,
