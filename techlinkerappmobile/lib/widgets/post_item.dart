@@ -11,14 +11,22 @@ class CompanyPost extends StatelessWidget {
   final int developerId;
   final bool show;
   final Post item;
-  const CompanyPost({super.key, required this.developerId, required this.show, required this.item});
+  const CompanyPost(
+      {super.key,
+      required this.developerId,
+      required this.show,
+      required this.item});
   Future deletePost(String id) async {
     await CompanyService.deleteCompanyPostById(id);
   }
+
   Future applyInPostCompany(String id, String idReceiver) async {
     final dev = await DeveloperService.getDeveloperById(id);
     Developer developer = Developer.fromJson(dev);
-    await DeveloperService.sendNotificationFromDeveloperToCompany(id, idReceiver, 'Developer ${developer.firstName} is interest in your post ${item!.title}');
+    await DeveloperService.sendNotificationFromDeveloperToCompany(
+        id,
+        idReceiver,
+        'Developer ${developer.firstName} is interest in your post ${item!.title}');
   }
 
   @override
@@ -40,7 +48,9 @@ class CompanyPost extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                  scale: 0.5, fit: BoxFit.cover, image: NetworkImage(item.imageUrl!)),
+                  scale: 0.5,
+                  fit: BoxFit.cover,
+                  image: NetworkImage(item.imageUrl!)),
             ),
           ),
           Padding(
@@ -94,8 +104,7 @@ class CompanyPost extends StatelessWidget {
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        if (show == true)
-                        {
+                        if (show == true) {
                           deletePost(item.id!.toString());
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -106,10 +115,10 @@ class CompanyPost extends StatelessWidget {
                               elevation: 0.0,
                             ),
                           );
-                        }
-                        else{
-                          applyInPostCompany(developerId!.toString(), item.company.id.toString());
-                          
+                        } else {
+                          applyInPostCompany(developerId!.toString(),
+                              item.company.id.toString());
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
@@ -120,8 +129,6 @@ class CompanyPost extends StatelessWidget {
                             ),
                           );
                         }
-                        
-
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors
@@ -142,22 +149,21 @@ class CompanyPost extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: show
-                              ? Icon(
-                                  Icons.delete_forever_outlined,
-                                  size: 35,
-                                  color: Colors.white,
-                              )
-                              : Text(
-                                  'Apply',
-                                  style: TextStyle(
+                            padding: EdgeInsets.all(8.0),
+                            child: show
+                                ? const Icon(
+                                    Icons.delete_forever_outlined,
+                                    size: 35,
                                     color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                        ),
+                                  )
+                                : const Text(
+                                    'Apply',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
                       ),
                     ),
                   ],

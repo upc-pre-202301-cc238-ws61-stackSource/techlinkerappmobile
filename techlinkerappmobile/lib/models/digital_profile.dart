@@ -11,6 +11,12 @@ class DigitalProfile {
     required this.name,
   });
 
+  //a empty constructor
+  DigitalProfile.empty()
+      : developer = Developer.empty(),
+        id = 0,
+        name = '';
+
   factory DigitalProfile.fromJson(Map<String, dynamic> json) {
     return DigitalProfile(
       developer: Developer.fromJson(json['developer']),

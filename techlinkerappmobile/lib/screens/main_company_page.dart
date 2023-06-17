@@ -25,33 +25,15 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
   void initState() {
     super.initState();
 
-    company = Company(
-      id: 4,
-      firstName: "Tomas",
-      lastName: "Pastor",
-      email: "tomas@gmail.com",
-      phone: "593 923 123 345",
-      password: "pass0r234",
-      role: "RECRUITER",
-      description: "Somos una empresa de desarrollo de software",
-      image:
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      bannerImage: "",
-      ruc: "1234567890",
-      owner: "Tomas Pastor",
-      name: "On Google",
-      address: "Av. Amazonas N34-123",
-      country: "Ecuador",
-      city: "Quito",
-    );
-
     screens = [
-      CompanyHome(companyId: widget.companyId,),
+      CompanyHome(
+        companyId: widget.companyId,
+      ),
       CompanyMessage(company: company),
       CompanyNotifications(
         UserId: widget.companyId,
       ),
-      CompanyProfile(company: company),
+      CompanyProfile(companyId: widget.companyId),
     ];
   }
 

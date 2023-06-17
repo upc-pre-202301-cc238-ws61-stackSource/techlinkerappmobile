@@ -18,8 +18,8 @@ import 'message_company_inbox.dart';
 import 'message_developer_inbox .dart';
 
 class DeveloperMessages extends StatefulWidget {
-  final Developer developer;
-  const DeveloperMessages({super.key, required this.developer});
+  final int developerId;
+  const DeveloperMessages({super.key, required this.developerId});
 
   @override
   State<DeveloperMessages> createState() => _DeveloperMessagesState();
@@ -37,7 +37,7 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
 
     getDevelopersImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-    getMessagesByDeveloperId(widget.developer.id.toString());
+    getMessagesByDeveloperId(widget.developerId.toString());
   }
 
   Future loadData() async {
@@ -128,14 +128,16 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DeveloperMessageInbox(
-                                        developerId: widget.developer.id!,
+                                        developerId: widget.developerId!,
                                         item: company),
                                   ),
                                 ).then((value) {
-                                  setState(() {
-                                    getMessagesByDeveloperId(
-                                        widget.developer.id.toString());
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      getMessagesByDeveloperId(
+                                          widget.developerId.toString());
+                                    });
+                                  }
                                 }),
                               },
                           urlImage: company.company.image!);
@@ -225,6 +227,8 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

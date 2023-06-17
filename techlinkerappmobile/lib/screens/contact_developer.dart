@@ -38,14 +38,15 @@ import 'message_company_inbox.dart';
 class ContactDeveloper extends StatefulWidget {
   final Developer developer;
   final int companyId;
-  const ContactDeveloper({required this.developer, required this.companyId, super.key});
+  const ContactDeveloper(
+      {required this.developer, required this.companyId, super.key});
 
   @override
   State<ContactDeveloper> createState() => _ContactDeveloperState();
 }
 
 class _ContactDeveloperState extends State<ContactDeveloper> {
-  DeveloperMessage ? developerMessageContact;
+  DeveloperMessage? developerMessageContact;
   final urlPostImages = [];
   final urlProjects = [];
   bool isLoading = true;
@@ -70,7 +71,8 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
 
   @override
   void initState() {
-    developerMessageContact = DeveloperMessage(developer: widget.developer, message: Message.empty() );
+    developerMessageContact =
+        DeveloperMessage(developer: widget.developer, message: Message.empty());
     super.initState();
     //create delay to show shimmer 2 seconds
 
@@ -88,7 +90,9 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
               widget.developer.id!.toString());
       developerCertificates = await getCertficationsByEducationId(value);
 
-      setState(() {});
+      if (mounted) {
+        setState(() => {});
+      }
     });
 
     getPostImages();
@@ -135,37 +139,38 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
   Future notifyToDeveloper(String id, String idReceiver) async {
     final response = await CompanyService.getCompanyById(id);
     Company company = Company.fromJson(response);
-    await CompanyService.sendNotificationFromCompanyToDeveloper(id, idReceiver, 'Company ${company.firstName} is interest in your profile');
+    await CompanyService.sendNotificationFromCompanyToDeveloper(id, idReceiver,
+        'Company ${company.firstName} is interest in your profile');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF39BCFD),
-                  Color(0xFF4F93E9),
-                  Color(0xFF7176EE),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF39BCFD),
+                Color(0xFF4F93E9),
+                Color(0xFF7176EE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          title: Text(
-                        "Developer Profile",
-                        style: TextStyle(
-                          color: cardColor,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
         ),
+        title: Text(
+          "Developer Profile",
+          style: TextStyle(
+            color: cardColor,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       backgroundColor: primaryColor,
       body: Container(
           child: Column(
@@ -232,21 +237,25 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                 child: Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () => {
-                        Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CompanyMessageInbox(
-                                        companyId: widget.companyId!,
-                                        item: developerMessageContact!),
-                                  ),
+                        onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CompanyMessageInbox(
+                                      companyId: widget.companyId!,
+                                      item: developerMessageContact!),
                                 ),
-                      },
-                      child: Icon(Icons.message)),
-                    const SizedBox(width: 40,),
-                    ElevatedButton(onPressed: (){
-                        notifyToDeveloper(widget.companyId!.toString(), widget.developer.id!.toString());
-                        ScaffoldMessenger.of(context).showSnackBar(
+                              ),
+                            },
+                        child: Icon(Icons.message)),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          notifyToDeveloper(widget.companyId!.toString(),
+                              widget.developer.id!.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
                                   message: 'Notification sent successfully'),
@@ -255,8 +264,8 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                               elevation: 0.0,
                             ),
                           );
-                      }, child: Icon(Icons.notification_add)
-                    ),
+                        },
+                        child: Icon(Icons.notification_add)),
                   ],
                 ),
               ),

@@ -11,6 +11,12 @@ class Education {
     this.id,
   });
 
+  //a empty constructor
+  Education.empty()
+      : career = '',
+        digitalProfile = DigitalProfile.empty(),
+        id = 0;
+
   factory Education.fromJson(Map<String, dynamic> json) {
     return Education(
       career: json['career'],

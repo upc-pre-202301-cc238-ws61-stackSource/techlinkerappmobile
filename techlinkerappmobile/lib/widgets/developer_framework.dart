@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/framework.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 
 class DeveloperFramework extends StatelessWidget {
   final Framework framework;
@@ -35,14 +36,23 @@ class DeveloperFramework extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
-                    child: Text(
-                  framework.name!,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
-                )),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Text(
+                          framework.name!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Center(
                     child: Text(framework.description!,
                         style: const TextStyle(

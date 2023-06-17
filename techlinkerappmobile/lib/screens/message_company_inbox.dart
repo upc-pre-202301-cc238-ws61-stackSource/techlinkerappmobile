@@ -31,26 +31,30 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
     getAllMessagesByReciverId(widget.companyId.toString()).then((value) {
       // update _messages with isMe = false, with the company messages data
       for (var message in companyMessages) {
-        setState(() {
-          _messages.add({
-            'id': message.id,
-            'text': message.message,
-            'isMe': true,
-            'time': DateTime.now().subtract(const Duration(minutes: 5)),
+        if (mounted) {
+          setState(() {
+            _messages.add({
+              'id': message.id,
+              'text': message.message,
+              'isMe': true,
+              'time': DateTime.now().subtract(const Duration(minutes: 5)),
+            });
           });
-        });
+        }
       }
 
       // update _messages with isMe = true, with the developer messages data
       for (var message in developerMessages) {
-        setState(() {
-          _messages.add({
-            'id': message.id,
-            'text': message.message,
-            'isMe': false,
-            'time': DateTime.now().subtract(const Duration(minutes: 5)),
+        if (mounted) {
+          setState(() {
+            _messages.add({
+              'id': message.id,
+              'text': message.message,
+              'isMe': false,
+              'time': DateTime.now().subtract(const Duration(minutes: 5)),
+            });
           });
-        });
+        }
       }
 
       //order the messages by id
@@ -185,12 +189,11 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                           widget.companyId,
                           widget.item.developer.id.toString());
 
-                      setState(() {
-                        //update the messages view (update _messages)
-
-                        _textController.clear();
-                        
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _textController.clear();
+                        });
+                      }
                     }
                   },
                   child: const Icon(Icons.send),
@@ -263,7 +266,9 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future insertMessage(
@@ -281,7 +286,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
         print(post.id);
         print(post.message);
 
-        if (value != null) {
+        if (value != null && mounted) {
           setState(() {
             _messages.add({
               'id': post.id,
