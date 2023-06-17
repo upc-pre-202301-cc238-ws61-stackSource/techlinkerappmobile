@@ -1,11 +1,9 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
-import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
-import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
-import 'package:techlinkerappmobile/screens/developer-project-post.dart';
 
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
@@ -13,6 +11,7 @@ import 'package:techlinkerappmobile/screens/developer_education_post.dart';
 import 'package:techlinkerappmobile/models/database.dart';
 import 'package:techlinkerappmobile/models/programming_language.dart';
 import 'package:techlinkerappmobile/models/study_center.dart';
+import 'package:techlinkerappmobile/screens/home_company.dart';
 
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_database.dart';
@@ -20,26 +19,34 @@ import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import 'package:techlinkerappmobile/widgets/developer_programming_language.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
 import '../models/certificate.dart';
+import '../models/company.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/developer.dart';
+import '../models/developer_x_message.dart';
 import '../models/education.dart';
 import '../models/framework.dart';
+import '../models/message.dart';
 import '../models/project.dart';
+import '../services/company_service.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
-import 'developer-editProfile.dart';
+import 'common/flash-correct-message-widget.dart';
+import 'message_company_inbox.dart';
 
-class DeveloperProfile extends StatefulWidget {
+class ContactDeveloper extends StatefulWidget {
   final Developer developer;
-  const DeveloperProfile({required this.developer, super.key});
+  final int companyId;
+  const ContactDeveloper(
+      {required this.developer, required this.companyId, super.key});
 
   @override
-  State<DeveloperProfile> createState() => _DeveloperProfileState();
+  State<ContactDeveloper> createState() => _ContactDeveloperState();
 }
 
-class _DeveloperProfileState extends State<DeveloperProfile> {
+class _ContactDeveloperState extends State<ContactDeveloper> {
+  DeveloperMessage? developerMessageContact;
   final urlPostImages = [];
   final urlProjects = [];
   bool isLoading = true;
@@ -47,7 +54,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
-  Developer MyDeveloper = Developer();
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -62,43 +68,35 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   ];
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   void initState() {
+    developerMessageContact =
+        DeveloperMessage(developer: widget.developer, message: Message.empty());
     super.initState();
+    //create delay to show shimmer 2 seconds
 
-    // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
-    getDeveloperById(widget.developer.id.toString()).then((developer) {
+    getEducationByDigitalProfileId(widget.developer.id!.toString())
+        .then((value) async {
+      developerStudyCenters = await getStudyCentersByEducation(value);
+      developerProjects =
+          await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+      developerFrameworks = await getFrameworksByDigitalProfileId(
+          widget.developer.id!.toString());
+      developerDatabases = await getDatabasesByDigitalProfileId(//error
+          widget.developer.id!.toString());
+      developerProgrammingLanguages =
+          await getProgrammingLanguagesByDigitalProfileId(
+              widget.developer.id!.toString());
+      developerCertificates = await getCertficationsByEducationId(value);
+
       if (mounted) {
-        setState(() {
-          MyDeveloper = developer;
-        });
+        setState(() => {});
       }
-
-      getEducationByDigitalProfileId(widget.developer.id!.toString())
-          .then((value) async {
-        developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects = await getProjectsByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerDatabases = await getDatabasesByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerProgrammingLanguages =
-            await getProgrammingLanguagesByDigitalProfileId(
-                widget.developer.id!.toString());
-        developerCertificates = await getCertficationsByEducationId(value);
-        if (mounted) {
-          setState(() {});
-        }
-      });
-      getPostImages();
-      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
     });
+
+    getPostImages();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
 
   Future loadData() async {
@@ -107,7 +105,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return;
+
     if (mounted) {
       await Future.wait(urlPostImages
           .map((urlImage) => cacheImage(context, urlImage))
@@ -131,36 +129,48 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
+
   void getPostImages() {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
     }
   }
 
+  Future notifyToDeveloper(String id, String idReceiver) async {
+    final response = await CompanyService.getCompanyById(id);
+    Company company = Company.fromJson(response);
+    await CompanyService.sendNotificationFromCompanyToDeveloper(id, idReceiver,
+        'Company ${company.firstName} is interest in your profile');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final shouldUpdateData =
-        ModalRoute.of(context)?.settings.arguments as bool?;
-    if (shouldUpdateData == true) {
-      getEducationByDigitalProfileId(widget.developer.id!.toString())
-          .then((value) async {
-        developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects = await getProjectsByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerDatabases = await getDatabasesByDigitalProfileId(
-            widget.developer.id!.toString());
-        developerProgrammingLanguages =
-            await getProgrammingLanguagesByDigitalProfileId(
-                widget.developer.id!.toString());
-        developerCertificates = await getCertficationsByEducationId(value);
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF39BCFD),
+                Color(0xFF4F93E9),
+                Color(0xFF7176EE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        title: Text(
+          "Developer Profile",
+          style: TextStyle(
+            color: cardColor,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       backgroundColor: primaryColor,
       body: Container(
           child: Column(
@@ -187,17 +197,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 60),
-                    const Center(
-                      child: Text(
-                        "Profile",
-                        style: TextStyle(
-                          color: cardColor,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                    const SizedBox(height: 20),
                     const SizedBox(height: 17),
                     Center(
                       child: isLoading
@@ -220,19 +220,54 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: MyDeveloper.description != null
-                        ? Text(MyDeveloper!.description!,
-                            textAlign: TextAlign.justify,
-                            style: const TextStyle(
-                                color: textColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.normal))
-                        : Text(""),
+                    child: Text('Contact Options',
+                        textAlign: TextAlign.justify,
+                        style: const TextStyle(
+                            color: textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal)),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                 ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 120),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CompanyMessageInbox(
+                                      companyId: widget.companyId!,
+                                      item: developerMessageContact!),
+                                ),
+                              ),
+                            },
+                        child: Icon(Icons.message)),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          notifyToDeveloper(widget.companyId!.toString(),
+                              widget.developer.id!.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: 'Notification sent successfully'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.notification_add)),
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -248,22 +283,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperEducationPost(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -304,22 +323,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const DeveloperFrameworkRegister(),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -360,22 +363,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperDatabasePost(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -416,22 +403,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperLanguajePost(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -473,22 +444,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperProjectPost(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -529,22 +484,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperCertificateRegister(),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.add_circle_outline_outlined,
-                        color: textColor,
-                        size: 30,
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -622,96 +561,43 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     );
   }
 
-  Widget buildProfileCard() {
-    if (MyDeveloper == null) {
-      return CircularProgressIndicator();
-    }
+  Card buildProfileCard() {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Stack(
-        alignment: Alignment
-            .topRight, // Alinea el botón en la esquina superior derecha
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: NetworkImage(widget.developer.image!),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MyDeveloper.image != null
-                    ? CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(MyDeveloper!.image!),
-                      )
-                    : const CircleAvatar(
-                        radius: 50,
-                      ),
-                const SizedBox(height: 16),
-                Text(
-                  '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: textColor),
-                ),
-                const SizedBox(height: 5),
-                MyDeveloper.email != null
-                    ? Text(
-                        MyDeveloper!.email!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: textColor,
-                        ),
-                      )
-                    : Text(""),
-                const SizedBox(height: 8),
-              ],
+            const SizedBox(height: 16),
+            Text(
+              '${widget.developer.firstName!} ${widget.developer.lastName!}',
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
             ),
-          ),
-          Positioned(
-            top: 12,
-            right: 12,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                    builder: (_) => EditProfileView(
-                      myDeveloper: MyDeveloper,
-                    ),
-                  ))
-                      .then((value) async {
-                    Map<String, dynamic> MyDeveloperUpdatE = value;
-                    if (mounted && MyDeveloperUpdatE != null) {
-                      setState(() {
-                        MyDeveloper = Developer.fromJson(MyDeveloperUpdatE);
-                      });
-                    }
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                  ),
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.blue, // Cambia el color del icono aquí
-                  ),
-                ),
+            const SizedBox(height: 5),
+            Text(
+              widget.developer.email!,
+              style: const TextStyle(
+                fontSize: 16,
+                color: textColor,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -879,22 +765,5 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return [];
-  }
-
-  Future<Developer> getDeveloperById(String id) async {
-    try {
-      final developerData = await DeveloperService.getDeveloperById(id);
-      print("beforteeeeeeeeeeeeeeeeeee");
-      if (mounted) {
-        final develop = Developer.fromJson(developerData);
-        print("---------------------------------");
-        print(develop);
-        return develop;
-      }
-    } catch (e) {
-      print('Failed to fetch developer data. Error: $e');
-    }
-
-    return Developer(); // Retornar una instancia vacía de Developer en caso de error
   }
 }

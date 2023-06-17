@@ -5,11 +5,11 @@ import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/screens/company-create-post.dart';
 import 'package:techlinkerappmobile/widgets/post_item.dart';
 import '../models/company.dart';
-import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/post.dart';
 import '../services/company_service.dart';
+import 'company-editProfile.dart';
 
 class CompanyProfile extends StatefulWidget {
   final Company company;
@@ -23,7 +23,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
   bool isLoading = true;
   bool usersIconisLoading = true;
   List<Post> companyPosts = [];
-
+  Company MyCompany = Company();
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -33,13 +33,16 @@ class _CompanyProfileState extends State<CompanyProfile> {
   @override
   void initState() {
     super.initState();
-
-    //create delay to show shimmer 2 seconds
     getPostByCompanyId(widget.company.id.toString()).then((value) {
       companyPosts = value;
       setState(() {});
-      //getPostImages();
-      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        loadData();
+        getCompanyById(widget.company.id.toString()).then((company) {
+          MyCompany = company;
+          setState(() {});
+        });
+      });
     });
   }
 
@@ -83,6 +86,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData =
+        ModalRoute.of(context)?.settings.arguments as bool?;
+    if (shouldUpdateData == true) {
+      getPostByCompanyId(widget.company.id.toString()).then((value) {
+        companyPosts = value;
+        setState(() {});
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -183,7 +194,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(item: item, urlImage: item.imageUrl))
+                        : CompanyPost(developerId: -1, show: true, item: item))
                     .toList(),
               ),
               const SizedBox(
@@ -240,43 +251,87 @@ class _CompanyProfileState extends State<CompanyProfile> {
     );
   }
 
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if (MyCompany == null) {
+      return CircularProgressIndicator(); // Muestra un indicador de carga mientras se cargan los datos
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 50),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(widget.company.image!),
+      child: Stack(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 50),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${widget.company.firstName!} ${widget.company.lastName!}',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(MyCompany!.image!),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '${MyCompany!.firstName!} ${MyCompany!.lastName!}',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  MyCompany!.email!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: textColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.company.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: textColor,
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (_) => EditProfileView(
+                                myCompany: MyCompany,
+                              )))
+                      .then((value) async {
+                    Map<String, dynamic> MyCompanyUpdatE = value;
+                    if (mounted) {
+                      setState(() {
+                        MyCompany = Company.fromJson(MyCompanyUpdatE);
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue, // Cambia el color del icono aquí
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -406,5 +461,20 @@ class _CompanyProfileState extends State<CompanyProfile> {
     }
 
     return [];
+  }
+
+  Future<Company> getCompanyById(String id) async {
+    try {
+      final companyData = await CompanyService.getCompanyById(id);
+      if (mounted) {
+        final company = Company.fromJson(companyData);
+        print(company);
+        return company;
+      }
+    } catch (e) {
+      print('Failed to fetch company data. Error: $e');
+    }
+
+    return Company(); // Retornar una instancia vacía de Company en caso de error
   }
 }

@@ -4,12 +4,14 @@ import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import '../models/developer.dart';
 import '../models/developer_unique_item.dart';
 import '../constants/colors.dart';
+import '../screens/contact_developer.dart';
 import '../services/developer_service.dart';
 
 class DeveloperItem extends StatelessWidget {
   final Developer item;
   final String urlImage;
-  const DeveloperItem({super.key, required this.item, required this.urlImage});
+  final int companyId;
+  const DeveloperItem({super.key, required this.item, required this.urlImage, required this.companyId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,9 @@ class DeveloperItem extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DeveloperProfile(
+                  builder: (context) => ContactDeveloper(
                     developer: value,
+                    companyId: companyId,
                   ),
                 ),
               ),

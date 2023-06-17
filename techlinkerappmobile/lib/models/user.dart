@@ -1,31 +1,31 @@
-class Developer {
-  final int? id;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phone;
-  final String? password;
-  final String? role;
-  final String? description;
-  final String? image;
-  final String? bannerImage;
+class User {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phone;
+  final String password;
+  final String role;
+  final String description;
+  final String image;
+  final String bannerImage;
 
-  Developer({
-     this.id,
-     this.firstName,
-     this.lastName,
-     this.email,
-     this.phone,
-     this.password,
-     this.role,
-     this.description,
-     this.image,
-     this.bannerImage,
+  User({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phone,
+    required this.password,
+    required this.role,
+    required this.description,
+    required this.image,
+    required this.bannerImage,
   });
 
   //empty constructor
-  factory Developer.empty() {
-    return Developer(
+  factory User.empty() {
+    return User(
       id: 1,
       firstName: '',
       lastName: '',
@@ -39,8 +39,8 @@ class Developer {
     );
   }
 
-  factory Developer.fromJson(Map<String, dynamic> json) {
-    return Developer(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['id'],
       firstName: json['firstName'],
       lastName: json['lastName'],

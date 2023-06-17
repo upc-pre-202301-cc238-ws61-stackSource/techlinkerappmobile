@@ -4,11 +4,13 @@ import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/models/post.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
 import '../models/company_unique_post.dart';
+import '../widgets/job_offer_item.dart';
 import '../widgets/post_item.dart';
 import '../constants/colors.dart';
 
 class DeveloperHome extends StatefulWidget {
-  const DeveloperHome({super.key});
+  final int developerId;
+  const DeveloperHome({super.key, required this.developerId});
 
   @override
   State<DeveloperHome> createState() => _DeveloperHomeState();
@@ -30,7 +32,9 @@ class _DeveloperHomeState extends State<DeveloperHome> {
       companyPosts = value;
       getPostImages();
       WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -129,8 +133,9 @@ class _DeveloperHomeState extends State<DeveloperHome> {
                             child: skeletonPostItem(context),
                           )
                         : CompanyPost(
-                            item: companyPosts[index],
-                            urlImage: companyPosts[index].imageUrl!),
+                            developerId: widget.developerId,
+                            show: false,
+                            item: companyPosts[index]),
                   ),
                 ),
               ),
