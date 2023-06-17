@@ -2,6 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
+import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
+import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
+import 'package:techlinkerappmobile/screens/developer-project-post.dart';
 
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
@@ -306,7 +310,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                            const DeveloperFrameworkRegister(),
                           ),
                         );
                       },
@@ -362,7 +366,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperDatabasePost(),
                           ),
                         );
                       },
@@ -418,7 +422,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperLanguajePost(),
                           ),
                         );
                       },
@@ -475,7 +479,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperProjectPost(),
                           ),
                         );
                       },

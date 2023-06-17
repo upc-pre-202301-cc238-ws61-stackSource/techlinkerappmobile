@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/project.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeveloperProject extends StatelessWidget {
@@ -37,10 +38,25 @@ class DeveloperProject extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  project.name!,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40.0),
+                      child: Text(
+                        project.name!,textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 18),
+                      ),
+                    ),                GestureDetector(
+                      onTap: () {
+                        DeveloperService.deleteProject(project.id);
+                        // Lógica para eliminar el elemento
+                        // Puedes implementar aquí la acción que deseas realizar al hacer clic en el icono "delete"
+                      },
+                      child: Icon(Icons.delete),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5),
                 Text(project.description!,

@@ -2,13 +2,104 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:techlinkerappmobile/models/certificate.dart';
+import 'package:techlinkerappmobile/models/database.dart';
+import 'package:techlinkerappmobile/models/framework.dart';
+import 'package:techlinkerappmobile/models/programming_language.dart';
+import 'package:techlinkerappmobile/models/project.dart';
 import 'package:techlinkerappmobile/models/developer.dart';
+
 import 'package:techlinkerappmobile/models/study_center.dart';
 
 import '../models/education.dart';
 
 class DeveloperService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
+
+
+  static deleteProgrammingLanguage(int id) async{
+    final url = Uri.parse(
+        '$baseUrl/programmingLanguages/${id}');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+        );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to delete programing language. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed delete programing language. Error: $e');
+    }
+  }
+  static deleteProject(int id) async{
+    final url = Uri.parse(
+        '$baseUrl/projects/${id}');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to delete project. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed delete project. Error: $e');
+    }
+  }
+  static deleteFramework(int id) async{
+    final url = Uri.parse(
+        '$baseUrl/frameworks/${id}');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to delete framework. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed delete framework. Error: $e');
+    }
+  }
+  static deleteDatabase(int id) async{
+    final url = Uri.parse(
+        '$baseUrl/databases/${id}');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to delete to database. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed delete to database. Error: $e');
+    }
+  }
 
   static postCertificate(Certificate certificate) async {
     final url = Uri.parse(
@@ -38,6 +129,129 @@ class DeveloperService {
       throw Exception('Failed to create certificate. Error: $e');
     }
   }
+ 
+  static postProjecttoDatabase(Project project) async {
+    final url = Uri.parse(
+        '$baseUrl/projects/digitalProfile/${project!.digitalProfile!.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'description': project.description,
+          'digitalProfile':project.digitalProfile!.toJson(),
+          'iconUrl': project.iconUrl,
+          'id': project.id,
+          'name': project.name,
+          'projectUrl':project.projectUrl
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create Project Developer. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create Project Developer. Error: $e');
+    }
+  }
+
+
+
+  static postProgramingLanguaje(ProgrammingLanguage programinglanguaje) async {
+    final url = Uri.parse(
+        '$baseUrl/programmingLanguages/${programinglanguaje!.digitalProfile!.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'description': programinglanguaje.description,
+          'digitalProfile':programinglanguaje.digitalProfile!.toJson(),
+          'iconLink': programinglanguaje.iconLink,
+          'id': programinglanguaje.id,
+          'name': programinglanguaje.name,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create ProgramingLanguaje. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create ProgramingLanguaje. Error: $e');
+    }
+  }
+
+
+
+
+  static postDatabase(Database database) async {
+    final url = Uri.parse(
+        '$baseUrl/databases/${database!.digitalProfile!.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'description': database.description,
+          'digitalProfile':database.digitalProfile!.toJson(),
+          'iconLink': database.iconLink,
+          'id': database.id,
+          'name': database.name,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create Database. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create Database. Error: $e');
+    }
+  }
+
+
+
+
+  static postFramework(Framework framework) async {
+    final url = Uri.parse(
+        '$baseUrl/frameworks/${framework!.digitalProfile!.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'description': framework.description,
+          'digitalProfile':framework.digitalProfile!.toJson(),
+          'iconLink': framework.iconLink,
+          'id': framework.id,
+          'name': framework.name,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to create Framework. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create Framework. Error: $e');
+    }
+  }
+
+ 
   static postStudyCenter(StudyCenter studyCenter) async {
     final url =
         Uri.parse('$baseUrl/study-centers/${studyCenter.education!.id}');
