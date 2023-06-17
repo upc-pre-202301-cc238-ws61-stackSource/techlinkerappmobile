@@ -17,6 +17,15 @@ class Certificate {
     required this.title,
   });
 
+  //a empty constructor
+  Certificate.empty()
+      : description = '',
+        education = Education.empty(),
+        iconUrl = '',
+        id = 0,
+        obtainedDate = DateTime.now(),
+        title = '';
+
   factory Certificate.fromJson(Map<String, dynamic> json) {
     return Certificate(
       description: json['description'],

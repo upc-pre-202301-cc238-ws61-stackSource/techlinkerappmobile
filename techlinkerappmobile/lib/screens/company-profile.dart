@@ -13,8 +13,8 @@ import 'company-editProfile.dart';
 import 'login.dart';
 
 class CompanyProfile extends StatefulWidget {
-  final Company company;
-  const CompanyProfile({required this.company, super.key});
+  final int companyId;
+  const CompanyProfile({required this.companyId, super.key});
 
   @override
   State<CompanyProfile> createState() => _CompanyProfileState();
@@ -34,12 +34,12 @@ class _CompanyProfileState extends State<CompanyProfile> {
   @override
   void initState() {
     super.initState();
-    getPostByCompanyId(widget.company.id.toString()).then((value) {
+    getPostByCompanyId(widget.companyId.toString()).then((value) {
       companyPosts = value;
       setState(() {});
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         loadData();
-        getCompanyById(widget.company.id.toString()).then((company) {
+        getCompanyById(widget.companyId.toString()).then((company) {
           MyCompany = company;
           setState(() {});
         });
@@ -90,7 +90,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
     final shouldUpdateData =
         ModalRoute.of(context)?.settings.arguments as bool?;
     if (shouldUpdateData == true) {
-      getPostByCompanyId(widget.company.id.toString()).then((value) {
+      getPostByCompanyId(widget.companyId.toString()).then((value) {
         companyPosts = value;
         setState(() {});
       });
@@ -177,7 +177,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(widget.company.description!,
+                    Text(MyCompany.description!,
                         textAlign: TextAlign.justify,
                         style: TextStyle(
                             color: secondaryTextInBackground,
@@ -448,7 +448,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => CompanyCreatePost(
-                      companyId: widget.company.id.toString(),
+                      companyId: widget.companyId.toString(),
                     )));
           },
           color: secondaryColor,

@@ -153,12 +153,12 @@ class CompanyPost extends StatelessWidget {
                         child: Padding(
                             padding: EdgeInsets.all(8.0),
                             child: show
-                                ? Icon(
+                                ? const Icon(
                                     Icons.delete_forever_outlined,
                                     size: 35,
                                     color: Colors.white,
                                   )
-                                : Text(
+                                : const Text(
                                     'Apply',
                                     style: TextStyle(
                                       color: Colors.white,

@@ -14,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   String emailTyped = '';
   String passwordTyped = '';
 
@@ -22,47 +21,35 @@ class _LoginPageState extends State<LoginPage> {
 
   void verifyInitUser(String email) async {
     final user = await LoginService.GetUserByEmail(email);
-    if(user.email != ''){
-      if(user.password == passwordTyped){
+    if (user.email != '') {
+      if (user.password == passwordTyped) {
         print(user.id);
-        if(user.role!.toUpperCase() == 'DEVELOPER'){
+        if (user.role!.toUpperCase() == 'DEVELOPER') {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: 
-                (context) => MainDeveloperPage(developerId: user.id!)
-            )
-          );
-        }
-        else{
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      MainDeveloperPage(developerId: user.id!)));
+        } else {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: 
-                (context) => MainCompanyPage(companyId: user.id!)
-            )
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MainCompanyPage(companyId: user.id!)));
         }
-      }
-      else{
+      } else {
         print('Wrong password');
         showDialog(
-          context: context,
-          builder: 
-          (BuildContext context) => ErrorDialog().build(context, 'Wrong password')
-          );
+            context: context,
+            builder: (BuildContext context) =>
+                ErrorDialog().build(context, 'Wrong password'));
       }
-    }
-    else{
+    } else {
       showDialog(
           context: context,
-          builder: 
-          (BuildContext context) => ErrorDialog().build(context, 'User not regystered')
-        );
-      
+          builder: (BuildContext context) =>
+              ErrorDialog().build(context, 'User not regystered'));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                             //fillColor: Colors.grey[200],
                           ),
                           validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter email';
-                          }
-                          return null;
+                            if (value!.isEmpty) {
+                              return 'Please enter email';
+                            }
+                            return null;
                           },
                           onSaved: (value) {
                             emailTyped = value!;
@@ -136,9 +123,9 @@ class _LoginPageState extends State<LoginPage> {
                             //fillColor: Colors.grey[200],
                           ),
                           validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter password';
-                          }
+                            if (value!.isEmpty) {
+                              return 'Please enter password';
+                            }
                             return null;
                           },
                           onSaved: (value) {
@@ -164,8 +151,11 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                             splashColor: Colors.redAccent,
-                            child: const Text('Login',
-                                style: TextStyle(fontSize: 20.0, color: Colors.white),),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                  fontSize: 20.0, color: Colors.white),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20.0),
@@ -173,7 +163,8 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             // Acción para registrar un nuevo usuario
                           },
-                          child: Text('Registrarse',style: TextStyle(fontSize: 16.0)),
+                          child: Text('Registrarse',
+                              style: TextStyle(fontSize: 16.0)),
                           splashColor: Colors.redAccent,
                         ),
                       ],
