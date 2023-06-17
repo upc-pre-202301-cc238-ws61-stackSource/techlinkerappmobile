@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/framework.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 
 class DeveloperFramework extends StatelessWidget {
   final Framework framework;
@@ -38,11 +39,28 @@ class DeveloperFramework extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                    child: Text(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 45.0),
+                          child: Text(
                   framework.name!,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
-                )),
+                            fontWeight: FontWeight.w700, fontSize: 18),
+                ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            DeveloperService.deleteFramework(framework.id);
+                            // Lógica para eliminar el elemento
+                            // Puedes implementar aquí la acción que deseas realizar al hacer clic en el icono "delete"
+                          },
+                          child: Icon(Icons.delete),
+                        ),
+                      ],
+                    ),
+                ),
                 Center(
                     child: Text(framework.description!,
                         style: const TextStyle(

@@ -6,14 +6,14 @@ class Framework {
   String? description;
   DigitalProfile? digitalProfile;
   String? iconLink;
-  int? id;
+  int id;
   String? name;
 
   Framework({
     this.description,
     this.digitalProfile,
     this.iconLink,
-    this.id,
+    required this.id,
     this.name,
   });
 

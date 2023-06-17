@@ -2,6 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
+import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
+import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
+import 'package:techlinkerappmobile/screens/developer-project-post.dart';
 
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
@@ -25,6 +29,7 @@ import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-editProfile.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final Developer developer;
@@ -42,6 +47,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
+  Developer MyDeveloper = Developer();
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -56,32 +62,43 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   ];
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
 
-    //create delay to show shimmer 2 seconds
+    // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
+    getDeveloperById(widget.developer.id.toString()).then((developer) {
+      if (mounted) {
+        setState(() {
+          MyDeveloper = developer;
+        });
+      }
 
-    getEducationByDigitalProfileId(widget.developer.id!.toString())
-        .then((value) async {
-      developerStudyCenters = await getStudyCentersByEducation(value);
-      developerProjects =
-          await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-      developerFrameworks = await getFrameworksByDigitalProfileId(
-          widget.developer.id!.toString());
-      developerDatabases = await getDatabasesByDigitalProfileId(//error
-          widget.developer.id!.toString());
-      developerProgrammingLanguages =
-          await getProgrammingLanguagesByDigitalProfileId(
-              widget.developer.id!.toString());
-      developerCertificates = await getCertficationsByEducationId(value);
-
-      setState(() {});
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerProgrammingLanguages =
+            await getProgrammingLanguagesByDigitalProfileId(
+                widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+        if (mounted) {
+          setState(() {});
+        }
+      });
+      getPostImages();
+      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
     });
-
-    getPostImages();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
 
   Future loadData() async {
@@ -90,7 +107,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     await Future.delayed(const Duration(seconds: 1));
-
+    if (!mounted) return;
     if (mounted) {
       await Future.wait(urlPostImages
           .map((urlImage) => cacheImage(context, urlImage))
@@ -114,7 +131,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
-
   void getPostImages() {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
@@ -123,6 +139,27 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData =
+        ModalRoute.of(context)?.settings.arguments as bool?;
+    if (shouldUpdateData == true) {
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerProgrammingLanguages =
+            await getProgrammingLanguagesByDigitalProfileId(
+                widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -183,12 +220,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(widget.developer.description!,
-                        textAlign: TextAlign.justify,
-                        style: const TextStyle(
-                            color: textColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal)),
+                    child: MyDeveloper.description != null
+                        ? Text(MyDeveloper!.description!,
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal))
+                        : Text(""),
                   ),
                   const SizedBox(
                     height: 20,
@@ -271,7 +310,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                            const DeveloperFrameworkRegister(),
                           ),
                         );
                       },
@@ -327,7 +366,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperDatabasePost(),
                           ),
                         );
                       },
@@ -383,7 +422,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperLanguajePost(),
                           ),
                         );
                       },
@@ -440,7 +479,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                const DeveloperProjectPost(),
                           ),
                         );
                       },
@@ -583,43 +622,96 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     );
   }
 
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if (MyDeveloper == null) {
+      return CircularProgressIndicator();
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(widget.developer.image!),
+      child: Stack(
+        alignment: Alignment
+            .topRight, // Alinea el botón en la esquina superior derecha
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${widget.developer.firstName!} ${widget.developer.lastName!}',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MyDeveloper.image != null
+                    ? CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(MyDeveloper!.image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 50,
+                      ),
+                const SizedBox(height: 16),
+                Text(
+                  '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(height: 5),
+                MyDeveloper.email != null
+                    ? Text(
+                        MyDeveloper!.email!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: textColor,
+                        ),
+                      )
+                    : Text(""),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.developer.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: textColor,
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                    builder: (_) => EditProfileView(
+                      myDeveloper: MyDeveloper,
+                    ),
+                  ))
+                      .then((value) async {
+                    Map<String, dynamic> MyDeveloperUpdatE = value;
+                    if (mounted && MyDeveloperUpdatE != null) {
+                      setState(() {
+                        MyDeveloper = Developer.fromJson(MyDeveloperUpdatE);
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue, // Cambia el color del icono aquí
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -787,5 +879,22 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return [];
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      print("beforteeeeeeeeeeeeeeeeeee");
+      if (mounted) {
+        final develop = Developer.fromJson(developerData);
+        print("---------------------------------");
+        print(develop);
+        return develop;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer(); // Retornar una instancia vacía de Developer en caso de error
   }
 }
