@@ -189,6 +189,7 @@ class _CompanyMessageInboxState extends State<CompanyMessageInbox> {
                         //update the messages view (update _messages)
 
                         _textController.clear();
+                        
                       });
                     }
                   },

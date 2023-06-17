@@ -541,4 +541,31 @@ class DeveloperService {
     }
   }
 
+  static sendNotificationFromDeveloperToCompany(String id, String reciverId, String content) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode(
+          {
+            "content": content,
+            "date": DateTime.now().toIso8601String(),
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        return [];
+      }
+      else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
 }
