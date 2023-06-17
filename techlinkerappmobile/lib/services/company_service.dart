@@ -8,6 +8,34 @@ import '../models/company_unique_post.dart';
 
 class CompanyService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
+
+  static sendNotificationFromCompanyToDeveloper(String id, String reciverId, String content) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode(
+          {
+            "content": content,
+            "date": DateTime.now().toIso8601String(),
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        return [];
+      }
+      else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
   static setCompanyPost(PostItem postJob) async {
     final url = Uri.parse('$baseUrl/posts/${postJob.companyUniqueItem.id}');
     print(url);
@@ -215,6 +243,27 @@ class CompanyService {
       }
     } catch (e) {
       throw Exception('Failed to create post. Error: $e');
+    }
+  }
+
+  //delete a post by id
+  static deleteCompanyPostById(String id) async {
+    final url = Uri.parse('$baseUrl/posts/$id');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to delete post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete post. Error: $e');
     }
   }
 }
