@@ -46,7 +46,9 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
     );
 
     screens = [
-      CompanyHome(companyId: widget.companyId,),
+      CompanyHome(
+        companyId: widget.companyId,
+      ),
       CompanyMessage(company: company),
       CompanyNotifications(),
       CompanyProfile(company: company),

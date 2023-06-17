@@ -45,6 +45,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
       });
     });
   }
+
   Future loadData() async {
     if (!mounted) return; // Check if the state is mounted
 
@@ -68,6 +69,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
       usersIconisLoading = false;
     });
   }
+
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
 
@@ -84,7 +86,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final shouldUpdateData = ModalRoute.of(context)?.settings.arguments as bool?;
+    final shouldUpdateData =
+        ModalRoute.of(context)?.settings.arguments as bool?;
     if (shouldUpdateData == true) {
       getPostByCompanyId(widget.company.id.toString()).then((value) {
         companyPosts = value;
@@ -277,7 +280,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
                 Text(
                   '${MyCompany!.firstName!} ${MyCompany!.lastName!}',
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -298,14 +303,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => EditProfileView(
-                        companyId: widget.company.id.toString(),
-                      )
-                  )
-                  ).then((value) async {
-                    Map<String,dynamic> MyCompanyUpdatE= value;
-                    if(mounted){
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (_) => EditProfileView(
+                                companyId: widget.company.id.toString(),
+                              )))
+                      .then((value) async {
+                    Map<String, dynamic> MyCompanyUpdatE = value;
+                    if (mounted) {
                       setState(() {
                         MyCompany = Company.fromJson(MyCompanyUpdatE);
                       });
@@ -457,6 +462,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
     return [];
   }
+
   Future<Company> getCompanyById(String id) async {
     try {
       final companyData = await CompanyService.getCompanyById(id);

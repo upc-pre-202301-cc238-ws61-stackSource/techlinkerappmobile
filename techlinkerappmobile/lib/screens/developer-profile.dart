@@ -62,40 +62,48 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   void dispose() {
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
 
     // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
     getDeveloperById(widget.developer.id.toString()).then((developer) {
-      setState(() {
-        MyDeveloper = developer;
-      });
+      if (mounted) {
+        setState(() {
+          MyDeveloper = developer;
+        });
+      }
       getEducationByDigitalProfileId(widget.developer.id!.toString())
           .then((value) async {
-
         developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
-        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
-        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerProjects = await getProjectsByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerProgrammingLanguages =
+            await getProgrammingLanguagesByDigitalProfileId(
+                widget.developer.id!.toString());
         developerCertificates = await getCertficationsByEducationId(value);
-
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     });
-
 
     getPostImages();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
+
   Future loadData() async {
     if (mounted) {
       setState(() => isLoading = true);
     }
 
     await Future.delayed(const Duration(seconds: 1));
-    if(!mounted)return;
+    if (!mounted) return;
     if (mounted) {
       await Future.wait(urlPostImages
           .map((urlImage) => cacheImage(context, urlImage))
@@ -116,6 +124,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           });
     }
   }
+
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
   void getPostImages() {
@@ -123,19 +132,28 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       urlPostImages.add(item.imageUrl!);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    final shouldUpdateData = ModalRoute.of(context)?.settings.arguments as bool?;
-    if(shouldUpdateData == true){
+    final shouldUpdateData =
+        ModalRoute.of(context)?.settings.arguments as bool?;
+    if (shouldUpdateData == true) {
       getEducationByDigitalProfileId(widget.developer.id!.toString())
           .then((value) async {
         developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
-        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
-        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerProjects = await getProjectsByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(
+            widget.developer.id!.toString());
+        developerProgrammingLanguages =
+            await getProgrammingLanguagesByDigitalProfileId(
+                widget.developer.id!.toString());
         developerCertificates = await getCertficationsByEducationId(value);
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     }
     return Scaffold(
@@ -553,6 +571,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       )),
     );
   }
+
   Widget skeletonPostItem(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
@@ -586,6 +605,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       ),
     );
   }
+
   Widget buildSkeletonUserIcon(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10, top: 10),
@@ -595,6 +615,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       height: 30,
     );
   }
+
   Widget buildProfileCard() {
     if (MyDeveloper == null) {
       return CircularProgressIndicator();
@@ -605,7 +626,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
-        alignment: Alignment.topRight, // Alinea el botón en la esquina superior derecha
+        alignment: Alignment
+            .topRight, // Alinea el botón en la esquina superior derecha
         children: [
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
@@ -648,12 +670,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
                     builder: (_) => EditProfileView(
                       developerId: widget.developer.id.toString(),
                     ),
-                  )
-                  ).then((value) async {
+                  ))
+                      .then((value) async {
                     Map<String, dynamic> MyDeveloperUpdatE = value;
                     if (mounted) {
                       setState(() {
