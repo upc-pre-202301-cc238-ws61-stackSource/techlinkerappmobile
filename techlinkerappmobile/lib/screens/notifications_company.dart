@@ -5,6 +5,9 @@ import 'package:techlinkerappmobile/models/notification_unique_item.dart';
 import 'package:techlinkerappmobile/widgets/notification_item.dart';
 
 import '../constants/colors.dart';
+import '../models/notify.dart';
+import '../models/user.dart';
+import '../services/company_service.dart';
 
 class CompanyNotifications extends StatefulWidget {
   const CompanyNotifications({super.key});
@@ -14,17 +17,18 @@ class CompanyNotifications extends StatefulWidget {
 }
 
 class _CompanyNotificationsState extends State<CompanyNotifications> {
-  List<NotificationUniqueItem> companyNotifications =
-      NotificationUniqueItem.notificationItems();
+  List<Notify> companyNotifications = <Notify>[];
+  User? emitterId;
+
 
   bool isLoding = true;
 
   final urlEmittersImages = [];
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-
+    await getNotificationsByCompanyId('1');
     getNotificationsImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
@@ -48,7 +52,7 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
 
   void getNotificationsImageUrls() {
     for (var item in companyNotifications) {
-      urlEmittersImages.add(item.emitterIcon);
+      urlEmittersImages.add(item.emitterId!.image);
     }
   }
 
@@ -113,7 +117,7 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
                           child: buildSkeletonNotification(context))
                       : NotificationItem(
                           notification: notification,
-                          emmiterIcon: urlEmittersImages[index],
+                          emitterId: urlEmittersImages[index],
                         );
                 }),
           )),
@@ -174,5 +178,19 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
         ],
       ),
     );
+  }
+  Future<void> getNotificationsByCompanyId(String id) async {
+    try {
+      final notificationsData = await CompanyService.getNotificationsByCompanyId(id);
+      if (mounted) {
+        setState(() {
+          companyNotifications = notificationsData
+              .map<Notify>((notification) => Notify.fromJson(notification))
+              .toList();
+        });
+      }
+    } catch (e) {
+      print('Failed to get notifications: $e');
+    }
   }
 }

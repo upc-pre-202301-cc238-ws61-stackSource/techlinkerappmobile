@@ -231,7 +231,7 @@ class CompanyService {
 
 
 
-  static getNotificationsByDeveloperId(String id) async {
+  static getNotificationsByCompanyId(String id) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications');
     print(url);
     try {
@@ -254,7 +254,7 @@ class CompanyService {
     }
   }
 
-  static deleteNotificationByDeveloperId(String id, String notificationId) async {
+  static deleteNotificationByCompanyId(String id, String notificationId) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
     print(url);
     try {

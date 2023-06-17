@@ -2,14 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
+import '../models/notify.dart';
+import '../models/user.dart';
 
 class NotificationItem extends StatefulWidget {
-  final Notification notification;
+  final Notify notification;
+  final User emitterId;
   //
-  final String emmiterIcon;
 
-  NotificationItem(
-      {required this.emmiterIcon,  required this.notification, super.key});
+  NotificationItem({
+    required this.emitterId,
+    required this.notification,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<NotificationItem> createState() => _NotificationItemState();
@@ -40,7 +45,7 @@ class _NotificationItemState extends State<NotificationItem> {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(34),
           child: CachedNetworkImage(
-            imageUrl: widget.emmiterIcon,
+            imageUrl: widget.emitterId.image ?? '',
             width: 54,
             height: 64,
             fit: BoxFit.cover,
@@ -50,12 +55,12 @@ class _NotificationItemState extends State<NotificationItem> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.notification.emitter!,
+              widget.emitterId.firstName ?? '',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
             ),
             Text(
-              widget.notification.content!,
+              widget.notification.content ?? '',
               style: const TextStyle(
                 color: textColor,
                 fontSize: 16,
