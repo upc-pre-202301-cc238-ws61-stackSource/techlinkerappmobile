@@ -128,10 +128,12 @@ class _CompanyMessageState extends State<CompanyMessage> {
                                         item: developer),
                                   ),
                                 ).then((value) {
-                                  setState(() {
-                                    getMessagesByCompanyId(
-                                        widget.company.id.toString());
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      getMessagesByCompanyId(
+                                          widget.company.id.toString());
+                                    });
+                                  }
                                 }),
                               },
                           urlImage: developer.developer.image!);
@@ -218,6 +220,8 @@ class _CompanyMessageState extends State<CompanyMessage> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

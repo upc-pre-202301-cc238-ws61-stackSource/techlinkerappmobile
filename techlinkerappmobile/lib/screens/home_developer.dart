@@ -32,7 +32,9 @@ class _DeveloperHomeState extends State<DeveloperHome> {
       companyPosts = value;
       getPostImages();
       WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -130,7 +132,9 @@ class _DeveloperHomeState extends State<DeveloperHome> {
                             highlightColor: Colors.grey[200]!,
                             child: skeletonPostItem(context),
                           )
-                        : CompanyPost(developerId: widget.developerId, show: false,
+                        : CompanyPost(
+                            developerId: widget.developerId,
+                            show: false,
                             item: companyPosts[index]),
                   ),
                 ),

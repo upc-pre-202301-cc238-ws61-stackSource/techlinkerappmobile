@@ -132,10 +132,12 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
                                         item: company),
                                   ),
                                 ).then((value) {
-                                  setState(() {
-                                    getMessagesByDeveloperId(
-                                        widget.developer.id.toString());
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      getMessagesByDeveloperId(
+                                          widget.developer.id.toString());
+                                    });
+                                  }
                                 }),
                               },
                           urlImage: company.company.image!);
@@ -225,6 +227,8 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
