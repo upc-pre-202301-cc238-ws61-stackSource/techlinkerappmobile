@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../services/login_service.dart';
+import 'common/error_dialog.dart';
 import 'main_company_page.dart';
 import 'main_developer_page.dart';
 
@@ -23,7 +24,6 @@ class _LoginPageState extends State<LoginPage> {
     final user = await LoginService.GetUserByEmail(email);
     if(user.email != ''){
       if(user.password == passwordTyped){
-        print('User found');
         print(user.id);
         if(user.role!.toUpperCase() == 'DEVELOPER'){
           Navigator.push(
@@ -46,10 +46,19 @@ class _LoginPageState extends State<LoginPage> {
       }
       else{
         print('Wrong password');
+        showDialog(
+          context: context,
+          builder: 
+          (BuildContext context) => ErrorDialog().build(context, 'Wrong password')
+          );
       }
     }
     else{
-      print('User not found');
+      showDialog(
+          context: context,
+          builder: 
+          (BuildContext context) => ErrorDialog().build(context, 'User not regystered')
+        );
       
     }
   }
@@ -155,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                             splashColor: Colors.redAccent,
-                            child: const Text('Iniciar sesión',
+                            child: const Text('Login',
                                 style: TextStyle(fontSize: 20.0, color: Colors.white),),
                           ),
                         ),
