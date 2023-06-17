@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techlinkerappmobile/screens/select_user_regyster.dart';
 
 import '../services/login_service.dart';
 import 'common/error_dialog.dart';
+import 'common/flash-correct-message-widget.dart';
 import 'main_company_page.dart';
 import 'main_developer_page.dart';
 
@@ -43,6 +45,15 @@ class _LoginPageState extends State<LoginPage> {
             )
           );
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: FlashCorrectMessageWidget(
+                                message: 'Logged in successfully'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0.0,
+                          ),
+                        );
       }
       else{
         print('Wrong password');
@@ -171,7 +182,8 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 20.0),
                         MaterialButton(
                           onPressed: () {
-                            // Acción para registrar un nuevo usuario
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => const SelectUserRegyster()));
                           },
                           child: Text('Registrarse',style: TextStyle(fontSize: 16.0)),
                           splashColor: Colors.redAccent,
