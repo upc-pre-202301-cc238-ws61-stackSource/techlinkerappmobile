@@ -34,7 +34,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
 
     if (randomNumber < 5) {
       iconUrl =
-          'https://us.123rf.com/450wm/iconsdom/iconsdom2012/iconsdom201201095/160378070-icono-de-la-universidad-signo-de-vector-negro-con-trazos-editables-ilustraci%C3%B3n-del-concepto.jpg?ver=6';
+          'https://images.creativemarket.com/0.1.0/ps/8618628/1820/1214/m1/fpnw/wm0/home-education-icon-online-learning-elearning-distance-thin-line-web-symbol-on-white-background-.jpg?1593177412&s=d6a36cafbdb2d8f77952c52f8ae97136';
     } else {
       iconUrl =
           'https://static.vecteezy.com/system/resources/previews/002/556/411/non_2x/teach-school-and-education-certificarte-roll-silhouette-style-icon-free-vector.jpg';

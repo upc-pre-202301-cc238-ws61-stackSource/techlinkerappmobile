@@ -7,7 +7,8 @@ import '../models/education.dart';
 import 'common/flash-correct-message-widget.dart';
 
 class DeveloperCertificateRegister extends StatefulWidget {
-  const DeveloperCertificateRegister({Key? key}) : super(key: key);
+  final int digitalProfileId;
+  const DeveloperCertificateRegister({Key? key, required this.digitalProfileId }) : super(key: key);
 
   @override
   State<DeveloperCertificateRegister> createState() =>
@@ -152,7 +153,7 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
                         //Send to API
-                        postCertificateToDataBase('1');
+                        postCertificateToDataBase(widget.digitalProfileId.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(

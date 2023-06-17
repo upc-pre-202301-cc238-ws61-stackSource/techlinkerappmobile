@@ -663,7 +663,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperCertificateRegister(),
+                                DeveloperCertificateRegister(digitalProfileId: digProfile!.id,),
                           ),
                         );
                       },
@@ -695,7 +695,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const DeveloperCertificateRegister(),
+                                        DeveloperCertificateRegister(digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
