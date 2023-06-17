@@ -304,4 +304,50 @@ class CompanyService {
       throw Exception('Failed to delete post. Error: $e');
     }
   }
+
+
+  static getNotificationsByCompanyId(String id) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
+  static deleteNotificationIdByDeveloperIdOrCompanyId(String id, String notificationId) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        return [];
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
 }

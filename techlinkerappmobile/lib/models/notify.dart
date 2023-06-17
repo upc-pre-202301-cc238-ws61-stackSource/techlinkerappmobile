@@ -1,13 +1,13 @@
 import 'package:techlinkerappmobile/models/user.dart';
 
-class Notification {
+class Notify {
   String? content;
   DateTime? date;
   User? emitterId;
   int? id;
   User? reciverId;
 
-  Notification(
+  Notify(
       {this.content,
       this.date,
       this.emitterId,
@@ -15,22 +15,22 @@ class Notification {
       this.reciverId,}
       );
 
-  factory Notification.fromJson(Map<String, dynamic> json) {
-    return Notification(
+  factory Notify.fromJson(Map<String, dynamic> json) {
+    return Notify(
       content: json['content'],
-      date: json['date'],
-      emitterId: json['emitterId'],
+      date: DateTime.parse(json['date']),
+      emitterId: User.fromJson(json['emitter']),
       id: json['id'],
-      reciverId: json['reciverId'],
+      reciverId: User.fromJson(json['receiver']),
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'content': content,
       'date': date,
-      'emitterId': emitterId,
+      'emitter': emitterId?.toJson(),
       'id': id,
-      'reciverId': reciverId,
+      'receiver': reciverId?.toJson(),
     };
   }
 }

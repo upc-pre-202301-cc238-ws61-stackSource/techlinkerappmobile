@@ -28,7 +28,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
         developerId: widget.developerId,
       ),
       DeveloperMessages(developerId: widget.developerId),
-      DeveloperNotifications(),
+      DeveloperNotifications(UserId: widget.developerId),
       DeveloperProfile(developerId: widget.developerId),
     ];
   }

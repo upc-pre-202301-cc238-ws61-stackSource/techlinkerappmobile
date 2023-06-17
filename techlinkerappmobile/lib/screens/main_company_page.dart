@@ -30,7 +30,9 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
         companyId: widget.companyId,
       ),
       CompanyMessage(company: company),
-      CompanyNotifications(),
+      CompanyNotifications(
+        UserId: widget.companyId,
+      ),
       CompanyProfile(companyId: widget.companyId),
     ];
   }
