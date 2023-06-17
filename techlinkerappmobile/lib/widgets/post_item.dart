@@ -1,16 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
+import 'package:techlinkerappmobile/models/post.dart';
+import 'package:techlinkerappmobile/services/company_service.dart';
 
+import '../models/developer.dart';
 import '../screens/applicants_developer_list.dart';
+import '../screens/common/flash-correct-message-widget.dart';
+import '../services/developer_service.dart';
 
 class CompanyPost extends StatelessWidget {
-  final PostItem item;
-  final String urlImage;
-  const CompanyPost({super.key, required this.urlImage, required this.item});
+  final int developerId;
+  final bool show;
+  final Post item;
+  const CompanyPost(
+      {super.key,
+      required this.developerId,
+      required this.show,
+      required this.item});
+  Future deletePost(String id) async {
+    await CompanyService.deleteCompanyPostById(id);
+  }
+
+  Future applyInPostCompany(String id, String idReceiver) async {
+    final dev = await DeveloperService.getDeveloperById(id);
+    Developer developer = Developer.fromJson(dev);
+    await DeveloperService.sendNotificationFromDeveloperToCompany(
+        id,
+        idReceiver,
+        'Developer ${developer.firstName} is interest in your post ${item!.title}');
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Developer dev;
     return Card(
       color: cardColor,
       shape: RoundedRectangleBorder(
@@ -27,7 +50,9 @@ class CompanyPost extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(urlImage)),
+                  scale: 0.5,
+                  fit: BoxFit.cover,
+                  image: NetworkImage(item.imageUrl!)),
             ),
           ),
           Padding(
@@ -59,10 +84,10 @@ class CompanyPost extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Icon(Icons.location_on),
                             SizedBox(width: 8),
-                            Text('New York, NY'),
+                            Text(item.company.address!),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -70,8 +95,7 @@ class CompanyPost extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 10,
-                              backgroundImage: NetworkImage(
-                                  item.companyUniqueItem!.bannerImage!),
+                              backgroundImage: NetworkImage(item.imageUrl),
                             ),
                             const SizedBox(width: 8),
                             const Text('Remote'),
@@ -79,13 +103,34 @@ class CompanyPost extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ApplicantsList()),
-                        );
+                        if (show == true) {
+                          deletePost(item.id!.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: 'Post deleted successfully'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                        } else {
+                          applyInPostCompany(developerId!.toString(),
+                              item.company.id.toString());
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: FlashCorrectMessageWidget(
+                                  message: 'Apply sent Successfully'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              elevation: 0.0,
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors
@@ -105,17 +150,22 @@ class CompanyPost extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text(
-                            'Applicants',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: show
+                                ? Icon(
+                                    Icons.delete_forever_outlined,
+                                    size: 35,
+                                    color: Colors.white,
+                                  )
+                                : Text(
+                                    'Apply',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
                       ),
                     ),
                   ],

@@ -1,4 +1,5 @@
-import 'developer_study_center.dart';
+
+import 'package:techlinkerappmobile/models/digital_profile.dart';
 
 class Database {
   String description;

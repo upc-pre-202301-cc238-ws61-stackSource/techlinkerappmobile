@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
 import 'package:techlinkerappmobile/screens/notifications_company.dart';
-
+import 'package:techlinkerappmobile/screens/Profile_AddProjectDeveloper.dart';
 import '../constants/colors.dart';
+import '../models/company.dart';
 import 'home_company.dart';
 
 class MainCompanyPage extends StatefulWidget {
-  const MainCompanyPage({super.key});
+  final int companyId;
+  const MainCompanyPage({super.key, required this.companyId});
 
   @override
   State<MainCompanyPage> createState() => _MainCompanyPageState();
@@ -15,13 +18,42 @@ class MainCompanyPage extends StatefulWidget {
 
 class _MainCompanyPageState extends State<MainCompanyPage> {
   int index = 0;
+  Company company = Company();
+  List<Widget> screens = [];
 
-  final screens = [
-    CompanyHome(),
-    CompanyMessage(),
-    CompanyNotifications(),
-    CompanyProfile(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    company = Company(
+      id: 4,
+      firstName: "Tomas",
+      lastName: "Pastor",
+      email: "tomas@gmail.com",
+      phone: "+51 923 123 345",
+      password: "pass0r234",
+      role: "RECRUITER",
+      description: "Somos una empresa de desarrollo de software",
+      image:
+          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      bannerImage: "",
+      ruc: "1234567890",
+      owner: "Tomas Pastor",
+      name: "On Google",
+      address: "Av. Amazonas N34-123",
+      country: "Ecuador",
+      city: "Quito",
+    );
+
+    screens = [
+      CompanyHome(
+        companyId: widget.companyId,
+      ),
+      CompanyMessage(company: company),
+      CompanyNotifications(),
+      CompanyProfile(company: company),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

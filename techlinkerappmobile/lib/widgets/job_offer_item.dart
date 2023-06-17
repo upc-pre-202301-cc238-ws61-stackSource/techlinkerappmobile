@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/company_unique_post.dart';
 import '../constants/colors.dart';
+import '../models/post.dart';
 
-class CompanyPost extends StatelessWidget {
-  final PostItem item;
+class JobOfferCompay extends StatelessWidget {
+  final Post item;
 
-  const CompanyPost({super.key, required this.item});
+  const JobOfferCompay({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,7 @@ class CompanyPost extends StatelessWidget {
                           color: Colors.white,
                         ),
                         Text(
-                          item.companyUniqueItem!.address!,
+                          item.title!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,
@@ -98,7 +99,7 @@ class CompanyPost extends StatelessWidget {
                           color: Colors.white,
                         ),
                         Text(
-                          item.companyUniqueItem!.companyName!,
+                          item.title!,
                           style: TextStyle(
                             color: textColor,
                             fontSize: 18,

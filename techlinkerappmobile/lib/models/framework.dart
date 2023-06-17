@@ -1,29 +1,29 @@
-import 'package:techlinkerappmobile/models/developer_study_center.dart';
 import 'dart:convert';
 
+import 'package:techlinkerappmobile/models/digital_profile.dart';
+
 class Framework {
-  String description;
-  DigitalProfile digitalProfile;
-  String iconLink;
+  String? description;
+  DigitalProfile? digitalProfile;
+  String? iconLink;
   int id;
-  String name;
+  String? name;
 
   Framework({
-    required this.description,
-    required this.digitalProfile,
-    required this.iconLink,
+    this.description,
+    this.digitalProfile,
+    this.iconLink,
     required this.id,
-    required this.name,
+    this.name,
   });
 
-  factory Framework.fromJson(String jsonString) {
-    final jsonData = json.decode(jsonString);
+  factory Framework.fromJson(Map<String, dynamic> json) {
     return Framework(
-      description: jsonData['description'],
-      digitalProfile: DigitalProfile.fromJson(jsonData['digitalProfile']),
-      iconLink: jsonData['iconLink'],
-      id: jsonData['id'],
-      name: jsonData['name'],
+      description: json['description'],
+      digitalProfile: DigitalProfile.fromJson(json['digitalProfile']),
+      iconLink: json['iconLink'],
+      id: json['id'],
+      name: json['name'],
     );
   }
 }
