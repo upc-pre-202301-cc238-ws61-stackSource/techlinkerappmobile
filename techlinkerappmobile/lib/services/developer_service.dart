@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:techlinkerappmobile/models/certificate.dart';
 import 'package:techlinkerappmobile/models/database.dart';
+import 'package:techlinkerappmobile/models/digital_profile.dart';
 import 'package:techlinkerappmobile/models/framework.dart';
 import 'package:techlinkerappmobile/models/programming_language.dart';
 import 'package:techlinkerappmobile/models/project.dart';
@@ -13,8 +14,63 @@ import 'package:techlinkerappmobile/models/study_center.dart';
 import '../models/education.dart';
 
 class DeveloperService {
-  static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
+  //static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
+  static const String baseUrl = 'https://stacksourcewebservice.azurewebsites.net/api/v1';
 
+  static Future<Map<String, dynamic>> insertDeveloper(Developer developer) async {
+    final url = Uri.parse('$baseUrl/developers');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'bannerImage': developer.bannerImage,
+          'description': developer.description,
+          'email': developer.email,
+          'firstName': developer.firstName,
+          'id': developer.id,
+          'image': developer.image,
+          'lastName': developer.lastName,
+          'password': developer.password,
+          'phone': developer.phone,
+          'role': developer.role,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception('Failed to create developer. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create developer. Error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> setDigitalProfile(DigitalProfile digitalProfile) async{
+    final url = Uri.parse('$baseUrl/digital_profiles/${digitalProfile.developer.id}');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({        
+          'developer': digitalProfile.developer.toJson(),
+          'id': digitalProfile.id,
+          'name': digitalProfile.name,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception('Failed to set digital profile. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to set digital profile. Error: $e');
+    }
+  }
 
   static deleteProgrammingLanguage(int id) async{
     final url = Uri.parse(
@@ -319,7 +375,7 @@ class DeveloperService {
 
 
   static getDigitalProfileByDeveloperId(String id) async {
-    final url = Uri.parse('$baseUrl/digital_profiles/$id');
+    final url = Uri.parse('$baseUrl/digital_profiles/developer/$id');
     print(url);
     try {
       final response = await http.get(
@@ -360,7 +416,7 @@ class DeveloperService {
     }
   }
 
-  static setEducationPublish(Education education) async {
+  static Future<Map<String, dynamic>> setEducationPublish(Education education) async {
     final url =
         Uri.parse('$baseUrl/educations/${education.digitalProfile!.id}');
     print(url);
