@@ -30,7 +30,7 @@ class _MainCompanyPageState extends State<MainCompanyPage> {
       firstName: "Tomas",
       lastName: "Pastor",
       email: "tomas@gmail.com",
-      phone: "593 923 123 345",
+      phone: "+51 923 123 345",
       password: "pass0r234",
       role: "RECRUITER",
       description: "Somos una empresa de desarrollo de software",
