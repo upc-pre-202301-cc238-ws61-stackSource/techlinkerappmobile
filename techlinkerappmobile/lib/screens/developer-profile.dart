@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
-import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
-import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
-import 'package:techlinkerappmobile/screens/developer-project-post.dart';
+// import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-project-post.dart';
 
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
@@ -306,13 +306,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const DeveloperFrameworkRegister(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //     const DeveloperFrameworkRegister(),
+                        //   ),
+                        // );
                       },
                       child: Icon(
                         Icons.add_circle_outline_outlined,
@@ -362,13 +362,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperDatabasePost(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         const DeveloperDatabasePost(),
+                        //   ),
+                        // );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -418,13 +418,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperLanguajePost(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         const DeveloperLanguajePost(),
+                        //   ),
+                        // );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -475,13 +475,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperProjectPost(),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         const DeveloperProjectPost(),
+                        //   ),
+                        // );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
