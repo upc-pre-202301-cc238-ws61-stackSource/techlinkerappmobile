@@ -8,7 +8,8 @@ import '../models/education.dart';
 import 'common/flash-correct-message-widget.dart';
 
 class DeveloperEducationPost extends StatefulWidget {
-  const DeveloperEducationPost({super.key});
+  final int digitalProfileId;
+  const DeveloperEducationPost({super.key, required this.digitalProfileId});
 
   @override
   State<DeveloperEducationPost> createState() => _DeveloperEducationPostState();
@@ -279,7 +280,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           imageUrlLoad();
-                          publishEducation('1');
+                          publishEducation(widget.digitalProfileId.toString());
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

@@ -25,6 +25,7 @@ import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/developer.dart';
+import '../models/digital_profile.dart';
 import '../models/education.dart';
 import '../models/framework.dart';
 import '../models/project.dart';
@@ -51,6 +52,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool apiHasBeenCalled = false;
 
   Developer MyDeveloper = Developer();
+  DigitalProfile ? digProfile;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -107,7 +109,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           MyDeveloper = developer;
         });
       }
-
+      getDigitalProfileByDeveloperId(widget.developerId.toString()).then((digital) {
+          if (mounted) {
+            setState(() {
+              digProfile = digital;
+            });
+          }
+      });
       getEducationByDigitalProfileId(widget.developerId.toString())
           .then((value) async {
         developerStudyCenters = await getStudyCentersByEducation(value);
@@ -129,6 +137,9 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
       });
     });
+
+    
+
   }
 
   Future loadData() async {
@@ -306,7 +317,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const DeveloperEducationPost(),
+                                DeveloperEducationPost(digitalProfileId: digProfile!.id),
                           ),
                         );
                       },
@@ -338,7 +349,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const DeveloperEducationPost(),
+                                        DeveloperEducationPost(digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
@@ -1097,5 +1108,21 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return Developer(); // Retornar una instancia vacía de Developer en caso de error
+  }
+
+  Future getDigitalProfileByDeveloperId(String id) async {
+    try {
+      final digitalProfileData = await DeveloperService.getDigitalProfileByDeveloperId(id);
+      print("------------------Obtained digital profile-------------------");
+      if (mounted) {
+        final digitalProfile = DigitalProfile.fromJson(digitalProfileData);
+        print("---------------------------------");
+        print(digitalProfile);
+        return digitalProfile;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
   }
 }

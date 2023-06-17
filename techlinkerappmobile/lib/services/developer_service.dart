@@ -14,8 +14,7 @@ import 'package:techlinkerappmobile/models/study_center.dart';
 import '../models/education.dart';
 
 class DeveloperService {
-  //static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
-  static const String baseUrl = 'https://stacksourcewebservice.azurewebsites.net/api/v1';
+  static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
 
   static Future<Map<String, dynamic>> insertDeveloper(Developer developer) async {
     final url = Uri.parse('$baseUrl/developers');
