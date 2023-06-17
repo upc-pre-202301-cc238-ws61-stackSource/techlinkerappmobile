@@ -13,6 +13,7 @@ import 'package:techlinkerappmobile/screens/developer_education_post.dart';
 import 'package:techlinkerappmobile/models/database.dart';
 import 'package:techlinkerappmobile/models/programming_language.dart';
 import 'package:techlinkerappmobile/models/study_center.dart';
+import 'package:techlinkerappmobile/screens/login.dart';
 
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_database.dart';
@@ -187,7 +188,29 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return LoginPage();
+                              },
+                            ));
+                          },
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     const Center(
                       child: Text(
                         "Profile",
