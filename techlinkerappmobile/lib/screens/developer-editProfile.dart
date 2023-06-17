@@ -4,8 +4,9 @@ import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.
 import 'package:techlinkerappmobile/services/developer_service.dart';
 
 class EditProfileView extends StatefulWidget {
-  final developerId;
-  const EditProfileView({required this.developerId, Key? key}) : super(key: key);
+  final Developer myDeveloper;
+  const EditProfileView({required this.myDeveloper, Key? key})
+      : super(key: key);
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
 }
@@ -110,6 +111,13 @@ class _EditProfileViewState extends State<EditProfileView> {
           style: TextStyle(
               color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
+        //change default back left button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, widget.myDeveloper.toJson());
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -121,7 +129,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 children: [
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Correo electrónico'),
+                    decoration:
+                        InputDecoration(labelText: 'Correo electrónico'),
                     validator: validateEmail,
                   ),
                   TextFormField(
@@ -145,7 +154,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
                         Map<String, dynamic> updateProfileDeveloper =
-                        await UpdateProfile(widget.developerId);
+                            await UpdateProfile(
+                                widget.myDeveloper.id.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(

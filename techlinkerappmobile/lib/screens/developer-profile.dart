@@ -43,7 +43,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
-  late Developer MyDeveloper;
+  Developer MyDeveloper = Developer();
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -74,6 +74,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           MyDeveloper = developer;
         });
       }
+
       getEducationByDigitalProfileId(widget.developer.id!.toString())
           .then((value) async {
         developerStudyCenters = await getStudyCentersByEducation(value);
@@ -91,10 +92,9 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           setState(() {});
         }
       });
+      getPostImages();
+      WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
     });
-
-    getPostImages();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
 
   Future loadData() async {
@@ -216,12 +216,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(MyDeveloper.description!,
-                        textAlign: TextAlign.justify,
-                        style: const TextStyle(
-                            color: textColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal)),
+                    child: MyDeveloper.description != null
+                        ? Text(MyDeveloper!.description!,
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal))
+                        : Text(""),
                   ),
                   const SizedBox(
                     height: 20,
@@ -639,10 +641,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(MyDeveloper!.image!),
-                ),
+                MyDeveloper.image != null
+                    ? CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(MyDeveloper!.image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 50,
+                      ),
                 const SizedBox(height: 16),
                 Text(
                   '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
@@ -652,13 +658,15 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                       color: textColor),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  MyDeveloper!.email!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: textColor,
-                  ),
-                ),
+                MyDeveloper.email != null
+                    ? Text(
+                        MyDeveloper!.email!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: textColor,
+                        ),
+                      )
+                    : Text(""),
                 const SizedBox(height: 8),
               ],
             ),
@@ -673,12 +681,12 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
                     builder: (_) => EditProfileView(
-                      developerId: widget.developer.id.toString(),
+                      myDeveloper: MyDeveloper,
                     ),
                   ))
                       .then((value) async {
                     Map<String, dynamic> MyDeveloperUpdatE = value;
-                    if (mounted) {
+                    if (mounted && MyDeveloperUpdatE != null) {
                       setState(() {
                         MyDeveloper = Developer.fromJson(MyDeveloperUpdatE);
                       });
@@ -872,8 +880,10 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   Future<Developer> getDeveloperById(String id) async {
     try {
       final developerData = await DeveloperService.getDeveloperById(id);
+      print("beforteeeeeeeeeeeeeeeeeee");
       if (mounted) {
         final develop = Developer.fromJson(developerData);
+        print("---------------------------------");
         print(develop);
         return develop;
       }

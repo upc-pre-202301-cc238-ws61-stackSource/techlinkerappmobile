@@ -4,8 +4,8 @@ import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.
 import 'package:techlinkerappmobile/services/company_service.dart';
 
 class EditProfileView extends StatefulWidget {
-  final companyId;
-  const EditProfileView({required this.companyId, Key? key}) : super(key: key);
+  final Company myCompany;
+  const EditProfileView({required this.myCompany, Key? key}) : super(key: key);
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
 }
@@ -38,17 +38,22 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
 
     final updateProfile = Company(
-      id: updatedCompany.id,
-      firstName: updatedCompany.firstName,
-      lastName: updatedCompany.lastName,
-      email: _emailController.text,
-      phone: _phoneController.text,
-      password: _passwordController.text,
-      role: updatedCompany.role,
-      description: updatedCompany.description,
-      image: _urlController.text,
-      bannerImage: updatedCompany.bannerImage,
-    );
+        id: updatedCompany.id,
+        firstName: updatedCompany.firstName,
+        lastName: updatedCompany.lastName,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        password: _passwordController.text,
+        role: updatedCompany.role,
+        description: updatedCompany.description,
+        image: _urlController.text,
+        bannerImage: updatedCompany.bannerImage,
+        ruc: updatedCompany.ruc,
+        owner: updatedCompany.owner,
+        name: updatedCompany.name,
+        address: updatedCompany.address,
+        country: updatedCompany.country,
+        city: updatedCompany.city);
     final update = await CompanyService.updateProfileCompany(updateProfile);
     return update;
   }
@@ -111,6 +116,12 @@ class _EditProfileViewState extends State<EditProfileView> {
           style: TextStyle(
               color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, widget.myCompany.toJson());
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -122,7 +133,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 children: [
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Correo electrónico'),
+                    decoration:
+                        InputDecoration(labelText: 'Correo electrónico'),
                     validator: validateEmail,
                   ),
                   TextFormField(
@@ -146,7 +158,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
                         Map<String, dynamic> updateProfileCompany =
-                        await UpdateProfile(widget.companyId);
+                            await UpdateProfile(widget.myCompany.id.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(

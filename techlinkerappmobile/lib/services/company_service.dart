@@ -9,7 +9,8 @@ import '../models/company_unique_post.dart';
 class CompanyService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
 
-  static sendNotificationFromCompanyToDeveloper(String id, String reciverId, String content) async {
+  static sendNotificationFromCompanyToDeveloper(
+      String id, String reciverId, String content) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
     print(url);
     try {
@@ -26,8 +27,7 @@ class CompanyService {
 
       if (response.statusCode == 201) {
         return [];
-      }
-      else {
+      } else {
         throw Exception(
             'Failed to fetch company data. Status code: ${response.statusCode}');
       }
@@ -63,9 +63,9 @@ class CompanyService {
       throw Exception('Failed to create post. Error: $e');
     }
   }
+
   static updateProfileCompany(Company company) async {
-    final url =
-    Uri.parse('$baseUrl/companies/${company.id}');
+    final url = Uri.parse('$baseUrl/companies/${company.id}');
     print(url);
     try {
       final response = await http.put(
@@ -102,6 +102,7 @@ class CompanyService {
       throw Exception('Failed to update profile. Error: $e');
     }
   }
+
   static getCompanyById(String id) async {
     final url = Uri.parse('$baseUrl/companies/$id');
     print(url);

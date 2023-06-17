@@ -23,7 +23,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
   bool isLoading = true;
   bool usersIconisLoading = true;
   List<Post> companyPosts = [];
-  late Company MyCompany;
+  Company MyCompany = Company();
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -306,7 +306,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
                           builder: (_) => EditProfileView(
-                                companyId: widget.company.id.toString(),
+                                myCompany: MyCompany,
                               )))
                       .then((value) async {
                     Map<String, dynamic> MyCompanyUpdatE = value;
