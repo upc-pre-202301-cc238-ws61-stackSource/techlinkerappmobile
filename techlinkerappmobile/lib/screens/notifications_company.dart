@@ -198,9 +198,9 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
             emitters = companyNotifications
                 .map<User?>((notification) => notification.emitterId)
                 .toList();
-            getNotificationsImageUrls();
           }
         });
+        getNotificationsImageUrls();
       }
     } catch (e) {
       print('Failed to get notifications: $e');

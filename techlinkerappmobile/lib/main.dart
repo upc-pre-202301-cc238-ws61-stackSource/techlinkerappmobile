@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
-      home: MainDeveloperPage(developerId: 2),
-      //home: MainCompanyPage(companyId: 4),
+      //home: MainDeveloperPage(developerId: 2),
+      home: MainCompanyPage(companyId: 4),
     );
   }
 }
