@@ -48,19 +48,12 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
     }
   }
 
-  Future cacheImage(BuildContext context, String urlImage) async {
-    if (urlImage.isNotEmpty) {
-      await precacheImage(CachedNetworkImageProvider(urlImage), context);
-    }
-  }
+  Future cacheImage(BuildContext context, String urlImage) =>
+      precacheImage(CachedNetworkImageProvider(urlImage), context);
 
   void getNotificationsImageUrls() {
-    urlEmittersImages.clear();
     for (var item in companyNotifications) {
-      final user = item.emitterId?.image;
-      if (user != null && user.isNotEmpty) {
-        urlEmittersImages.add(user);
-      }
+      urlEmittersImages.add(item.emitterId?.image);
     }
     loadData();
   }

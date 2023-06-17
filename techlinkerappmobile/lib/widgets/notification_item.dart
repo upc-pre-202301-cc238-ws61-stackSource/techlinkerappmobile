@@ -11,7 +11,6 @@ class NotificationItem extends StatefulWidget {
   final Notify notification;
   final User emitterId;
   final VoidCallback refreshNotifications;
-  //
 
   NotificationItem({
     required this.emitterId,
@@ -25,11 +24,15 @@ class NotificationItem extends StatefulWidget {
 }
 
 class _NotificationItemState extends State<NotificationItem> {
+  bool isNotificationVisible = true;
 
-  Future deleteNotificationByDeveloperId(String id, String notificationId) async {
+  Future<void> deleteNotification(String id, String notificationId) async {
     try {
       await DeveloperService.deleteNotificationIdByDeveloperIdOrCompanyId(id, notificationId);
       widget.refreshNotifications();
+      setState(() {
+        isNotificationVisible = false;
+      });
     } catch (e) {
       print('Failed to delete notification: $e');
     }
@@ -37,6 +40,9 @@ class _NotificationItemState extends State<NotificationItem> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isNotificationVisible) {
+      return Container(); // Return an empty container if the notification is not visible
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
@@ -46,10 +52,10 @@ class _NotificationItemState extends State<NotificationItem> {
         color: cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Shadow color
-            spreadRadius: 1, // Spread radius
-            blurRadius: 2, // Blur radius
-            offset: Offset(0, 0.5), // Offset in the y direction
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 0.5),
           ),
         ],
       ),
@@ -70,7 +76,10 @@ class _NotificationItemState extends State<NotificationItem> {
             Text(
               '${widget.emitterId.firstName} ${widget.emitterId.lastName}' ?? '',
               style: const TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: textColor,
+              ),
             ),
             Text(
               widget.notification.content ?? '',
@@ -84,8 +93,7 @@ class _NotificationItemState extends State<NotificationItem> {
         trailing: Container(
           decoration: BoxDecoration(
             color: warningColor,
-            borderRadius:
-                BorderRadius.circular(30), // Adjust the radius as needed
+            borderRadius: BorderRadius.circular(30),
           ),
           child: IconButton(
             icon: const Icon(
@@ -93,16 +101,20 @@ class _NotificationItemState extends State<NotificationItem> {
               color: Colors.white,
             ),
             onPressed: () {
-              deleteNotificationByDeveloperId(widget.notification.reciverId.toString(), widget.notification.id.toString());
+              deleteNotification(
+                widget.notification.reciverId.toString(),
+                widget.notification.id.toString(),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: FlashCorrectMessageWidget(message: 'Notification deleted successfully'),
+                  content: FlashCorrectMessageWidget(
+                    message: 'Notification deleted successfully',
+                  ),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Colors.transparent,
                   elevation: 0.0,
                 ),
               );
-              // Handle delete button press
             },
           ),
         ),
