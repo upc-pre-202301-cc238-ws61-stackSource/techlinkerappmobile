@@ -17,6 +17,15 @@ class Project {
     required this.projectUrl,
   });
 
+  //a empty constructor
+  Project.empty()
+      : description = '',
+        digitalProfile = DigitalProfile.empty(),
+        iconUrl = '',
+        id = 0,
+        name = '',
+        projectUrl = '';
+
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
       description: json['description'],

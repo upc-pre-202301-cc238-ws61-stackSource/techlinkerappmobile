@@ -1,4 +1,3 @@
-
 import 'package:techlinkerappmobile/models/digital_profile.dart';
 
 class Database {
@@ -15,6 +14,14 @@ class Database {
     required this.id,
     required this.name,
   });
+
+  //a empty constructor
+  Database.empty()
+      : description = '',
+        digitalProfile = DigitalProfile.empty(),
+        iconLink = '',
+        id = 0,
+        name = '';
 
   factory Database.fromJson(Map<String, dynamic> json) {
     return Database(

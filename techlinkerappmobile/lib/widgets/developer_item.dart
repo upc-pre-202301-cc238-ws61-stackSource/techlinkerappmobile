@@ -11,7 +11,11 @@ class DeveloperItem extends StatelessWidget {
   final Developer item;
   final String urlImage;
   final int companyId;
-  const DeveloperItem({super.key, required this.item, required this.urlImage, required this.companyId});
+  const DeveloperItem(
+      {super.key,
+      required this.item,
+      required this.urlImage,
+      required this.companyId});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +118,7 @@ class DeveloperItem extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => DeveloperProfile(
-          developer: Developer.empty(),
+          developerId: 1,
         ),
       ),
     );

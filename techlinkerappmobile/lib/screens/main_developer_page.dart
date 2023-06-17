@@ -23,22 +23,14 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
   @override
   void initState() {
     super.initState();
-    if(mounted){
-      initData();
-    }
-  }
-
-   Future<void> initData() async {
-    final dev = await DeveloperService.getDeveloperById(widget.developerId.toString());
-    setState(() {
-      developer = Developer.fromJson(dev as Map<String, dynamic>);
-      screens = [
-        DeveloperHome(developerId: widget.developerId),
-        DeveloperMessages(developer: developer),
-        DeveloperNotifications(),
-        DeveloperProfile(developer: developer),
-      ];
-    });
+    screens = [
+      DeveloperHome(
+        developerId: widget.developerId,
+      ),
+      DeveloperMessages(developerId: widget.developerId),
+      DeveloperNotifications(),
+      DeveloperProfile(developerId: widget.developerId),
+    ];
   }
 
   @override

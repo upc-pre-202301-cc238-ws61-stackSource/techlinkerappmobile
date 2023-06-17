@@ -40,26 +40,15 @@ class DeveloperDatabase extends StatelessWidget {
               children: [
                 Center(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 60.0),
-                          child: Text(
-                  database.name!,
-                  style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 18),
-                ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            DeveloperService.deleteDatabase(database.id);
-                            // Lógica para eliminar el elemento
-                            // Puedes implementar aquí la acción que deseas realizar al hacer clic en el icono "delete"
-                          },
-                          child: Icon(Icons.delete),
-                        ),
-                      ],
-                    )),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      database.name!,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 18),
+                    ),
+                  ],
+                )),
                 Center(
                     child: Text(database.description!,
                         style: const TextStyle(

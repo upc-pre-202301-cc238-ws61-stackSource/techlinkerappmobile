@@ -17,6 +17,14 @@ class Framework {
     this.name,
   });
 
+  //a empty constructor
+  Framework.empty()
+      : description = '',
+        digitalProfile = DigitalProfile.empty(),
+        iconLink = '',
+        id = 0,
+        name = '';
+
   factory Framework.fromJson(Map<String, dynamic> json) {
     return Framework(
       description: json['description'],

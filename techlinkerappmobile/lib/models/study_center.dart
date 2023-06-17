@@ -21,6 +21,17 @@ class StudyCenter {
     required this.progress,
   });
 
+  //a empty constructor
+  StudyCenter.empty()
+      : description = '',
+        education = Education.empty(),
+        entryDate = DateTime.now(),
+        graduationDate = DateTime.now(),
+        iconUrl = '',
+        id = 0,
+        name = '',
+        progress = 0;
+
   factory StudyCenter.fromJson(Map<String, dynamic> json) {
     return StudyCenter(
       description: json['description'],
