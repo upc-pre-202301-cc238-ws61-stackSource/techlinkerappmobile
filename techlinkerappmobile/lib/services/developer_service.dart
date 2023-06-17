@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:techlinkerappmobile/models/certificate.dart';
+import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/models/study_center.dart';
 
 import '../models/education.dart';
@@ -37,7 +38,6 @@ class DeveloperService {
       throw Exception('Failed to create certificate. Error: $e');
     }
   }
-
   static postStudyCenter(StudyCenter studyCenter) async {
     final url =
         Uri.parse('$baseUrl/study-centers/${studyCenter.education!.id}');
@@ -69,6 +69,40 @@ class DeveloperService {
       throw Exception('Failed to create study center. Error: $e');
     }
   }
+  static updateProfileDeveloper(Developer developer ) async {
+    final url =
+    Uri.parse('$baseUrl/developers/${developer.id}');
+    print(url);
+    try {
+      final response = await http.put(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'id': developer.id,
+          'firstName': developer.firstName,
+          'lastName': developer.lastName,
+          'email': developer.email,
+          'phone': developer.phone,
+          'password': developer.password,
+          'role': developer.role,
+          'description': developer.description,
+          'image': developer.image,
+          'bannerImage': developer.bannerImage,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception(
+            'Failed to update profile. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to update profile. Error: $e');
+    }
+  }
+
 
   static getDigitalProfileByDeveloperId(String id) async {
     final url = Uri.parse('$baseUrl/digital_profiles/$id');

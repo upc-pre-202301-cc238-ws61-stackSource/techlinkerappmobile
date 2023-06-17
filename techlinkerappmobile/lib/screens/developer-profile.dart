@@ -25,6 +25,7 @@ import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-editProfile.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final Developer developer;
@@ -42,6 +43,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
+  late Developer MyDeveloper;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -56,41 +58,44 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   ];
-
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   void initState() {
     super.initState();
 
-    //create delay to show shimmer 2 seconds
+    // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
+    getDeveloperById(widget.developer.id.toString()).then((developer) {
+      setState(() {
+        MyDeveloper = developer;
+      });
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
 
-    getEducationByDigitalProfileId(widget.developer.id!.toString())
-        .then((value) async {
-      developerStudyCenters = await getStudyCentersByEducation(value);
-      developerProjects =
-          await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-      developerFrameworks = await getFrameworksByDigitalProfileId(
-          widget.developer.id!.toString());
-      developerDatabases = await getDatabasesByDigitalProfileId(//error
-          widget.developer.id!.toString());
-      developerProgrammingLanguages =
-          await getProgrammingLanguagesByDigitalProfileId(
-              widget.developer.id!.toString());
-      developerCertificates = await getCertficationsByEducationId(value);
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
+        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
 
-      setState(() {});
+        setState(() {});
+      });
     });
+
 
     getPostImages();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
-
   Future loadData() async {
     if (mounted) {
       setState(() => isLoading = true);
     }
 
     await Future.delayed(const Duration(seconds: 1));
-
+    if(!mounted)return;
     if (mounted) {
       await Future.wait(urlPostImages
           .map((urlImage) => cacheImage(context, urlImage))
@@ -111,18 +116,28 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           });
     }
   }
-
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
-
   void getPostImages() {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
     }
   }
-
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData = ModalRoute.of(context)?.settings.arguments as bool?;
+    if(shouldUpdateData == true){
+      getEducationByDigitalProfileId(widget.developer.id!.toString())
+          .then((value) async {
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects = await getProjectsByDigitalProfileId(widget.developer.id!.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(widget.developer.id!.toString());
+        developerDatabases = await getDatabasesByDigitalProfileId(widget.developer.id!.toString());
+        developerProgrammingLanguages = await getProgrammingLanguagesByDigitalProfileId(widget.developer.id!.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+        setState(() {});
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -538,7 +553,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       )),
     );
   }
-
   Widget skeletonPostItem(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5),
@@ -572,7 +586,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       ),
     );
   }
-
   Widget buildSkeletonUserIcon(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10, top: 10),
@@ -582,44 +595,88 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
       height: 30,
     );
   }
-
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if (MyDeveloper == null) {
+      return CircularProgressIndicator();
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(widget.developer.image!),
+      child: Stack(
+        alignment: Alignment.topRight, // Alinea el botón en la esquina superior derecha
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${widget.developer.firstName!} ${widget.developer.lastName!}',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(widget.developer.image!),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '${widget.developer.firstName!} ${widget.developer.lastName!}',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  widget.developer.email!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: textColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.developer.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: textColor,
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => EditProfileView(
+                      developerId: widget.developer.id.toString(),
+                    ),
+                  )
+                  ).then((value) async {
+                    Map<String, dynamic> MyDeveloperUpdatE = value;
+                    if (mounted) {
+                      setState(() {
+                        MyDeveloper = Developer.fromJson(MyDeveloperUpdatE);
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue, // Cambia el color del icono aquí
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -787,5 +844,20 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return [];
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      if (mounted) {
+        final develop = Developer.fromJson(developerData);
+        print(develop);
+        return develop;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer(); // Retornar una instancia vacía de Developer en caso de error
   }
 }
