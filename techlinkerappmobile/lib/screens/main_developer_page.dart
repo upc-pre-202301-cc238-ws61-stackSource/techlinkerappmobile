@@ -7,7 +7,8 @@ import '../constants/colors.dart';
 import '../screens/home_developer.dart';
 
 class MainDeveloperPage extends StatefulWidget {
-  const MainDeveloperPage({super.key});
+  final int developerId;
+  const MainDeveloperPage({super.key, required this.developerId});
 
   @override
   State<MainDeveloperPage> createState() => _MainDeveloperPageState();
@@ -15,9 +16,13 @@ class MainDeveloperPage extends StatefulWidget {
 
 class _MainDeveloperPageState extends State<MainDeveloperPage> {
   int index = 0;
+  List<Widget> screens = [];
 
-  final screens = [
-    DeveloperHome(),
+  @override
+  void initState() {
+    super.initState();
+    screens = [
+    DeveloperHome(developerId: widget.developerId,),
     DeveloperMessages(
       developer: Developer(
         id: 1,
@@ -52,6 +57,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
       ),
     ),
   ];
+  }
 
   @override
   Widget build(BuildContext context) {

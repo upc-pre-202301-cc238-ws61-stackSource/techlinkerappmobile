@@ -12,7 +12,8 @@ import '../constants/colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CompanyHome extends StatefulWidget {
-  CompanyHome({super.key});
+  final int companyId;
+  CompanyHome({super.key, required this.companyId});
 
   @override
   State<CompanyHome> createState() => _CompanyHomeState();
@@ -67,7 +68,9 @@ class _CompanyHomeState extends State<CompanyHome> {
       urlDevelopersImages[item.id!.toString()] = item.image!;
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     return urlDevelopersImages;
   }
@@ -123,9 +126,12 @@ class _CompanyHomeState extends State<CompanyHome> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  setState(() {
-                    isLoding = true;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      isLoding = true;
+                    });
+                  }
+
                   await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -133,30 +139,37 @@ class _CompanyHomeState extends State<CompanyHome> {
                               DeveloperFilter())).then((value) => {
                         if (value != null)
                           {
-                            setState(() {
-                              selectedFramework = value['selectedFramework'];
-                              selectedDatabase = value['selectedDatabase'];
-                              selectedProgrammingLanguage =
-                                  value['selectedProgrammingLanguage'];
-                              selectedYearsOfExperience =
-                                  value['selectedYearsOfExperience'];
-                              //convert filters to lower case
-                              selectedFramework = selectedFramework
-                                  .map((framework) => framework.toLowerCase())
-                                  .toList();
-                              selectedDatabase = selectedDatabase
-                                  .map((database) => database.toLowerCase())
-                                  .toList();
-                              selectedProgrammingLanguage =
-                                  selectedProgrammingLanguage
-                                      .map((language) => language.toLowerCase())
+                            if (mounted)
+                              {
+                                setState(() {
+                                  selectedFramework =
+                                      value['selectedFramework'];
+                                  selectedDatabase = value['selectedDatabase'];
+                                  selectedProgrammingLanguage =
+                                      value['selectedProgrammingLanguage'];
+                                  selectedYearsOfExperience =
+                                      value['selectedYearsOfExperience'];
+                                  //convert filters to lower case
+                                  selectedFramework = selectedFramework
+                                      .map((framework) =>
+                                          framework.toLowerCase())
                                       .toList();
-                              selectedYearsOfExperience =
-                                  selectedYearsOfExperience
-                                      .map((experience) =>
-                                          experience.toString().toLowerCase())
+                                  selectedDatabase = selectedDatabase
+                                      .map((database) => database.toLowerCase())
                                       .toList();
-                            })
+                                  selectedProgrammingLanguage =
+                                      selectedProgrammingLanguage
+                                          .map((language) =>
+                                              language.toLowerCase())
+                                          .toList();
+                                  selectedYearsOfExperience =
+                                      selectedYearsOfExperience
+                                          .map((experience) => experience
+                                              .toString()
+                                              .toLowerCase())
+                                          .toList();
+                                })
+                              }
                           },
                       });
                   filterDevelopers();
@@ -239,9 +252,11 @@ class _CompanyHomeState extends State<CompanyHome> {
                             const SizedBox(height: 20),
                             InkWell(
                               onTap: () {
-                                setState(() {
-                                  filteredDevelopers = developers;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    filteredDevelopers = developers;
+                                  });
+                                }
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -290,6 +305,7 @@ class _CompanyHomeState extends State<CompanyHome> {
                                       item: developer,
                                       urlImage: urlDevelopersImages[
                                           developer.id!.toString()]!,
+                                      companyId: widget.companyId,
                                     );
                             }),
                       )),
@@ -390,7 +406,7 @@ class _CompanyHomeState extends State<CompanyHome> {
             ))
         .toList();
 
-    List<int> filteredDeveloperIds =
+    List<int?> filteredDeveloperIds =
         developers.map((developer) => developer.id).toList();
 
     if (selectedFramework.isNotEmpty) {
@@ -429,23 +445,25 @@ class _CompanyHomeState extends State<CompanyHome> {
       }).toList();
     }
 
-    setState(() {
-      //check if there is not any filter and set filter developers with all developer if thats the case
+    if (mounted) {
+      setState(() {
+        //check if there is not any filter and set filter developers with all developer if thats the case
 
-      if (selectedFramework.isEmpty &&
-          selectedProgrammingLanguage.isEmpty &&
-          selectedDatabase.isEmpty) {
-        filteredDevelopers = developers;
+        if (selectedFramework.isEmpty &&
+            selectedProgrammingLanguage.isEmpty &&
+            selectedDatabase.isEmpty) {
+          filteredDevelopers = developers;
+          isLoding = false;
+          return;
+        }
+
+        filteredDevelopers = developers
+            .where((developer) => filteredDeveloperIds.contains(developer.id))
+            .toList();
+        print('Filtered developers: $filteredDevelopers');
         isLoding = false;
-        return;
-      }
-
-      filteredDevelopers = developers
-          .where((developer) => filteredDeveloperIds.contains(developer.id))
-          .toList();
-      print('Filtered developers: $filteredDevelopers');
-      isLoding = false;
-    });
+      });
+    }
   }
 
   Future<List<Framework>> getAllFrameworks() async {
@@ -480,9 +498,11 @@ class _CompanyHomeState extends State<CompanyHome> {
             .map((developer) => Developer.fromJson(developer))
             .toList();
 
-        setState(() {
-          developers = backDevelopers;
-        });
+        if (mounted) {
+          setState(() {
+            developers = backDevelopers;
+          });
+        }
 
         print('Developers: $backDevelopers');
 
