@@ -39,7 +39,9 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
             "https://img.freepik.com/free-vector/programming-concept-illustration_114360-1351.jpg",
       ),
     ),
-    DeveloperNotifications(),
+    DeveloperNotifications(
+      UserId: widget.developerId,
+    ),
     DeveloperProfile(
       developer: Developer(
         id: 1,

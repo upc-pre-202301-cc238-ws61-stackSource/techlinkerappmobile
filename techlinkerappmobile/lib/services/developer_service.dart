@@ -557,7 +557,7 @@ class DeveloperService {
     }
   }
 
-  static deleteNotificationByDeveloperId(String id, String notificationId) async {
+  static deleteNotificationIdByDeveloperIdOrCompanyId(String id, String notificationId) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
     print(url);
     try {

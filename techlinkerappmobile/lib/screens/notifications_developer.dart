@@ -5,12 +5,15 @@ import 'package:shimmer/shimmer.dart';
 import '../constants/colors.dart';
 import '../models/notification_unique_item.dart';
 import '../models/user.dart';
-import '../widgets/notification_item.dart';
+
 import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:techlinkerappmobile/models/notify.dart';
 
+import '../widgets/notification_item.dart';
+
 class DeveloperNotifications extends StatefulWidget {
-  const DeveloperNotifications({Key? key}) : super(key: key);
+  final int UserId;
+  const DeveloperNotifications({Key? key,required this.UserId}) : super(key: key);
 
   @override
   State<DeveloperNotifications> createState() =>
@@ -26,7 +29,11 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
   @override
   void initState() {
     super.initState();
-    getNotificationsByDeveloperId('2');
+    getNotificationsByDeveloperId(widget.UserId.toString());
+  }
+
+  Future refreshNotifications() async {
+    await getNotificationsByDeveloperId(widget.UserId.toString()); // Actualiza el ID del desarrollador según sea necesario
   }
 
   Future loadData() async {
@@ -110,22 +117,26 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: ListView.builder(
-                  itemCount: developerNotifications.length,
-                  itemBuilder: (context, index) {
-                    final notification = developerNotifications[index];
+                child: RefreshIndicator(
+                  onRefresh: refreshNotifications,
+                  child: ListView.builder(
+                    itemCount: developerNotifications.length,
+                    itemBuilder: (context, index) {
+                      final notification = developerNotifications[index];
 
-                    return isLoading
-                        ? Shimmer.fromColors(
-                      baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                      highlightColor: Colors.grey[200]!,
-                      child: buildSkeletonNotification(context),
-                    )
-                        : NotificationItem(
-                      notification: notification,
-                      emitterId: emitters[index] ?? User.empty(),
-                    );
-                  },
+                      return isLoading
+                          ? Shimmer.fromColors(
+                        baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                        highlightColor: Colors.grey[200]!,
+                        child: buildSkeletonNotification(context),
+                      )
+                          : NotificationItem(
+                        notification: notification,
+                        emitterId: emitters[index] ?? User.empty(),
+                        refreshNotifications: refreshNotifications,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -209,4 +220,5 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
       print('Failed to get notifications: $e');
     }
   }
+
 }
