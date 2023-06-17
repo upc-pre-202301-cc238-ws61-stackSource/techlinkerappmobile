@@ -10,6 +10,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../models/post.dart';
 import '../services/company_service.dart';
 import 'company-editProfile.dart';
+import 'login.dart';
 
 class CompanyProfile extends StatefulWidget {
   final Company company;
@@ -120,9 +121,29 @@ class _CompanyProfileState extends State<CompanyProfile> {
                   ),
                 ),
                 child: Column(children: [
-                  const SizedBox(
-                    height: 60,
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return LoginPage();
+                            },
+                          ));
+                        },
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                    ],
                   ),
+                  const SizedBox(height: 10),
                   const Center(
                     child: Text(
                       "Profile",
