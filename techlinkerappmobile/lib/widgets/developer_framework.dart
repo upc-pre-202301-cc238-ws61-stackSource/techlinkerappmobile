@@ -54,7 +54,10 @@ class DeveloperFramework extends StatelessWidget {
                   ),
                 ),
                 Center(
-                    child: Text(framework.description!,
+                    child: Text(
+                        framework.description!.length > 25
+                            ? framework.description!.substring(0, 25) + '...'
+                            : framework.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],
