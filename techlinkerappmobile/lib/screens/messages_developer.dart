@@ -27,6 +27,8 @@ class DeveloperMessages extends StatefulWidget {
 
 class _DeveloperMessagesState extends State<DeveloperMessages> {
   bool isLoding = true;
+  bool apiCall = false;
+  int numberOfMessages = 10;
 
   final urlMessagesIcons = [];
   List<CompanyMessage> companyContacts = <CompanyMessage>[];
@@ -37,7 +39,14 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
 
     getDevelopersImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-    getMessagesByDeveloperId(widget.developerId.toString());
+    getMessagesByDeveloperId(widget.developerId.toString()).then((value) {
+      if (mounted) {
+        setState(() {
+          apiCall = true;
+          numberOfMessages = 1;
+        });
+      }
+    });
   }
 
   Future loadData() async {
@@ -113,13 +122,27 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ListView.builder(
                 itemCount:
-                    companyContacts.isEmpty ? 10 : companyContacts.length,
+                    companyContacts.isEmpty ? numberOfMessages : companyContacts.length,
                 itemBuilder: (context, index) {
                   if (companyContacts.isEmpty) {
-                    return Shimmer.fromColors(
-                        baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                        highlightColor: Colors.grey[200]!,
-                        child: buildSkeleton(context));
+                    return apiCall
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Text(
+                                'You dont have messages yet',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: buildSkeleton(context));
                   } else {
                     final company = companyContacts[index];
 

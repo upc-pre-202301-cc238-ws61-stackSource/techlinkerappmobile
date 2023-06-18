@@ -21,17 +21,27 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
   List<Notify> companyNotifications = [];
   List<User?> emitters = [];
   bool isLoading = true;
+  bool apiCall = false;
+  int numberOfNotifications = 10;
 
   final urlEmittersImages = [];
 
   @override
   void initState() {
     super.initState();
-    getNotificationsByCompanyId(widget.UserId.toString());
+    getNotificationsByCompanyId(widget.UserId.toString()).then((value) {
+      if (mounted) {
+        setState(() {
+          apiCall = true;
+          numberOfNotifications = 1;
+        });
+      }
+    });
   }
 
   Future refreshNotifications() async {
-    await getNotificationsByCompanyId(widget.UserId.toString()); // Actualiza el ID del desarrollador según sea necesario
+    await getNotificationsByCompanyId(widget.UserId
+        .toString()); // Actualiza el ID del desarrollador según sea necesario
   }
 
   Future loadData() async {
@@ -81,26 +91,27 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
               ),
             ),
             child: Column(children: const [
-                SizedBox(
-                  height: 40,
-                ),
-                Text(
-                  "Company",
-                  style: TextStyle(
-                      color: cardColor,
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800),
-                ),
-                Text(
-                  "Notifications",
-                  style: TextStyle(
-                      color: cardColor,
-                      fontSize: 41,
-                      fontWeight: FontWeight.w800),
-                ),
-                SizedBox(height: 25,)
-              ]
-            ),
+              SizedBox(
+                height: 40,
+              ),
+              Text(
+                "Company",
+                style: TextStyle(
+                    color: cardColor,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w800),
+              ),
+              Text(
+                "Notifications",
+                style: TextStyle(
+                    color: cardColor,
+                    fontSize: 41,
+                    fontWeight: FontWeight.w800),
+              ),
+              SizedBox(
+                height: 25,
+              )
+            ]),
           ),
           const SizedBox(height: 20),
           Expanded(
@@ -109,21 +120,37 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
               child: RefreshIndicator(
                 onRefresh: refreshNotifications,
                 child: ListView.builder(
-                  itemCount: companyNotifications.length,
+                  itemCount: companyNotifications.isEmpty
+                      ? numberOfNotifications
+                      : companyNotifications.length,
                   itemBuilder: (context, index) {
-                    final notification = companyNotifications[index];
-
-                    return isLoading
-                        ? Shimmer.fromColors(
-                      baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                      highlightColor: Colors.grey[200]!,
-                      child: buildSkeletonNotification(context),
-                    )
-                        : NotificationItem(
-                      notification: notification,
-                      emitterId: emitters[index] ?? User.empty(),
-                      refreshNotifications: refreshNotifications,
-                    );
+                    if (companyNotifications.isEmpty) {
+                      return apiCall
+                          ? const Padding(
+                              padding: EdgeInsets.only(top: 100),
+                              child: Center(
+                                child: Text(
+                                  'You dont have notifications',
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Shimmer.fromColors(
+                              baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                              highlightColor: Colors.grey[200]!,
+                              child: buildSkeletonNotification(context));
+                    } else {
+                      final notification = companyNotifications[index];
+                      return NotificationItem(
+                        notification: notification,
+                        emitterId: emitters[index] ?? User.empty(),
+                        refreshNotifications: refreshNotifications,
+                      );
+                    }
                   },
                 ),
               ),
@@ -136,13 +163,13 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
 
   Widget buildSkeletonNotification(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 13),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Color.fromARGB(154, 255, 255, 255),
+        color: Color.fromARGB(126, 255, 255, 255),
         borderRadius: BorderRadius.circular(10),
       ),
-      height: 100,
+      height: 120,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -186,9 +213,11 @@ class _CompanyNotificationsState extends State<CompanyNotifications> {
       ),
     );
   }
+
   Future getNotificationsByCompanyId(String id) async {
     try {
-      final notificationsData = await CompanyService.getNotificationsByCompanyId(id);
+      final notificationsData =
+          await CompanyService.getNotificationsByCompanyId(id);
       if (mounted) {
         setState(() {
           if (notificationsData != null) {

@@ -26,10 +26,20 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
   bool isLoading = true;
   final urlEmittersImages = <String>[];
 
+  bool apiCall = false;
+  int numberOfNotifications = 10;
+
   @override
   void initState() {
     super.initState();
-    getNotificationsByDeveloperId(widget.UserId.toString());
+    getNotificationsByDeveloperId(widget.UserId.toString()).then((value) {
+      if (mounted) {
+        setState(() {
+          apiCall = true;
+          numberOfNotifications = 1;
+        });
+      }
+    });
   }
 
   Future refreshNotifications() async {
@@ -122,15 +132,29 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
                   onRefresh: refreshNotifications,
                   child: ListView.builder(
                     itemCount: developerNotifications.isEmpty
-                        ? 10
+                        ? numberOfNotifications
                         : developerNotifications.length,
                     itemBuilder: (context, index) {
                       if (developerNotifications.isEmpty) {
-                        return Shimmer.fromColors(
-                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                          highlightColor: Colors.grey[200]!,
-                          child: buildSkeletonNotification(context),
-                        );
+                        return apiCall
+                            ? const Padding(
+                                padding: EdgeInsets.only(top: 100),
+                                child: Center(
+                                  child: Text(
+                                    'You dont have notifications',
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: buildSkeletonNotification(context),
+                              );
                       } else {
                         final notification = developerNotifications[index];
                         return NotificationItem(

@@ -54,6 +54,7 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
+  bool apiHasBeenCalled = false;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -63,6 +64,13 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
   List<Certificate> developerCertificates = [];
   List<StudyCenter> developerStudyCenters = [];
 
+  List<StudyCenter> developerStudyCentersAtInit = [];
+  List<Framework> developerFrameworksAtInit = [];
+  List<Database> developerDatabasesAtInit = [];
+  List<Project> developerProjectsAtInit = [];
+  List<ProgrammingLanguage> developerProgrammingLanguagesAtInit = [];
+  List<Certificate> developerCertificatesAtInit = [];
+
   final urlUserIcons = [
     "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -71,6 +79,13 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
 
   @override
   void initState() {
+    developerStudyCentersAtInit.add(StudyCenter.empty());
+    developerFrameworksAtInit.add(Framework.empty());
+    developerDatabasesAtInit.add(Database.empty());
+    developerProjectsAtInit.add(Project.empty());
+    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
+    developerCertificatesAtInit.add(Certificate.empty());
+
     developerMessageContact =
         DeveloperMessage(developer: widget.developer, message: Message.empty());
     super.initState();
@@ -92,6 +107,7 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
 
       if (mounted) {
         setState(() => {});
+        apiHasBeenCalled = true;
       }
     });
 
@@ -224,8 +240,8 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                         textAlign: TextAlign.justify,
                         style: const TextStyle(
                             color: textColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal)),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w500)),
                   ),
                   const SizedBox(
                     height: 20,
@@ -292,16 +308,18 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.8,
-
-                  // Add more options as needed
                 ),
-                items: developerStudyCenters
+                items: (developerStudyCenters.isEmpty
+                        ? developerStudyCentersAtInit
+                        : developerStudyCenters)
                     .map((item) => developerStudyCenters.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperStudyCenter(
                             studyCenter: item, studyCenterIcon: item.iconUrl!))
                     .toList(),
@@ -331,17 +349,21 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerFrameworks
+                items: (developerFrameworks.isEmpty
+                        ? developerFrameworksAtInit
+                        : developerFrameworks)
                     .map((item) => developerFrameworks.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperFramework(
                             framework: item, frameworkIcon: item.iconLink!))
                     .toList(),
@@ -371,17 +393,21 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction: developerDatabases.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerDatabases
+                items: (developerDatabases.isEmpty
+                        ? developerDatabasesAtInit
+                        : developerDatabases)
                     .map((item) => developerDatabases.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperDatabase(
                             database: item, databaseIcon: item.iconLink!))
                     .toList(),
@@ -411,17 +437,22 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction:
+                      developerProgrammingLanguages.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerProgrammingLanguages
+                items: (developerProgrammingLanguages.isEmpty
+                        ? developerProgrammingLanguagesAtInit
+                        : developerProgrammingLanguages)
                     .map((item) => developerProgrammingLanguages.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperProgrammingLanguage(
                             programmingLanguage: item,
                             programmingLanguageIcon: item.iconLink!))
@@ -449,20 +480,24 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 270, // Adjust the height as per your requirements
+                  height: 250, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
-                  viewportFraction: 0.7,
+                  viewportFraction: developerProjects.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerProjects
+                items: (developerProjects.isEmpty
+                        ? developerProjectsAtInit
+                        : developerProjects)
                     .map((item) => developerProjects.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperProject(
                             project: item, projectIcon: item.iconUrl!))
                     .toList(),
@@ -496,13 +531,17 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
 
                   // Add more options as needed
                 ),
-                items: developerCertificates
+                items: (developerCertificates.isEmpty
+                        ? developerCertificatesAtInit
+                        : developerCertificates)
                     .map((item) => developerCertificates.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem()
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperCertificate(
                             certificate: item, certificateIcon: item.iconUrl!))
                     .toList(),
@@ -514,6 +553,38 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
           )),
         ],
       )),
+    );
+  }
+
+  Widget skeletonAddItem() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Color.fromARGB(154, 228, 228, 228),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.transparent,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "No Data Yet",
+            style: TextStyle(
+              color: Color.fromARGB(255, 169, 169, 169),
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -83,27 +83,10 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     super.initState();
 
     developerStudyCentersAtInit.add(StudyCenter.empty());
-    developerStudyCentersAtInit.add(StudyCenter.empty());
-    developerStudyCentersAtInit.add(StudyCenter.empty());
-
     developerFrameworksAtInit.add(Framework.empty());
-    developerFrameworksAtInit.add(Framework.empty());
-    developerFrameworksAtInit.add(Framework.empty());
-
     developerDatabasesAtInit.add(Database.empty());
-    developerDatabasesAtInit.add(Database.empty());
-    developerDatabasesAtInit.add(Database.empty());
-
     developerProjectsAtInit.add(Project.empty());
-    developerProjectsAtInit.add(Project.empty());
-    developerProjectsAtInit.add(Project.empty());
-
     developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-
-    developerCertificatesAtInit.add(Certificate.empty());
-    developerCertificatesAtInit.add(Certificate.empty());
     developerCertificatesAtInit.add(Certificate.empty());
 
     // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
@@ -338,8 +321,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.8,
-
-                  // Add more options as needed
                 ),
                 items: (developerStudyCenters.isEmpty
                         ? developerStudyCentersAtInit
@@ -493,7 +474,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                         myDigitalProfile: digProfile!),
                                   ),
                                 );
-                                print("Add Database");
                               })
                             : Shimmer.fromColors(
                                 baseColor: Color.fromARGB(255, 219, 221, 225)!,

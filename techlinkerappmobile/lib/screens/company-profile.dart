@@ -36,12 +36,18 @@ class _CompanyProfileState extends State<CompanyProfile> {
     super.initState();
     getPostByCompanyId(widget.companyId.toString()).then((value) {
       companyPosts = value;
-      setState(() {});
+
+      if (mounted) {
+        setState(() {});
+      }
+
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         loadData();
         getCompanyById(widget.companyId.toString()).then((company) {
           MyCompany = company;
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       });
     });
@@ -92,7 +98,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
     if (shouldUpdateData == true) {
       getPostByCompanyId(widget.companyId.toString()).then((value) {
         companyPosts = value;
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     }
     return Scaffold(
