@@ -68,10 +68,10 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
             backgroundColor: Colors.transparent, // Color de fondo transparente
             elevation: 0, // Sin sombra
             title: Text(
-              'Post Experience Projects ',
+              'Add Project',
               style: TextStyle(
                 color: cardColor,
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.w600,
               ),
             ), // Título personalizado
@@ -189,8 +189,7 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 16.0),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 32.0),
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
@@ -209,7 +208,44 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                           Navigator.pop(context);
                         }
                       },
-                      child: const Text('Submit'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.transparent,
+                        elevation: 0,
+                      ),
+                      child: Container(
+                        width: 150,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF39BCFD),
+                              Color(0xFF4F93E9),
+                              Color(0xFF7176EE),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Submit",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 )),
