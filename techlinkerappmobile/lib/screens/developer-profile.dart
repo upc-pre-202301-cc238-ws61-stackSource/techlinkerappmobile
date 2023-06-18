@@ -593,7 +593,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 250, // Adjust the height as per your requirements
+                  height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: developerProjects.isEmpty ? 0.7 : 0.5,
