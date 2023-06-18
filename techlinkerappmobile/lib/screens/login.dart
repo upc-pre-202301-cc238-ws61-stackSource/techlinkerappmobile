@@ -21,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
 
   final formKey = GlobalKey<FormState>();
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,11 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 20.0),
                         MaterialButton(
                           onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => const SelectUserRegyster()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SelectUserRegyster()));
                           },
-                          child: Text('Registrarse',
-                              style: TextStyle(fontSize: 16.0)),
+                          child: Text('Register',
+                              style: TextStyle(fontSize: 20.0)),
                           splashColor: Colors.redAccent,
                         ),
                       ],
@@ -169,14 +171,14 @@ class _LoginPageState extends State<LoginPage> {
                   builder: (context) => MainCompanyPage(companyId: user.id!)));
         }
         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: FlashCorrectMessageWidget(
-                                message: 'Logged in successfully'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                          ),
-                        );
+          const SnackBar(
+            content:
+                FlashCorrectMessageWidget(message: 'Logged in successfully'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+        );
       } else {
         showDialog(
             context: context,
@@ -190,5 +192,4 @@ class _LoginPageState extends State<LoginPage> {
               ErrorDialog().build(context, 'User not regystered'));
     }
   }
-
 }

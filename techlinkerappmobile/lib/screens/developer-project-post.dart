@@ -7,12 +7,13 @@ import 'package:techlinkerappmobile/services/developer_service.dart';
 import '../constants/colors.dart';
 import 'common/flash-correct-message-widget.dart';
 
-
 class DeveloperProjectPost extends StatefulWidget {
-  const DeveloperProjectPost({super.key});
+  final DigitalProfile myDigitalProfile;
+  const DeveloperProjectPost({super.key, required this.myDigitalProfile});
   @override
   State<DeveloperProjectPost> createState() => _DeveloperProjectPostState();
 }
+
 class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
   @override
   final formKey = GlobalKey<FormState>();
@@ -21,35 +22,18 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
   String IconURL = "";
   String ProjectUrl = "";
 
-  Future PostProjecttoDatabase(String id) async{
-    final digitalprofile =await DeveloperService.getDigitalProfileByDeveloperId(id);
-    print(digitalprofile);
-    final PostProject=Project(
-      id:0,
-      name:nameProject,
-      description: DescriptionLProject,
-      iconUrl: IconURL,
-      digitalProfile:DigitalProfile.fromJson(digitalprofile),
-      projectUrl: ProjectUrl
-    );
+  Future PostProjecttoDatabase(DigitalProfile digitalProfile) async {
+    final PostProject = Project(
+        id: 0,
+        name: nameProject,
+        description: DescriptionLProject,
+        iconUrl: IconURL,
+        digitalProfile: digitalProfile,
+        projectUrl: ProjectUrl);
     print(PostProject);
     final post = await DeveloperService.postProjecttoDatabase(PostProject);
     print(post);
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +94,11 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.drive_file_rename_outline),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.drive_file_rename_outline),
                           labelText: 'name Project',
                           border: OutlineInputBorder(),
                         ),
@@ -132,8 +119,11 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.description),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.description),
                           labelText: 'Description Project',
                           border: OutlineInputBorder(),
                         ),
@@ -154,8 +144,11 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.link),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.link),
                           labelText: 'Icon  URL',
                           border: OutlineInputBorder(),
                         ),
@@ -177,8 +170,11 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.link),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.link),
                           labelText: 'project URL',
                           border: OutlineInputBorder(),
                         ),
@@ -200,7 +196,7 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           //Send to API
-                          PostProjecttoDatabase('1');
+                          PostProjecttoDatabase(widget.myDigitalProfile);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
@@ -215,14 +211,11 @@ class _DeveloperProjectPostState extends State<DeveloperProjectPost> {
                       },
                       child: const Text('Submit'),
                     ),
-
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),
     );
   }
-
 }

@@ -14,8 +14,8 @@ import '../services/company_service.dart';
 import '../services/developer_service.dart';
 
 class CompanyMessage extends StatefulWidget {
-  final Company company;
-  const CompanyMessage({required this.company, super.key});
+  final int companyId;
+  const CompanyMessage({required this.companyId, super.key});
 
   @override
   State<CompanyMessage> createState() => _CompanyMessageState();
@@ -33,7 +33,7 @@ class _CompanyMessageState extends State<CompanyMessage> {
 
     getDevelopersImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
-    getMessagesByCompanyId(widget.company.id.toString());
+    getMessagesByCompanyId(widget.companyId.toString());
   }
 
   Future loadData() async {
@@ -124,14 +124,14 @@ class _CompanyMessageState extends State<CompanyMessage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => CompanyMessageInbox(
-                                        companyId: widget.company.id!,
+                                        companyId: widget.companyId,
                                         item: developer),
                                   ),
                                 ).then((value) {
                                   if (mounted) {
                                     setState(() {
                                       getMessagesByCompanyId(
-                                          widget.company.id.toString());
+                                          widget.companyId.toString());
                                     });
                                   }
                                 }),

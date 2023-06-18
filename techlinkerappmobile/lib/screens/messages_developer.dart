@@ -112,35 +112,38 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ListView.builder(
-                itemCount: companyContacts.length,
+                itemCount:
+                    companyContacts.isEmpty ? 10 : companyContacts.length,
                 itemBuilder: (context, index) {
-                  final company = companyContacts[index];
+                  if (companyContacts.isEmpty) {
+                    return Shimmer.fromColors(
+                        baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                        highlightColor: Colors.grey[200]!,
+                        child: buildSkeleton(context));
+                  } else {
+                    final company = companyContacts[index];
 
-                  return isLoding
-                      ? Shimmer.fromColors(
-                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                          highlightColor: Colors.grey[200]!,
-                          child: buildSkeleton(context))
-                      : MessageItemCompany(
-                          item: company,
-                          onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DeveloperMessageInbox(
-                                        developerId: widget.developerId!,
-                                        item: company),
-                                  ),
-                                ).then((value) {
-                                  if (mounted) {
-                                    setState(() {
-                                      getMessagesByDeveloperId(
-                                          widget.developerId.toString());
-                                    });
-                                  }
-                                }),
-                              },
-                          urlImage: company.company.image!);
+                    return MessageItemCompany(
+                        item: company,
+                        onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DeveloperMessageInbox(
+                                      developerId: widget.developerId!,
+                                      item: company),
+                                ),
+                              ).then((value) {
+                                if (mounted) {
+                                  setState(() {
+                                    getMessagesByDeveloperId(
+                                        widget.developerId.toString());
+                                  });
+                                }
+                              }),
+                            },
+                        urlImage: company.company.image!);
+                  }
                 },
               ),
             ),

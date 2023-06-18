@@ -31,7 +31,11 @@ import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-Database-create.dart';
+import 'developer-Frameworks-create.dart';
+import 'developer-ProgramingLanguajes-create.dart';
 import 'developer-editProfile.dart';
+import 'developer-project-post.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final int developerId;
@@ -52,7 +56,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool apiHasBeenCalled = false;
 
   Developer MyDeveloper = Developer();
-  DigitalProfile ? digProfile;
+  DigitalProfile? digProfile;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -109,12 +113,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           MyDeveloper = developer;
         });
       }
-      getDigitalProfileByDeveloperId(widget.developerId.toString()).then((digital) {
-          if (mounted) {
-            setState(() {
-              digProfile = digital;
-            });
-          }
+      getDigitalProfileByDeveloperId(widget.developerId.toString())
+          .then((digital) {
+        if (mounted) {
+          setState(() {
+            digProfile = digital;
+          });
+        }
       });
       getEducationByDigitalProfileId(widget.developerId.toString())
           .then((value) async {
@@ -137,9 +142,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
       });
     });
-
-    
-
   }
 
   Future loadData() async {
@@ -316,8 +318,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                DeveloperEducationPost(digitalProfileId: digProfile!.id),
+                            builder: (context) => DeveloperEducationPost(
+                                digitalProfileId: digProfile!.id),
                           ),
                         );
                       },
@@ -349,7 +351,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        DeveloperEducationPost(digitalProfileId: digProfile!.id),
+                                        DeveloperEducationPost(
+                                            digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
@@ -381,13 +384,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //     const DeveloperFrameworkRegister(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperFrameworkRegister(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: Icon(
                         Icons.add_circle_outline_outlined,
@@ -403,7 +406,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0,
+                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
@@ -413,13 +416,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerFrameworks.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperFrameworkRegister(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeveloperFrameworkRegister(
+                                            myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Framework");
                               })
                             : Shimmer.fromColors(
@@ -450,13 +454,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperDatabasePost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperDatabasePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -482,13 +486,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerDatabases.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperDatabasePost(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperDatabasePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Database");
                               })
                             : Shimmer.fromColors(
@@ -519,13 +523,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperLanguajePost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperLanguajePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -552,13 +556,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerProgrammingLanguages.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperLanguajePost(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperLanguajePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Programming Language");
                               })
                             : Shimmer.fromColors(
@@ -590,13 +594,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperProjectPost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperProjectPost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -609,7 +613,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 200, // Adjust the height as per your requirements
+                  height: 250, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: developerProjects.isEmpty ? 0.7 : 0.5,
@@ -622,13 +626,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerProjects.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperProjectPost(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperProjectPost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Project");
                               })
                             : Shimmer.fromColors(
@@ -662,8 +666,9 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                DeveloperCertificateRegister(digitalProfileId: digProfile!.id,),
+                            builder: (context) => DeveloperCertificateRegister(
+                              digitalProfileId: digProfile!.id,
+                            ),
                           ),
                         );
                       },
@@ -695,7 +700,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        DeveloperCertificateRegister(digitalProfileId: digProfile!.id),
+                                        DeveloperCertificateRegister(
+                                            digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
@@ -1112,7 +1118,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   Future getDigitalProfileByDeveloperId(String id) async {
     try {
-      final digitalProfileData = await DeveloperService.getDigitalProfileByDeveloperId(id);
+      final digitalProfileData =
+          await DeveloperService.getDigitalProfileByDeveloperId(id);
       print("------------------Obtained digital profile-------------------");
       if (mounted) {
         final digitalProfile = DigitalProfile.fromJson(digitalProfileData);
@@ -1123,6 +1130,5 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     } catch (e) {
       print('Failed to fetch developer data. Error: $e');
     }
-
   }
 }

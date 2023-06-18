@@ -7,7 +7,8 @@ import '../constants/colors.dart';
 import 'common/flash-correct-message-widget.dart';
 
 class DeveloperLanguajePost extends StatefulWidget {
-  const DeveloperLanguajePost({super.key});
+  final DigitalProfile myDigitalProfile;
+  const DeveloperLanguajePost({super.key, required this.myDigitalProfile});
 
   @override
   State<DeveloperLanguajePost> createState() => _DeveloperLanguajePostState();
@@ -21,32 +22,18 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
   DateTime ObtainDate = DateTime.now();
   bool _isSubmitting = false;
 
-  Future postLanguajetoDatabase(String id) async{
-    final digitalprofile =await DeveloperService.getDigitalProfileByDeveloperId(id);
-    print(digitalprofile);
-    final PostLanguaje=ProgrammingLanguage(
-      id:0,
-      name:nameLanguaje,
+  Future postLanguajetoDatabase(DigitalProfile digitalProfile) async {
+    final PostLanguaje = ProgrammingLanguage(
+      id: 0,
+      name: nameLanguaje,
       description: DescriptionLangauje,
       iconLink: IconURL,
-      digitalProfile: DigitalProfile.fromJson(digitalprofile),
+      digitalProfile: digitalProfile,
     );
     print(PostLanguaje);
     final post = await DeveloperService.postProgramingLanguaje(PostLanguaje);
     print(post);
-
   }
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +94,11 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.drive_file_rename_outline),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.drive_file_rename_outline),
                           labelText: 'name Languaje',
                           border: OutlineInputBorder(),
                         ),
@@ -129,8 +119,11 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.description),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.description),
                           labelText: 'Description Programing Languaje',
                           border: OutlineInputBorder(),
                         ),
@@ -151,8 +144,11 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.link),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.link),
                           labelText: 'Icon Languaje URL',
                           border: OutlineInputBorder(),
                         ),
@@ -174,11 +170,12 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           //Send to API
-                          postLanguajetoDatabase('1');
+                          postLanguajetoDatabase(widget.myDigitalProfile);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
-                                  message: 'Programing Languaje added successfully'),
+                                  message:
+                                      'Programing Languaje added successfully'),
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: Colors.transparent,
                               elevation: 0.0,
@@ -189,10 +186,8 @@ class _DeveloperLanguajePostState extends State<DeveloperLanguajePost> {
                       },
                       child: const Text('Submit'),
                     ),
-
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),

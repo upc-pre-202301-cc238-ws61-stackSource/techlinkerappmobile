@@ -8,10 +8,12 @@ import '../constants/colors.dart';
 import 'common/flash-correct-message-widget.dart';
 
 class DeveloperDatabasePost extends StatefulWidget {
-  const DeveloperDatabasePost({super.key});
+  final DigitalProfile myDigitalProfile;
+  const DeveloperDatabasePost({super.key, required this.myDigitalProfile});
   @override
   State<DeveloperDatabasePost> createState() => _DeveloperDatabasePostState();
 }
+
 class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
   final formKey = GlobalKey<FormState>();
   String nameDatabase = "";
@@ -20,35 +22,18 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
   DateTime ObtainDate = DateTime.now();
   bool _isSubmitting = false;
 
-
-
-  Future postDatabasetoDatabase(String id) async{
-    final digitalprofile =await DeveloperService.getDigitalProfileByDeveloperId(id);
-    print(digitalprofile);
-    final PostDatabase=Database(
-      id:0,
-      name:nameDatabase,
+  Future postDatabasetoDatabase(DigitalProfile digitalProfile) async {
+    final PostDatabase = Database(
+      id: 0,
+      name: nameDatabase,
       description: DescriptionDatabase,
       iconLink: IconURL,
-      digitalProfile:DigitalProfile.fromJson(digitalprofile),
+      digitalProfile: digitalProfile,
     );
     print(PostDatabase);
     final post = await DeveloperService.postDatabase(PostDatabase);
     print(post);
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +94,11 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.drive_file_rename_outline),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.drive_file_rename_outline),
                           labelText: 'name Database',
                           border: OutlineInputBorder(),
                         ),
@@ -131,8 +119,11 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.description_sharp),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.description_sharp),
                           labelText: 'Description Database',
                           border: OutlineInputBorder(),
                         ),
@@ -153,8 +144,11 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0), // Ajusta el tamaño del campo de texto
-                          icon:Icon(Icons.link),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal:
+                                  12.0), // Ajusta el tamaño del campo de texto
+                          icon: Icon(Icons.link),
                           labelText: 'Icon Database URL',
                           border: OutlineInputBorder(),
                         ),
@@ -176,7 +170,7 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           //Send to API
-                          postDatabasetoDatabase('1');
+                          postDatabasetoDatabase(widget.myDigitalProfile);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: FlashCorrectMessageWidget(
@@ -191,10 +185,8 @@ class _DeveloperDatabasePostState extends State<DeveloperDatabasePost> {
                       },
                       child: const Text('Submit'),
                     ),
-
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),

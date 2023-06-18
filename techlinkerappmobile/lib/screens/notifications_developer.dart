@@ -13,11 +13,11 @@ import '../widgets/notification_item.dart';
 
 class DeveloperNotifications extends StatefulWidget {
   final int UserId;
-  const DeveloperNotifications({Key? key,required this.UserId}) : super(key: key);
+  const DeveloperNotifications({Key? key, required this.UserId})
+      : super(key: key);
 
   @override
-  State<DeveloperNotifications> createState() =>
-      _DeveloperNotificationsState();
+  State<DeveloperNotifications> createState() => _DeveloperNotificationsState();
 }
 
 class _DeveloperNotificationsState extends State<DeveloperNotifications> {
@@ -33,7 +33,8 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
   }
 
   Future refreshNotifications() async {
-    await getNotificationsByDeveloperId(widget.UserId.toString()); // Actualiza el ID del desarrollador según sea necesario
+    await getNotificationsByDeveloperId(widget.UserId
+        .toString()); // Actualiza el ID del desarrollador según sea necesario
   }
 
   Future loadData() async {
@@ -120,21 +121,24 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
                 child: RefreshIndicator(
                   onRefresh: refreshNotifications,
                   child: ListView.builder(
-                    itemCount: developerNotifications.length,
+                    itemCount: developerNotifications.isEmpty
+                        ? 10
+                        : developerNotifications.length,
                     itemBuilder: (context, index) {
-                      final notification = developerNotifications[index];
-
-                      return isLoading
-                          ? Shimmer.fromColors(
-                        baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                        highlightColor: Colors.grey[200]!,
-                        child: buildSkeletonNotification(context),
-                      )
-                          : NotificationItem(
-                        notification: notification,
-                        emitterId: emitters[index] ?? User.empty(),
-                        refreshNotifications: refreshNotifications,
-                      );
+                      if (developerNotifications.isEmpty) {
+                        return Shimmer.fromColors(
+                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                          highlightColor: Colors.grey[200]!,
+                          child: buildSkeletonNotification(context),
+                        );
+                      } else {
+                        final notification = developerNotifications[index];
+                        return NotificationItem(
+                          notification: notification,
+                          emitterId: emitters[index] ?? User.empty(),
+                          refreshNotifications: refreshNotifications,
+                        );
+                      }
                     },
                   ),
                 ),
@@ -202,7 +206,7 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
   Future getNotificationsByDeveloperId(String id) async {
     try {
       final notificationsData =
-      await DeveloperService.getNotificationsByDeveloperId(id);
+          await DeveloperService.getNotificationsByDeveloperId(id);
       if (mounted) {
         setState(() {
           if (notificationsData != null) {
@@ -220,5 +224,4 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
       print('Failed to get notifications: $e');
     }
   }
-
 }
