@@ -57,6 +57,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   Developer MyDeveloper = Developer();
   DigitalProfile? digProfile;
+  int educationId = 0;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -103,26 +104,27 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
             digProfile = digital;
           });
         }
-      });
-      getEducationByDigitalProfileId(widget.developerId.toString())
-          .then((value) async {
-        developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects =
-            await getProjectsByDigitalProfileId(widget.developerId.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(
-            widget.developerId.toString());
-        developerDatabases =
-            await getDatabasesByDigitalProfileId(widget.developerId.toString());
-        developerProgrammingLanguages =
-            await getProgrammingLanguagesByDigitalProfileId(
-                widget.developerId.toString());
-        developerCertificates = await getCertficationsByEducationId(value);
-        if (mounted) {
-          setState(() {});
-        }
+      }).then((value) {
+        getEducationByDigitalProfileId(digProfile!.id.toString())
+            .then((value) async {
+          developerStudyCenters = await getStudyCentersByEducation(value);
+          developerProjects = await getProjectsByDigitalProfileId(
+              widget.developerId.toString());
+          developerFrameworks = await getFrameworksByDigitalProfileId(
+              widget.developerId.toString());
+          developerDatabases = await getDatabasesByDigitalProfileId(
+              widget.developerId.toString());
+          developerProgrammingLanguages =
+              await getProgrammingLanguagesByDigitalProfileId(
+                  widget.developerId.toString());
+          developerCertificates = await getCertficationsByEducationId(value);
+          if (mounted) {
+            setState(() {});
+          }
 
-        getPostImages();
-        WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+          getPostImages();
+          WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+        });
       });
     });
   }
@@ -304,7 +306,17 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                             builder: (context) => DeveloperEducationPost(
                                 digitalProfileId: digProfile!.id),
                           ),
-                        );
+                        ).then((value) async {
+                          await getStudyCentersByEducation(
+                                  digProfile!.id.toString())
+                              .then((value) {
+                            if (mounted) {
+                              setState(() {
+                                developerStudyCenters = value;
+                              });
+                            }
+                          });
+                        });
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -957,6 +969,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           await DeveloperService.getEducationByDigitalProfileId(id);
       if (mounted) {
         final education = Education.fromJson(educationData);
+        if (mounted) {
+          setState(() {
+            educationId = education.id!;
+          });
+        }
         return education.id.toString();
       }
     } catch (e) {
@@ -1082,11 +1099,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   Future<Developer> getDeveloperById(String id) async {
     try {
       final developerData = await DeveloperService.getDeveloperById(id);
-      print("beforteeeeeeeeeeeeeeeeeee");
       if (mounted) {
         final develop = Developer.fromJson(developerData);
-        print("---------------------------------");
-        print(develop);
         return develop;
       }
     } catch (e) {
@@ -1100,11 +1114,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     try {
       final digitalProfileData =
           await DeveloperService.getDigitalProfileByDeveloperId(id);
-      print("------------------Obtained digital profile-------------------");
       if (mounted) {
         final digitalProfile = DigitalProfile.fromJson(digitalProfileData);
-        print("---------------------------------");
-        print(digitalProfile);
         return digitalProfile;
       }
     } catch (e) {

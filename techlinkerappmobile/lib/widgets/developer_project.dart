@@ -47,8 +47,8 @@ class DeveloperProject extends StatelessWidget {
 
                 const SizedBox(height: 5),
                 Text(
-                    project.description.length > 25
-                        ? project.description!.substring(0, 25) + '...'
+                    project.description.length > 20
+                        ? project.description!.substring(0, 20) + '...'
                         : project.description!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(

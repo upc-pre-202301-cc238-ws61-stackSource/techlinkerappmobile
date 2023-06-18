@@ -67,9 +67,9 @@ class DeveloperProgrammingLanguage extends StatelessWidget {
                 )),
                 Center(
                     child: Text(
-                        programmingLanguage.description.length > 25
+                        programmingLanguage.description.length > 20
                             ? programmingLanguage.description!
-                                    .substring(0, 25) +
+                                    .substring(0, 20) +
                                 '...'
                             : programmingLanguage.description!,
                         style: const TextStyle(
