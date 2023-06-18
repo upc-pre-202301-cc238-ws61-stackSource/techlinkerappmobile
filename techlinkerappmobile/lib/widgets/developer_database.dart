@@ -50,7 +50,10 @@ class DeveloperDatabase extends StatelessWidget {
                   ],
                 )),
                 Center(
-                    child: Text(database.description!,
+                    child: Text(
+                        database.description.length > 25
+                            ? database.description!.substring(0, 25) + '...'
+                            : database.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],
