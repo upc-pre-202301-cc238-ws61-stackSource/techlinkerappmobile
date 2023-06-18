@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
@@ -110,11 +111,23 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: primaryColor,
       appBar: AppBar(
-        title: const Text(
-          "Edit your profile!",
-          style: TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: const Text("Editar Perfil"),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF39BCFD),
+                Color(0xFF4F93E9),
+                Color(0xFF7176EE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -124,7 +137,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 16),
         child: ListView(
           children: <Widget>[
             Form(
@@ -152,7 +165,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     decoration: InputDecoration(labelText: 'URL del perfil'),
                     validator: validateUrl,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 25),
                   ElevatedButton(
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
@@ -171,7 +184,43 @@ class _EditProfileViewState extends State<EditProfileView> {
                         Navigator.pop(context, updateProfileCompany);
                       }
                     },
-                    child: Text('Guardar cambios'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF39BCFD),
+                            Color(0xFF4F93E9),
+                            Color(0xFF7176EE),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              textAlign: TextAlign.center,
+                              "Guardar Cambios",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

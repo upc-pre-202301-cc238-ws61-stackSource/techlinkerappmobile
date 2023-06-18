@@ -162,31 +162,6 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF39BCFD),
-                Color(0xFF4F93E9),
-                Color(0xFF7176EE),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
-        title: Text(
-          "Developer Profile",
-          style: TextStyle(
-            color: cardColor,
-            fontSize: 25,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
       backgroundColor: primaryColor,
       body: Container(
           child: Column(
@@ -195,6 +170,8 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
           Expanded(
               child: ListView(
             children: [
+              //create an app back width ios back icon and "Developer Profile" text
+
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -214,6 +191,28 @@ class _ContactDeveloperState extends State<ContactDeveloper> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
+                    //create a row with back icon and "Developer Profile" text
+                    Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const Text(
+                          "Developer Profile",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+
                     const SizedBox(height: 17),
                     Center(
                       child: isLoading

@@ -785,7 +785,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: const [
                     Text(
                       textAlign: TextAlign.center,
                       "Add",
@@ -795,7 +795,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: 5),
                     Icon(
                       Icons.add,
                       color: Colors.white,

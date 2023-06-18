@@ -31,7 +31,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
       //home: LoginPage(),
-      home: MainCompanyPage(companyId: 4),
+      home: MainDeveloperPage(
+        developerId: 1,
+      ),
     );
   }
 }
