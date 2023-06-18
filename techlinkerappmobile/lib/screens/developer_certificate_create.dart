@@ -8,14 +8,16 @@ import 'common/flash-correct-message-widget.dart';
 
 class DeveloperCertificateRegister extends StatefulWidget {
   final int digitalProfileId;
-  const DeveloperCertificateRegister({Key? key, required this.digitalProfileId }) : super(key: key);
+  const DeveloperCertificateRegister({Key? key, required this.digitalProfileId})
+      : super(key: key);
 
   @override
   State<DeveloperCertificateRegister> createState() =>
       _DeveloperCertificateRegisterState();
 }
 
-class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegister> {
+class _DeveloperCertificateRegisterState
+    extends State<DeveloperCertificateRegister> {
   final TextEditingController _obtainedDateController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   String TittleCertificate = "";
@@ -44,10 +46,21 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Post your certificate!",
-          style: TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: const Text("Add Certificate"),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF39BCFD),
+                Color(0xFF4F93E9),
+                Color(0xFF7176EE),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
         ),
       ),
       body: Padding(
@@ -119,20 +132,20 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                       },
                     ),
                   ),
-                  const SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 25.0, right: 20.0, top: 8.0),
+                  const SizedBox(height: 20),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 20.0, top: 8.0),
                     child: Text(
                       'Select date of Obtained Certificate',
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TableCalendar(
@@ -153,7 +166,8 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
                         //Send to API
-                        postCertificateToDataBase(widget.digitalProfileId.toString());
+                        postCertificateToDataBase(
+                            widget.digitalProfileId.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: FlashCorrectMessageWidget(
@@ -166,8 +180,48 @@ class _DeveloperCertificateRegisterState extends State<DeveloperCertificateRegis
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Submit'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Container(
+                      width: 150,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF39BCFD),
+                            Color(0xFF4F93E9),
+                            Color(0xFF7176EE),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              textAlign: TextAlign.center,
+                              "Submit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),
