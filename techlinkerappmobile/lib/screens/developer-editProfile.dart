@@ -3,6 +3,10 @@ import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 import 'package:techlinkerappmobile/services/developer_service.dart';
 
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 class EditProfileView extends StatefulWidget {
   final Developer myDeveloper;
   const EditProfileView({required this.myDeveloper, Key? key})
@@ -19,13 +23,60 @@ class _EditProfileViewState extends State<EditProfileView> {
   late Developer developer;
   final formKey = GlobalKey<FormState>();
 
+  bool _isPasswordVisible = false;
+  late File? _image;
+  final picker = ImagePicker();
+
   @override
   void initState() {
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-    _phoneController = TextEditingController();
-    _urlController = TextEditingController();
+    _emailController = TextEditingController(text: widget.myDeveloper.email);
+    _passwordController = TextEditingController(text: widget.myDeveloper.password);
+    _phoneController = TextEditingController(text: widget.myDeveloper.phone);
+    _urlController = TextEditingController(text: widget.myDeveloper.image);
     super.initState();
+  }
+
+  Future<bool> _checkCameraAndStoragePermissions() async {
+    PermissionStatus cameraPermissionStatus = await Permission.camera.status;
+    PermissionStatus storagePermissionStatus = await Permission.storage.status;
+
+    if (cameraPermissionStatus.isGranted && storagePermissionStatus.isGranted) {
+      return true;
+    }
+
+    Map<Permission, PermissionStatus> permissionStatuses = await [
+      Permission.camera,
+      Permission.storage,
+    ].request();
+
+    return permissionStatuses[Permission.camera]!.isGranted &&
+        permissionStatuses[Permission.storage]!.isGranted;
+  }
+
+  Future getImage(ImageSource source) async {
+    bool hasPermissions = await _checkCameraAndStoragePermissions();
+
+    if (!hasPermissions) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text( 'Se necesitan permisos para acceder a la cámara y la galería.'),
+          action: SnackBarAction(
+            label: 'Solicitar permisos',
+            onPressed: () {
+              _checkCameraAndStoragePermissions();
+            },
+          )
+        ),
+      );
+    }
+
+    final pickedFile = await picker.getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
   }
 
   Future UpdateProfile(String id) async {
@@ -41,12 +92,12 @@ class _EditProfileViewState extends State<EditProfileView> {
       id: updatedDeveloper.id,
       firstName: updatedDeveloper.firstName,
       lastName: updatedDeveloper.lastName,
-      email: _emailController.text,
-      phone: _phoneController.text,
-      password: _passwordController.text,
+      email: _emailController.text.isNotEmpty ? _emailController.text : updatedDeveloper.email,
+      phone: _phoneController.text.isNotEmpty ? _phoneController.text : updatedDeveloper.phone,
+      password: _passwordController.text.isNotEmpty ? _passwordController.text : updatedDeveloper.password,
       role: updatedDeveloper.role,
       description: updatedDeveloper.description,
-      image: _urlController.text,
+      image: _urlController.text.isNotEmpty ? _urlController.text : updatedDeveloper.image,
       bannerImage: updatedDeveloper.bannerImage,
     );
     final update = await DeveloperService.updateProfileDeveloper(updateProfile);
@@ -145,7 +196,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Contraseña'),
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                        child: Icon(
+                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
                     validator: validatePassword,
                   ),
                   TextFormField(
@@ -157,6 +222,78 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: _urlController,
                     decoration: InputDecoration(labelText: 'URL del perfil'),
                     validator: validateUrl,
+                  ),
+                  SizedBox(height: 25),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Seleccionar una imagen'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    child: const Text('Tomar una foto'),
+                                    onTap: () {
+                                      getImage(ImageSource.camera);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: GestureDetector(
+                                      child: const Text('Elegir una foto de la galería'),
+                                      onTap: () {
+                                        getImage(ImageSource.gallery);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF39BCFD),
+                            Color(0xFF4F93E9),
+                            Color(0xFF7176EE),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.add_a_photo, color: Colors.white),
+                            SizedBox(width: 10),
+                            Text(
+                              'Cambiar imagen de perfil',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 25),
                   ElevatedButton(

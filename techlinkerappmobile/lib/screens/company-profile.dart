@@ -312,10 +312,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(MyCompany!.image!),
-                ),
+                MyCompany.image == null
+                    ? const CircleAvatar(
+                        radius: 50,
+                      )
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(MyCompany!.image!),
+                      ),
                 const SizedBox(height: 16),
                 MyCompany.firstName == null || MyCompany.lastName == null
                     ? Text(
@@ -481,7 +485,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
               fontWeight: FontWeight.w500),
         ),
         const SizedBox(
-          width: 20,
+          width: 5,
         ),
         MaterialButton(
           onPressed: () {

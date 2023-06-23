@@ -28,9 +28,10 @@ class MyApp extends StatelessWidget {
     );
 
     return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Tech Linker',
-        //home: LoginPage(),
-        home: LoginPage());
+      debugShowCheckedModeBanner: false,
+      title: 'Tech Linker',
+      //home: LoginPage(),
+      home: LoginPage(),
+    );
   }
 }
