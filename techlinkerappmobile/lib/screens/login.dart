@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techlinkerappmobile/screens/select_user_regyster.dart';
 
 import '../services/login_service.dart';
 import 'common/error_dialog.dart';
+import 'common/flash-correct-message-widget.dart';
 import 'main_company_page.dart';
 import 'main_developer_page.dart';
 
@@ -19,38 +21,6 @@ class _LoginPageState extends State<LoginPage> {
 
   final formKey = GlobalKey<FormState>();
 
-  void verifyInitUser(String email) async {
-    final user = await LoginService.GetUserByEmail(email);
-    if (user.email != '') {
-      if (user.password == passwordTyped) {
-        print(user.id);
-        if (user.role!.toUpperCase() == 'DEVELOPER') {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      MainDeveloperPage(developerId: user.id!)));
-        } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MainCompanyPage(companyId: user.id!)));
-        }
-      } else {
-        print('Wrong password');
-        showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                ErrorDialog().build(context, 'Wrong password'));
-      }
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) =>
-              ErrorDialog().build(context, 'User not regystered'));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,20 +30,20 @@ class _LoginPageState extends State<LoginPage> {
           Image(
             image: AssetImage('lib/assets/icons/hands_logo.jpg'),
             fit: BoxFit.cover,
-            color: Colors.black54,
+            color: Color.fromARGB(164, 0, 0, 0),
             colorBlendMode: BlendMode.darken,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: 150,
-                height: 50,
+                width: 200,
+                height: 100,
                 child: Image.asset(
-                  'lib/assets/icons/logo_icon.png',
+                  'lib/assets/icons/techlinkerlogo.png',
                   fit: BoxFit.cover,
-                  color: Colors.black54,
-                  colorBlendMode: BlendMode.darken,
+                  // color: Colors.black54,
+                  // colorBlendMode: BlendMode.darken,
                 ),
               ),
               Form(
@@ -161,10 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 20.0),
                         MaterialButton(
                           onPressed: () {
-                            // Acción para registrar un nuevo usuario
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SelectUserRegyster()));
                           },
-                          child: Text('Registrarse',
-                              style: TextStyle(fontSize: 16.0)),
+                          child: Text('Register',
+                              style: TextStyle(fontSize: 20.0)),
                           splashColor: Colors.redAccent,
                         ),
                       ],
@@ -177,5 +151,45 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  void verifyInitUser(String email) async {
+    final user = await LoginService.GetUserByEmail(email);
+    if (user.email != '') {
+      if (user.password == passwordTyped) {
+        print(user.id);
+        if (user.role!.toUpperCase() == 'DEVELOPER') {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      MainDeveloperPage(developerId: user.id!)));
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MainCompanyPage(companyId: user.id!)));
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                FlashCorrectMessageWidget(message: 'Logged in successfully'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+          ),
+        );
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                ErrorDialog().build(context, 'Wrong password'));
+      }
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              ErrorDialog().build(context, 'User not regystered'));
+    }
   }
 }

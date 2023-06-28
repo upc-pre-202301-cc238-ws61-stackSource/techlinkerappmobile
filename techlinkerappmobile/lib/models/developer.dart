@@ -1,14 +1,14 @@
 class Developer {
-  final int? id;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phone;
-  final String? password;
-  final String? role;
-  final String? description;
-  final String? image;
-  final String? bannerImage;
+  int? id;
+  String? firstName;
+  String? lastName;
+  String? email;
+  String? phone;
+  String? password;
+  String? role;
+  String? description;
+  String? image;
+  String? bannerImage;
 
   Developer({
      this.id,

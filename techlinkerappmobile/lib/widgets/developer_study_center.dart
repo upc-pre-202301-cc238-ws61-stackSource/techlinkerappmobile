@@ -42,7 +42,10 @@ class DeveloperStudyCenter extends StatelessWidget {
                       fontWeight: FontWeight.w700, fontSize: 18),
                 ),
                 const SizedBox(height: 5),
-                Text(studyCenter.description!,
+                Text(
+                    studyCenter.description.length > 25
+                        ? studyCenter.description!.substring(0, 25) + '...'
+                        : studyCenter.description!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 16)),

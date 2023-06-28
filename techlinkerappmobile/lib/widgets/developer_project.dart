@@ -38,28 +38,18 @@ class DeveloperProject extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40.0),
-                      child: Text(
-                        project.name!,textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 18),
-                      ),
-                    ),                GestureDetector(
-                      onTap: () {
-                        DeveloperService.deleteProject(project.id);
-                        // Lógica para eliminar el elemento
-                        // Puedes implementar aquí la acción que deseas realizar al hacer clic en el icono "delete"
-                      },
-                      child: Icon(Icons.delete),
-                    ),
-                  ],
+                Text(
+                  project.name!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700, fontSize: 18),
                 ),
+
                 const SizedBox(height: 5),
-                Text(project.description!,
+                Text(
+                    project.description.length > 20
+                        ? project.description!.substring(0, 20) + '...'
+                        : project.description!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 16)),
@@ -87,6 +77,7 @@ class DeveloperProject extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 2),
               ],
             ),
           ),

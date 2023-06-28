@@ -25,12 +25,17 @@ import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/developer.dart';
+import '../models/digital_profile.dart';
 import '../models/education.dart';
 import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-Database-create.dart';
+import 'developer-Frameworks-create.dart';
+import 'developer-ProgramingLanguajes-create.dart';
 import 'developer-editProfile.dart';
+import 'developer-project-post.dart';
 
 class DeveloperProfile extends StatefulWidget {
   final int developerId;
@@ -51,6 +56,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool apiHasBeenCalled = false;
 
   Developer MyDeveloper = Developer();
+  DigitalProfile? digProfile;
+  int educationId = 0;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -77,27 +84,10 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     super.initState();
 
     developerStudyCentersAtInit.add(StudyCenter.empty());
-    developerStudyCentersAtInit.add(StudyCenter.empty());
-    developerStudyCentersAtInit.add(StudyCenter.empty());
-
     developerFrameworksAtInit.add(Framework.empty());
-    developerFrameworksAtInit.add(Framework.empty());
-    developerFrameworksAtInit.add(Framework.empty());
-
     developerDatabasesAtInit.add(Database.empty());
-    developerDatabasesAtInit.add(Database.empty());
-    developerDatabasesAtInit.add(Database.empty());
-
     developerProjectsAtInit.add(Project.empty());
-    developerProjectsAtInit.add(Project.empty());
-    developerProjectsAtInit.add(Project.empty());
-
     developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
-
-    developerCertificatesAtInit.add(Certificate.empty());
-    developerCertificatesAtInit.add(Certificate.empty());
     developerCertificatesAtInit.add(Certificate.empty());
 
     // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
@@ -107,26 +97,34 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           MyDeveloper = developer;
         });
       }
-
-      getEducationByDigitalProfileId(widget.developerId.toString())
-          .then((value) async {
-        developerStudyCenters = await getStudyCentersByEducation(value);
-        developerProjects =
-            await getProjectsByDigitalProfileId(widget.developerId.toString());
-        developerFrameworks = await getFrameworksByDigitalProfileId(
-            widget.developerId.toString());
-        developerDatabases =
-            await getDatabasesByDigitalProfileId(widget.developerId.toString());
-        developerProgrammingLanguages =
-            await getProgrammingLanguagesByDigitalProfileId(
-                widget.developerId.toString());
-        developerCertificates = await getCertficationsByEducationId(value);
+      getDigitalProfileByDeveloperId(widget.developerId.toString())
+          .then((digital) {
         if (mounted) {
-          setState(() {});
+          setState(() {
+            digProfile = digital;
+          });
         }
+      }).then((value) {
+        getEducationByDigitalProfileId(digProfile!.id.toString())
+            .then((value) async {
+          developerStudyCenters = await getStudyCentersByEducation(value);
+          developerProjects = await getProjectsByDigitalProfileId(
+              widget.developerId.toString());
+          developerFrameworks = await getFrameworksByDigitalProfileId(
+              widget.developerId.toString());
+          developerDatabases = await getDatabasesByDigitalProfileId(
+              widget.developerId.toString());
+          developerProgrammingLanguages =
+              await getProgrammingLanguagesByDigitalProfileId(
+                  widget.developerId.toString());
+          developerCertificates = await getCertficationsByEducationId(value);
+          if (mounted) {
+            setState(() {});
+          }
 
-        getPostImages();
-        WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+          getPostImages();
+          WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+        });
       });
     });
   }
@@ -305,10 +303,20 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperEducationPost(),
+                            builder: (context) => DeveloperEducationPost(
+                                digitalProfileId: digProfile!.id),
                           ),
-                        );
+                        ).then((value) async {
+                          await getStudyCentersByEducation(
+                                  digProfile!.id.toString())
+                              .then((value) {
+                            if (mounted) {
+                              setState(() {
+                                developerStudyCenters = value;
+                              });
+                            }
+                          });
+                        });
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -325,8 +333,6 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.8,
-
-                  // Add more options as needed
                 ),
                 items: (developerStudyCenters.isEmpty
                         ? developerStudyCentersAtInit
@@ -338,7 +344,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const DeveloperEducationPost(),
+                                        DeveloperEducationPost(
+                                            digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
@@ -370,13 +377,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //     const DeveloperFrameworkRegister(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperFrameworkRegister(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: Icon(
                         Icons.add_circle_outline_outlined,
@@ -392,7 +399,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0,
+                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
@@ -402,13 +409,14 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerFrameworks.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperFrameworkRegister(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeveloperFrameworkRegister(
+                                            myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Framework");
                               })
                             : Shimmer.fromColors(
@@ -439,13 +447,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperDatabasePost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperDatabasePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -471,14 +479,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerDatabases.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperDatabasePost(),
-                                //   ),
-                                // );
-                                print("Add Database");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperDatabasePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                               })
                             : Shimmer.fromColors(
                                 baseColor: Color.fromARGB(255, 219, 221, 225)!,
@@ -508,13 +515,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperLanguajePost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperLanguajePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -541,13 +548,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerProgrammingLanguages.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperLanguajePost(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperLanguajePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Programming Language");
                               })
                             : Shimmer.fromColors(
@@ -579,13 +586,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) =>
-                        //         const DeveloperProjectPost(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperProjectPost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
                       },
                       child: const Icon(
                         Icons.add_circle_outline_outlined,
@@ -611,13 +618,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                     .map((item) => developerProjects.isEmpty
                         ? apiHasBeenCalled
                             ? skeletonAddItem(context, () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         const DeveloperProjectPost(),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperProjectPost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
                                 print("Add Project");
                               })
                             : Shimmer.fromColors(
@@ -651,8 +658,9 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const DeveloperCertificateRegister(),
+                            builder: (context) => DeveloperCertificateRegister(
+                              digitalProfileId: digProfile!.id,
+                            ),
                           ),
                         );
                       },
@@ -684,7 +692,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const DeveloperCertificateRegister(),
+                                        DeveloperCertificateRegister(
+                                            digitalProfileId: digProfile!.id),
                                   ),
                                 );
                               })
@@ -788,7 +797,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: const [
                     Text(
                       textAlign: TextAlign.center,
                       "Add",
@@ -798,7 +807,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: 5),
                     Icon(
                       Icons.add,
                       color: Colors.white,
@@ -960,6 +969,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           await DeveloperService.getEducationByDigitalProfileId(id);
       if (mounted) {
         final education = Education.fromJson(educationData);
+        if (mounted) {
+          setState(() {
+            educationId = education.id!;
+          });
+        }
         return education.id.toString();
       }
     } catch (e) {
@@ -1085,11 +1099,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   Future<Developer> getDeveloperById(String id) async {
     try {
       final developerData = await DeveloperService.getDeveloperById(id);
-      print("beforteeeeeeeeeeeeeeeeeee");
       if (mounted) {
         final develop = Developer.fromJson(developerData);
-        print("---------------------------------");
-        print(develop);
         return develop;
       }
     } catch (e) {
@@ -1097,5 +1108,18 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return Developer(); // Retornar una instancia vacía de Developer en caso de error
+  }
+
+  Future getDigitalProfileByDeveloperId(String id) async {
+    try {
+      final digitalProfileData =
+          await DeveloperService.getDigitalProfileByDeveloperId(id);
+      if (mounted) {
+        final digitalProfile = DigitalProfile.fromJson(digitalProfileData);
+        return digitalProfile;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
   }
 }

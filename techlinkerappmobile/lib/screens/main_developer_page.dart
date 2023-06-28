@@ -3,6 +3,7 @@ import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_developer.dart';
 import 'package:techlinkerappmobile/screens/notifications_developer.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 import '../constants/colors.dart';
 import '../screens/home_developer.dart';
 
@@ -17,6 +18,7 @@ class MainDeveloperPage extends StatefulWidget {
 class _MainDeveloperPageState extends State<MainDeveloperPage> {
   int index = 0;
   List<Widget> screens = [];
+  Developer developer = Developer();
 
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _MainDeveloperPageState extends State<MainDeveloperPage> {
         developerId: widget.developerId,
       ),
       DeveloperMessages(developerId: widget.developerId),
-      DeveloperNotifications(),
+      DeveloperNotifications(UserId: widget.developerId),
       DeveloperProfile(developerId: widget.developerId),
     ];
   }

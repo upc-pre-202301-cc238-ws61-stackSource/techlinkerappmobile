@@ -9,6 +9,43 @@ import '../models/company_unique_post.dart';
 class CompanyService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
 
+  static Future<Map<String, dynamic>> insertCompany(Company company) async {
+    final url = Uri.parse('$baseUrl/companies');
+    print(url);
+    try {
+      final response = await http.post(
+        url,
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode({
+          'address': company.address,
+          'bannerImage': company.bannerImage,
+          'city': company.city,
+          'country': company.country,
+          'description': company.description,
+          'email': company.email,
+          'firstName': company.firstName,
+          'id': company.id,
+          'image': company.image,
+          'lastName': company.lastName,
+          'name': company.name,
+          'owner': company.owner,
+          'password': company.password,
+          'phone': company.phone,
+          'role': company.role,
+          'ruc': company.ruc,
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else {
+        throw Exception('Failed to create developer. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create developer. Error: $e');
+    }
+  }
+
   static sendNotificationFromCompanyToDeveloper(
       String id, String reciverId, String content) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
@@ -265,6 +302,52 @@ class CompanyService {
       }
     } catch (e) {
       throw Exception('Failed to delete post. Error: $e');
+    }
+  }
+
+
+  static getNotificationsByCompanyId(String id) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications');
+    print(url);
+    try {
+      final response = await http.get(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as List<dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
+    }
+  }
+
+  static deleteNotificationIdByDeveloperIdOrCompanyId(String id, String notificationId) async {
+    final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
+    print(url);
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'content-type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        return [];
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception(
+            'Failed to fetch company data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch company data. Error: $e');
     }
   }
 }

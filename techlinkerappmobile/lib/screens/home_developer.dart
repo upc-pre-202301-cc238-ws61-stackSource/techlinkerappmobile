@@ -123,7 +123,7 @@ class _DeveloperHomeState extends State<DeveloperHome> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: ListView.builder(
-                  itemCount: companyPosts.length,
+                  itemCount: companyPosts.isEmpty ? 3 : companyPosts.length,
                   itemBuilder: (context, index) => Container(
                     margin: const EdgeInsets.only(bottom: 16),
                     child: companyPosts.isEmpty

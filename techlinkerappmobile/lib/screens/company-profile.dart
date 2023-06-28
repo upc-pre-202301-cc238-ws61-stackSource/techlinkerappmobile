@@ -36,12 +36,18 @@ class _CompanyProfileState extends State<CompanyProfile> {
     super.initState();
     getPostByCompanyId(widget.companyId.toString()).then((value) {
       companyPosts = value;
-      setState(() {});
+
+      if (mounted) {
+        setState(() {});
+      }
+
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         loadData();
         getCompanyById(widget.companyId.toString()).then((company) {
           MyCompany = company;
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       });
     });
@@ -92,7 +98,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
     if (shouldUpdateData == true) {
       getPostByCompanyId(widget.companyId.toString()).then((value) {
         companyPosts = value;
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     }
     return Scaffold(
@@ -177,12 +185,23 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(MyCompany.description!,
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                            color: secondaryTextInBackground,
-                            fontSize: 19,
-                            fontWeight: FontWeight.normal)),
+                    MyCompany.description == null
+                        ? Text(
+                            "",
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                              color: textColor,
+                            ),
+                          )
+                        : Text(
+                            MyCompany.description!,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                              color: textColor,
+                            ),
+                          ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -293,26 +312,50 @@ class _CompanyProfileState extends State<CompanyProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(MyCompany!.image!),
-                ),
+                MyCompany.image == null
+                    ? const CircleAvatar(
+                        radius: 50,
+                      )
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(MyCompany!.image!),
+                      ),
                 const SizedBox(height: 16),
-                Text(
-                  '${MyCompany!.firstName!} ${MyCompany!.lastName!}',
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: textColor),
-                ),
+                MyCompany.firstName == null || MyCompany.lastName == null
+                    ? Text(
+                        "",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                        ),
+                      )
+                    : Text(
+                        "${MyCompany!.firstName!} ${MyCompany!.lastName!}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                        ),
+                      ),
                 const SizedBox(height: 5),
-                Text(
-                  MyCompany!.email!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: textColor,
-                  ),
-                ),
+                MyCompany!.email == null
+                    ? Text(
+                        "",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: textColor,
+                        ),
+                      )
+                    : Text(
+                        MyCompany!.email!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: textColor,
+                        ),
+                      ),
                 const SizedBox(height: 8),
               ],
             ),
@@ -442,7 +485,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
               fontWeight: FontWeight.w500),
         ),
         const SizedBox(
-          width: 20,
+          width: 5,
         ),
         MaterialButton(
           onPressed: () {

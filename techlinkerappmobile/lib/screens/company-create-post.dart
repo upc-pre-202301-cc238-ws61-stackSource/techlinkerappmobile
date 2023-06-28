@@ -55,12 +55,22 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Create a Post of Job',
-          style: TextStyle(
-              color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
-      ),
+          title: const Text("Create new post"),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF39BCFD),
+                  Color(0xFF4F93E9),
+                  Color(0xFF7176EE),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -237,7 +247,44 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Submit'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF39BCFD),
+                            Color(0xFF4F93E9),
+                            Color(0xFF7176EE),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              textAlign: TextAlign.center,
+                              "Submit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

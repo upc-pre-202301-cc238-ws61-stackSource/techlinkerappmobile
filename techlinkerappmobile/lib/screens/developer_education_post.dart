@@ -8,7 +8,8 @@ import '../models/education.dart';
 import 'common/flash-correct-message-widget.dart';
 
 class DeveloperEducationPost extends StatefulWidget {
-  const DeveloperEducationPost({super.key});
+  final int digitalProfileId;
+  const DeveloperEducationPost({super.key, required this.digitalProfileId});
 
   @override
   State<DeveloperEducationPost> createState() => _DeveloperEducationPostState();
@@ -33,7 +34,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
 
     if (randomNumber < 5) {
       iconUrl =
-          'https://us.123rf.com/450wm/iconsdom/iconsdom2012/iconsdom201201095/160378070-icono-de-la-universidad-signo-de-vector-negro-con-trazos-editables-ilustraci%C3%B3n-del-concepto.jpg?ver=6';
+          'https://images.creativemarket.com/0.1.0/ps/8618628/1820/1214/m1/fpnw/wm0/home-education-icon-online-learning-elearning-distance-thin-line-web-symbol-on-white-background-.jpg?1593177412&s=d6a36cafbdb2d8f77952c52f8ae97136';
     } else {
       iconUrl =
           'https://static.vecteezy.com/system/resources/previews/002/556/411/non_2x/teach-school-and-education-certificarte-roll-silhouette-style-icon-free-vector.jpg';
@@ -90,11 +91,11 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
           child: AppBar(
             backgroundColor: Colors.transparent, // Color de fondo transparente
             elevation: 0, // Sin sombra
-            title: Text(
-              'Developer Education',
+            title: const Text(
+              'Add Education',
               style: TextStyle(
                 color: cardColor,
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.w600,
               ),
             ), // Título personalizado
@@ -279,7 +280,7 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           imageUrlLoad();
-                          publishEducation('1');
+                          publishEducation(widget.digitalProfileId.toString());
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -293,9 +294,49 @@ class _DeveloperEducationPostState extends State<DeveloperEducationPost> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Text('Publish'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.transparent,
+                        elevation: 0,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF39BCFD),
+                              Color(0xFF4F93E9),
+                              Color(0xFF7176EE),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                textAlign: TextAlign.center,
+                                "Publish",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  )
                 ]),
           )
         ],
