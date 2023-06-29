@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/accept_terms.dart';
 import 'package:techlinkerappmobile/screens/main_company_page.dart';
 import 'package:techlinkerappmobile/screens/terms.dart';
+import 'package:techlinkerappmobile/util/db_helper.dart';
 
 import '../models/company.dart';
 import '../models/developer.dart';
@@ -23,7 +24,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final formKey = GlobalKey<FormState>();
-  final AcceptTerms acceptTerms = AcceptTerms(isAccepted: false);
+  DbHelper ? dbHelper;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String email = '';
@@ -44,6 +45,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   String bannerImage = ''; //
   String description = ''; //
   String image = ''; //
+
+  AcceptTerms ? acceptTerms = AcceptTerms(id: 1, isAccepted: false);
+  
+
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DbHelper();
+    dbHelper!.openDb();
+    dbHelper!.insertAcceptTerms(acceptTerms!);
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -339,18 +352,26 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                               ),
                             GestureDetector(
                               onTap: (){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions( acceptTerms: acceptTerms,)));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => 
+                                  TermsAndConditions(acceptTerms: acceptTerms!,))).then(
+                                    (value) => {
+                                      setState(() {
+                                        isAcceptedTerms(acceptTerms!);
+                                      })
+                                    });
                               },
                               child: Row(
                                 //mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Checkbox(
                                     activeColor: Colors.blueAccent,
-                                    value: acceptTerms.isAccepted,
+                                    value: acceptTerms!.isAccepted,
                                     onChanged: (value) {
                                     setState(() {
-                                      acceptTerms.isAccepted = value!;
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions(acceptTerms: acceptTerms,)));
+                                      acceptTerms!.isAccepted = value!;
+                                      dbHelper!.openDb();
+                                      dbHelper!.updateAcceptTerms(acceptTerms!);
                                       });
                                     },
                                     shape: RoundedRectangleBorder(
@@ -594,5 +615,17 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
       print(response);
     }
+  }
+
+  Future isAcceptedTerms(AcceptTerms acceptTerms) async {
+    print("--------------------------------Update------------------");
+    await dbHelper!.openDb();
+    final response = await dbHelper!.getAcceptTerms(1);
+    
+    setState(() {
+      print(response);
+      acceptTerms.id = response.id;
+      acceptTerms.isAccepted = response.isAccepted;
+    });
   }
 }

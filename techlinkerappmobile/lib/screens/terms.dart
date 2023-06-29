@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/accept_terms.dart';
 import 'package:techlinkerappmobile/screens/register_form_screen.dart';
 
+import '../util/db_helper.dart';
+
 class TermsAndConditions extends StatefulWidget {
   final AcceptTerms acceptTerms;
-  const TermsAndConditions({ super.key, required this.acceptTerms});
+  const TermsAndConditions({ super.key,required this.acceptTerms});
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
 }
-
 class _TermsAndConditionsState extends State<TermsAndConditions> {
+  DbHelper ? dbHelper;
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DbHelper();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -254,9 +262,11 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   Expanded(
                     child: TermsButton(
                       title: "Decline",
-                      onTap: (){
+                      onTap: () async {
                         print('Clicked Decline');
-                        widget.acceptTerms.isAccepted = true;
+                        widget.acceptTerms.isAccepted = false;
+                        await dbHelper!.openDb();
+                        await dbHelper!.updateAcceptTerms(widget.acceptTerms);
                         Navigator.pop(context);
                       },
                       isAccepted: false,
@@ -266,9 +276,13 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   Expanded(
                     child: TermsButton(
                       title: "Accept",
-                      onTap: (){
+                      onTap: () async {
                         print('Clicked Accept');
+                        print("----------------Accept Terms----------------");
+                        print(widget.acceptTerms.toJson());
                         widget.acceptTerms.isAccepted = true;
+                        await dbHelper!.openDb();
+                        await dbHelper!.updateAcceptTerms(widget.acceptTerms);
                         Navigator.pop(context);
                       },
                       isAccepted: true,
@@ -281,7 +295,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
           ),
           ),
       ),
-      );
+    );
   }
 }
 
