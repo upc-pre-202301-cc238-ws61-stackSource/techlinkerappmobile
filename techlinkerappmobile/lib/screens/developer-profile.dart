@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
-// import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
-// import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
-// import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
-// import 'package:techlinkerappmobile/screens/developer-project-post.dart';
+import 'package:techlinkerappmobile/screens/common/flash-incorrect-message-widget.dart';
 
 import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
 import 'package:techlinkerappmobile/screens/developer_education_post.dart';
@@ -14,12 +12,14 @@ import 'package:techlinkerappmobile/models/database.dart';
 import 'package:techlinkerappmobile/models/programming_language.dart';
 import 'package:techlinkerappmobile/models/study_center.dart';
 import 'package:techlinkerappmobile/screens/login.dart';
+import 'package:techlinkerappmobile/widgets/connect_github.dart';
 
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_database.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
 import 'package:techlinkerappmobile/widgets/developer_programming_language.dart';
 import 'package:techlinkerappmobile/widgets/developer_project.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/certificate.dart';
 import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -31,6 +31,7 @@ import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'common/flash-correct-message-widget.dart';
 import 'developer-Database-create.dart';
 import 'developer-Frameworks-create.dart';
 import 'developer-ProgramingLanguajes-create.dart';
@@ -73,6 +74,10 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   List<Project> developerProjectsAtInit = [];
   List<ProgrammingLanguage> developerProgrammingLanguagesAtInit = [];
   List<Certificate> developerCertificatesAtInit = [];
+
+  String githubUsername = "none";
+  String githubAvatarUrl = "none";
+  String githubUrl = "none";
 
   @override
   void dispose() {
@@ -127,6 +132,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         });
       });
     });
+
+    getGithubData();
   }
 
   Future loadData() async {
@@ -262,6 +269,118 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ],
                 ),
               ),
+              githubUsername == "none"
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                          top: 30, bottom: 10, left: 20, right: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => GithubCard(),
+                          ).then((value) {
+                            if (mounted && value != null && value[0] != "") {
+                              setState(() {
+                                githubUsername = value[0];
+                                githubAvatarUrl = value[1];
+                                githubUrl = value[2];
+                              });
+                              setGithubData();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: FlashIncorrectMessageWidget(
+                                      message: 'User not found!'),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0.0,
+                                ),
+                              );
+                            }
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 225, 221,
+                                226), // Set the button background color
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding: EdgeInsets.all(12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                'https://cdn-icons-png.flaticon.com/512/25/25231.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              SizedBox(width: 8),
+                              Text('Connect to GitHub',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                          top: 30, bottom: 10, left: 20, right: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (githubUrl != "none") launch(githubUrl);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7176EE),
+                                Color(0xFF4F93E9),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.topRight,
+                            ),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
+                            ),
+                          ),
+                          padding: EdgeInsets.all(12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              CircleAvatar(
+                                child: ClipOval(
+                                  child: Image.network(
+                                    githubAvatarUrl,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 15),
+                              Text(githubUsername,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
+                              Spacer(),
+                              Image.network(
+                                'https://cdn-icons-png.flaticon.com/512/25/25231.png',
+                                width: 24,
+                                height: 24,
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(children: [
@@ -1121,5 +1240,27 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     } catch (e) {
       print('Failed to fetch developer data. Error: $e');
     }
+  }
+
+  void setGithubData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('username', githubUsername);
+    prefs.setString('avatar_url', githubAvatarUrl);
+    prefs.setString('github_url', githubUrl);
+
+    getGithubData();
+  }
+
+  void getGithubData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('username') ?? "none";
+    String avatar = prefs.getString('avatar_url') ?? "none";
+    String githubUrl = prefs.getString('github_url') ?? "none";
+
+    setState(() {
+      githubUsername = username;
+      githubAvatarUrl = avatar;
+      githubUrl = githubUrl;
+    });
   }
 }

@@ -15,8 +15,10 @@ import '../models/education.dart';
 
 class DeveloperService {
   static const String baseUrl = 'https://stacksource.azurewebsites.net/api/v1';
+  static const String githubUrl = 'http://api.github.com/users/';
 
-  static Future<Map<String, dynamic>> insertDeveloper(Developer developer) async {
+  static Future<Map<String, dynamic>> insertDeveloper(
+      Developer developer) async {
     final url = Uri.parse('$baseUrl/developers');
     print(url);
     try {
@@ -40,21 +42,24 @@ class DeveloperService {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
-        throw Exception('Failed to create developer. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to create developer. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to create developer. Error: $e');
     }
   }
 
-  static Future<Map<String, dynamic>> setDigitalProfile(DigitalProfile digitalProfile) async{
-    final url = Uri.parse('$baseUrl/digital_profiles/${digitalProfile.developer.id}');
+  static Future<Map<String, dynamic>> setDigitalProfile(
+      DigitalProfile digitalProfile) async {
+    final url =
+        Uri.parse('$baseUrl/digital_profiles/${digitalProfile.developer.id}');
     print(url);
     try {
       final response = await http.post(
         url,
         headers: {'content-type': 'application/json'},
-        body: jsonEncode({        
+        body: jsonEncode({
           'developer': digitalProfile.developer.toJson(),
           'id': digitalProfile.id,
           'name': digitalProfile.name,
@@ -64,22 +69,22 @@ class DeveloperService {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
-        throw Exception('Failed to set digital profile. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to set digital profile. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to set digital profile. Error: $e');
     }
   }
 
-  static deleteProgrammingLanguage(int id) async{
-    final url = Uri.parse(
-        '$baseUrl/programmingLanguages/${id}');
+  static deleteProgrammingLanguage(int id) async {
+    final url = Uri.parse('$baseUrl/programmingLanguages/${id}');
     print(url);
     try {
       final response = await http.delete(
         url,
         headers: {'content-type': 'application/json'},
-        );
+      );
 
       if (response.statusCode == 201) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -92,9 +97,9 @@ class DeveloperService {
       throw Exception('Failed delete programing language. Error: $e');
     }
   }
-  static deleteProject(int id) async{
-    final url = Uri.parse(
-        '$baseUrl/projects/${id}');
+
+  static deleteProject(int id) async {
+    final url = Uri.parse('$baseUrl/projects/${id}');
     print(url);
     try {
       final response = await http.delete(
@@ -113,9 +118,9 @@ class DeveloperService {
       throw Exception('Failed delete project. Error: $e');
     }
   }
-  static deleteFramework(int id) async{
-    final url = Uri.parse(
-        '$baseUrl/frameworks/${id}');
+
+  static deleteFramework(int id) async {
+    final url = Uri.parse('$baseUrl/frameworks/${id}');
     print(url);
     try {
       final response = await http.delete(
@@ -134,9 +139,9 @@ class DeveloperService {
       throw Exception('Failed delete framework. Error: $e');
     }
   }
-  static deleteDatabase(int id) async{
-    final url = Uri.parse(
-        '$baseUrl/databases/${id}');
+
+  static deleteDatabase(int id) async {
+    final url = Uri.parse('$baseUrl/databases/${id}');
     print(url);
     try {
       final response = await http.delete(
@@ -184,7 +189,7 @@ class DeveloperService {
       throw Exception('Failed to create certificate. Error: $e');
     }
   }
- 
+
   static postProjecttoDatabase(Project project) async {
     final url = Uri.parse(
         '$baseUrl/projects/digitalProfile/${project!.digitalProfile!.id}');
@@ -195,11 +200,11 @@ class DeveloperService {
         headers: {'content-type': 'application/json'},
         body: jsonEncode({
           'description': project.description,
-          'digitalProfile':project.digitalProfile!.toJson(),
+          'digitalProfile': project.digitalProfile!.toJson(),
           'iconUrl': project.iconUrl,
           'id': project.id,
           'name': project.name,
-          'projectUrl':project.projectUrl
+          'projectUrl': project.projectUrl
         }),
       );
       if (response.statusCode == 201) {
@@ -214,8 +219,6 @@ class DeveloperService {
     }
   }
 
-
-
   static postProgramingLanguaje(ProgrammingLanguage programinglanguaje) async {
     final url = Uri.parse(
         '$baseUrl/programmingLanguages/${programinglanguaje!.digitalProfile!.id}');
@@ -226,7 +229,7 @@ class DeveloperService {
         headers: {'content-type': 'application/json'},
         body: jsonEncode({
           'description': programinglanguaje.description,
-          'digitalProfile':programinglanguaje.digitalProfile!.toJson(),
+          'digitalProfile': programinglanguaje.digitalProfile!.toJson(),
           'iconLink': programinglanguaje.iconLink,
           'id': programinglanguaje.id,
           'name': programinglanguaje.name,
@@ -244,12 +247,8 @@ class DeveloperService {
     }
   }
 
-
-
-
   static postDatabase(Database database) async {
-    final url = Uri.parse(
-        '$baseUrl/databases/${database!.digitalProfile!.id}');
+    final url = Uri.parse('$baseUrl/databases/${database!.digitalProfile!.id}');
     print(url);
     try {
       final response = await http.post(
@@ -257,7 +256,7 @@ class DeveloperService {
         headers: {'content-type': 'application/json'},
         body: jsonEncode({
           'description': database.description,
-          'digitalProfile':database.digitalProfile!.toJson(),
+          'digitalProfile': database.digitalProfile!.toJson(),
           'iconLink': database.iconLink,
           'id': database.id,
           'name': database.name,
@@ -275,12 +274,9 @@ class DeveloperService {
     }
   }
 
-
-
-
   static postFramework(Framework framework) async {
-    final url = Uri.parse(
-        '$baseUrl/frameworks/${framework!.digitalProfile!.id}');
+    final url =
+        Uri.parse('$baseUrl/frameworks/${framework!.digitalProfile!.id}');
     print(url);
     try {
       final response = await http.post(
@@ -288,7 +284,7 @@ class DeveloperService {
         headers: {'content-type': 'application/json'},
         body: jsonEncode({
           'description': framework.description,
-          'digitalProfile':framework.digitalProfile!.toJson(),
+          'digitalProfile': framework.digitalProfile!.toJson(),
           'iconLink': framework.iconLink,
           'id': framework.id,
           'name': framework.name,
@@ -306,7 +302,6 @@ class DeveloperService {
     }
   }
 
- 
   static postStudyCenter(StudyCenter studyCenter) async {
     final url =
         Uri.parse('$baseUrl/study-centers/${studyCenter.education!.id}');
@@ -338,9 +333,9 @@ class DeveloperService {
       throw Exception('Failed to create study center. Error: $e');
     }
   }
-  static updateProfileDeveloper(Developer developer ) async {
-    final url =
-    Uri.parse('$baseUrl/developers/${developer.id}');
+
+  static updateProfileDeveloper(Developer developer) async {
+    final url = Uri.parse('$baseUrl/developers/${developer.id}');
     print(url);
     try {
       final response = await http.put(
@@ -371,7 +366,6 @@ class DeveloperService {
       throw Exception('Failed to update profile. Error: $e');
     }
   }
-
 
   static getDigitalProfileByDeveloperId(String id) async {
     final url = Uri.parse('$baseUrl/digital_profiles/developer/$id');
@@ -415,7 +409,8 @@ class DeveloperService {
     }
   }
 
-  static Future<Map<String, dynamic>> setEducationPublish(Education education) async {
+  static Future<Map<String, dynamic>> setEducationPublish(
+      Education education) async {
     final url =
         Uri.parse('$baseUrl/educations/${education.digitalProfile!.id}');
     print(url);
@@ -786,7 +781,6 @@ class DeveloperService {
     }
   }
 
- 
   static getMessagesByDeveloperAndReciverId(String id, String reciverId) async {
     final url = Uri.parse('$baseUrl/users/$id/messages/$reciverId');
     print(url);
@@ -810,7 +804,8 @@ class DeveloperService {
     }
   }
 
-  static sendNotificationFromDeveloperToCompany(String id, String reciverId, String content) async {
+  static sendNotificationFromDeveloperToCompany(
+      String id, String reciverId, String content) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$reciverId');
     print(url);
     try {
@@ -827,8 +822,7 @@ class DeveloperService {
 
       if (response.statusCode == 201) {
         return [];
-      }
-      else {
+      } else {
         throw Exception(
             'Failed to fetch company data. Status code: ${response.statusCode}');
       }
@@ -860,7 +854,8 @@ class DeveloperService {
     }
   }
 
-  static deleteNotificationIdByDeveloperIdOrCompanyId(String id, String notificationId) async {
+  static deleteNotificationIdByDeveloperIdOrCompanyId(
+      String id, String notificationId) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
     print(url);
     try {
@@ -882,6 +877,26 @@ class DeveloperService {
     }
   }
 
+  //get by username from github
+  static Future<Map<String, dynamic>> getGithubData(String username) async {
+    final url = Uri.parse('$githubUrl$username');
+    print(url);
+    try {
+      final response = await http.get(url, headers: {
+        'Authorization': 'token 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'
+      });
 
-
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        return jsonData;
+      } else if (response.statusCode == 404) {
+        return {};
+      } else {
+        throw Exception(
+            'Failed to fetch github data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch github data. Error: $e');
+    }
+  }
 }
