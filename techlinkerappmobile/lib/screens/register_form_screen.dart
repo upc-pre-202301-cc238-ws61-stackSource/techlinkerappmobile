@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/screens/main_company_page.dart';
+import 'package:techlinkerappmobile/screens/terms.dart';
 
 import '../models/company.dart';
 import '../models/developer.dart';
@@ -21,6 +22,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final formKey = GlobalKey<FormState>();
+  bool isAccepted = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String email = '';
@@ -46,9 +48,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.isDeveloper
-            ? const Text("Register Developer")
-            : const Text("Register Company"),
+        title: widget.isDeveloper ? const Text("Register Developer") : const Text("Register Company"),
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
@@ -76,8 +76,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     key: formKey,
                     child: Theme(
                       data: ThemeData(
-                        brightness: Brightness.dark,
-                        primarySwatch: Colors.cyan,
+                        //brightness: Brightness.dark,
+                        //primarySwatch: Colors.cyan,
                         inputDecorationTheme: InputDecorationTheme(
                           labelStyle: TextStyle(
                             color: Colors.black87,
@@ -201,15 +201,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 fillColor: Color.fromARGB(255, 236, 233, 233),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                     color: Theme.of(context).primaryColorDark,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _isConfirmPasswordVisible =
-                                          !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
+                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
                                     });
                                   },
                                 ),
@@ -341,6 +338,38 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 },
                                 keyboardType: TextInputType.text,
                               ),
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions()));
+                              },
+                              child: Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Checkbox(
+                                    activeColor: Colors.blueAccent,
+                                    value: isAccepted,
+                                    onChanged: (value) {
+                                    setState(() {
+                                      isAccepted = value!;
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions()));
+                                      });
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Accept our terms of services & privacy policy',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 25),
                               child: ElevatedButton(
