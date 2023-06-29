@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/accept_terms.dart';
+import 'package:techlinkerappmobile/screens/register_form_screen.dart';
 
 class TermsAndConditions extends StatefulWidget {
-  //final bool isAccepted;
-  const TermsAndConditions({ super.key});
-
+  final AcceptTerms acceptTerms;
+  const TermsAndConditions({ super.key, required this.acceptTerms});
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
 }
@@ -255,19 +256,22 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       title: "Decline",
                       onTap: (){
                         print('Clicked Decline');
+                        widget.acceptTerms.isAccepted = true;
                         Navigator.pop(context);
                       },
+                      isAccepted: false,
                     ),
                   ),
                   SizedBox(width: 10,),
                   Expanded(
                     child: TermsButton(
-                      isAccepted: true,
                       title: "Accept",
                       onTap: (){
                         print('Clicked Accept');
+                        widget.acceptTerms.isAccepted = true;
                         Navigator.pop(context);
                       },
+                      isAccepted: true,
                     ),
                   ),
                 ],
@@ -285,7 +289,7 @@ class TermsButton extends StatelessWidget {
   final String title;
   final bool isAccepted;
   final VoidCallback onTap;
-  const TermsButton({super.key, required this.title, required this.onTap, this.isAccepted = false});
+  const TermsButton({super.key, required this.title, required this.onTap, required this.isAccepted});
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/accept_terms.dart';
 import 'package:techlinkerappmobile/screens/main_company_page.dart';
 import 'package:techlinkerappmobile/screens/terms.dart';
 
@@ -22,7 +23,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final formKey = GlobalKey<FormState>();
-  bool isAccepted = false;
+  final AcceptTerms acceptTerms = AcceptTerms(isAccepted: false);
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String email = '';
@@ -76,8 +77,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     key: formKey,
                     child: Theme(
                       data: ThemeData(
-                        //brightness: Brightness.dark,
-                        //primarySwatch: Colors.cyan,
                         inputDecorationTheme: InputDecorationTheme(
                           labelStyle: TextStyle(
                             color: Colors.black87,
@@ -340,18 +339,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                               ),
                             GestureDetector(
                               onTap: (){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions()));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions( acceptTerms: acceptTerms,)));
                               },
                               child: Row(
                                 //mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Checkbox(
                                     activeColor: Colors.blueAccent,
-                                    value: isAccepted,
+                                    value: acceptTerms.isAccepted,
                                     onChanged: (value) {
                                     setState(() {
-                                      isAccepted = value!;
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions()));
+                                      acceptTerms.isAccepted = value!;
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsAndConditions(acceptTerms: acceptTerms,)));
                                       });
                                     },
                                     shape: RoundedRectangleBorder(
