@@ -35,6 +35,27 @@ class Company {
     this.city,
   });
 
+  factory Company.empty() {
+    return Company(
+      id: 2,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      role: '',
+      description: '',
+      image: '',
+      bannerImage: '',
+      ruc: '',
+      owner: '',
+      name: '',
+      address: '',
+      country: '',
+      city: '',
+    );
+  }
+
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
       id: json['id'],
@@ -54,5 +75,26 @@ class Company {
       country: json['country'],
       city: json['city'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'role': role,
+      'description': description,
+      'image': image,
+      'bannerImage': bannerImage,
+      'ruc': ruc,
+      'owner': owner,
+      'name': name,
+      'address': address,
+      'country': country,
+      'city': city,
+    };
   }
 }

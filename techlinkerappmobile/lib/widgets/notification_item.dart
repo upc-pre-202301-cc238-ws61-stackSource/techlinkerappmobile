@@ -1,19 +1,43 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:techlinkerappmobile/models/notification_unique_item.dart';
-import 'package:techlinkerappmobile/screens/notifications_company.dart';
+import 'package:techlinkerappmobile/screens/common/flash-correct-message-widget.dart';
 
 import '../constants/colors.dart';
+import '../models/notify.dart';
+import '../models/user.dart';
+import '../services/developer_service.dart';
 
-class NotificationItem extends StatelessWidget {
-  final NotificationUniqueItem notification;
-  final String emmiterIcon;
+class NotificationItem extends StatefulWidget {
+  final Notify notification;
+  final User emitterId;
+  final VoidCallback refreshNotifications;
+  //
 
-  const NotificationItem(
-      {required this.emmiterIcon, required this.notification, super.key});
+  NotificationItem({
+    required this.emitterId,
+    required this.notification,
+    required this.refreshNotifications,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<NotificationItem> createState() => _NotificationItemState();
+}
+
+class _NotificationItemState extends State<NotificationItem> {
+
+  Future deleteNotificationByDeveloperId(String id, String notificationId) async {
+    try {
+      await DeveloperService.deleteNotificationIdByDeveloperIdOrCompanyId(id, notificationId);
+      widget.refreshNotifications();
+    } catch (e) {
+      print('Failed to delete notification: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10, top: 10, right: 1, left: 1),
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -34,7 +58,7 @@ class NotificationItem extends StatelessWidget {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(34),
           child: CachedNetworkImage(
-            imageUrl: emmiterIcon,
+            imageUrl: widget.emitterId.image ?? '',
             width: 54,
             height: 64,
             fit: BoxFit.cover,
@@ -44,12 +68,12 @@ class NotificationItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              notification.emitter!,
+              '${widget.emitterId.firstName} ${widget.emitterId.lastName}' ?? '',
               style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: textColor),
             ),
             Text(
-              notification.content!,
+              widget.notification.content ?? '',
               style: const TextStyle(
                 color: textColor,
                 fontSize: 16,
@@ -69,6 +93,15 @@ class NotificationItem extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
+              deleteNotificationByDeveloperId(widget.notification.reciverId.toString(), widget.notification.id.toString());
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: FlashCorrectMessageWidget(message: 'Notification deleted successfully'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                ),
+              );
               // Handle delete button press
             },
           ),

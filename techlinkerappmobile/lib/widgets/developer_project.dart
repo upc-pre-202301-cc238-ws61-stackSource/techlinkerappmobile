@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/project.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeveloperProject extends StatelessWidget {
@@ -39,11 +40,16 @@ class DeveloperProject extends StatelessWidget {
               children: [
                 Text(
                   project.name!,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontWeight: FontWeight.w700, fontSize: 18),
                 ),
+
                 const SizedBox(height: 5),
-                Text(project.description!,
+                Text(
+                    project.description.length > 20
+                        ? project.description!.substring(0, 20) + '...'
+                        : project.description!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 16)),
@@ -71,6 +77,7 @@ class DeveloperProject extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 2),
               ],
             ),
           ),

@@ -20,6 +20,21 @@ class DeveloperUniqueItem {
       required this.database,
       required this.points});
 
+
+  factory DeveloperUniqueItem.fromJson(Map<String, dynamic> json) {
+    return DeveloperUniqueItem(
+      id: json['id'],
+      name: json['name'],
+      image: json['image'],
+      specialityType: json['specialityType'],
+      yearsOfExperience: json['yearsOfExperience'],
+      frameworks: json['frameworks'],
+      programmingLanguage: json['programmingLanguage'],
+      database: json['database'],
+      points: json['points'],
+    );
+  }
+
   static List<DeveloperUniqueItem> developerItems() {
     return [
       DeveloperUniqueItem(

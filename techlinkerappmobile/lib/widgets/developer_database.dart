@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/models/database.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
 
 class DeveloperDatabase extends StatelessWidget {
   final Database database;
@@ -38,13 +39,21 @@ class DeveloperDatabase extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                    child: Text(
-                  database.name!,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      database.name!,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 18),
+                    ),
+                  ],
                 )),
                 Center(
-                    child: Text(database.description!,
+                    child: Text(
+                        database.description.length > 20
+                            ? database.description!.substring(0, 20) + '...'
+                            : database.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],

@@ -6,16 +6,24 @@ class Framework {
   String? description;
   DigitalProfile? digitalProfile;
   String? iconLink;
-  int? id;
+  int id;
   String? name;
 
   Framework({
     this.description,
     this.digitalProfile,
     this.iconLink,
-    this.id,
+    required this.id,
     this.name,
   });
+
+  //a empty constructor
+  Framework.empty()
+      : description = '',
+        digitalProfile = DigitalProfile.empty(),
+        iconLink = '',
+        id = 0,
+        name = '';
 
   factory Framework.fromJson(Map<String, dynamic> json) {
     return Framework(

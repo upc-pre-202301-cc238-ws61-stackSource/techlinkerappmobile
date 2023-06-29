@@ -51,47 +51,47 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 35),
+            const SizedBox(height: 15),
 
-            const Text(
-              'Years of experience',
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
-            ),
+            // const Text(
+            //   'Years of experience',
+            //   style: TextStyle(
+            //       fontSize: 20, fontWeight: FontWeight.w400, color: textColor),
+            // ),
+            // SizedBox(height: verticalWith),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     children: yearsOfExperienceOptions
+            //         .map((yearOfExperience) => Container(
+            //               margin: const EdgeInsets.only(right: 8),
+            //               child: FilterChip(
+            //                 label: Text(yearOfExperience),
+            //                 onSelected: (selected) {
+            //                   setState(() {
+            //                     if (selected) {
+            //                       if (yearOfExperience == 'Intern') {
+            //                         selectedYearsOfExperience.clear();
+            //                       } else {
+            //                         selectedYearsOfExperience.remove('Intern');
+            //                       }
+            //                       selectedYearsOfExperience
+            //                           .add(yearOfExperience);
+            //                     } else {
+            //                       selectedYearsOfExperience
+            //                           .remove(yearOfExperience);
+            //                     }
+            //                   });
+            //                 },
+            //                 selected: selectedYearsOfExperience
+            //                     .contains(yearOfExperience),
+            //               ),
+            //             ))
+            //         .toList(),
+            //   ),
+            // ),
             SizedBox(height: verticalWith),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: yearsOfExperienceOptions
-                    .map((yearOfExperience) => Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(yearOfExperience),
-                            onSelected: (selected) {
-                              setState(() {
-                                if (selected) {
-                                  if (yearOfExperience == 'Intern') {
-                                    selectedYearsOfExperience.clear();
-                                  } else {
-                                    selectedYearsOfExperience.remove('Intern');
-                                  }
-                                  selectedYearsOfExperience
-                                      .add(yearOfExperience);
-                                } else {
-                                  selectedYearsOfExperience
-                                      .remove(yearOfExperience);
-                                }
-                              });
-                            },
-                            selected: selectedYearsOfExperience
-                                .contains(yearOfExperience),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ),
-            SizedBox(height: verticalWith),
-            Divider(thickness: ticknessWidth, color: textColor),
+            //Divider(thickness: ticknessWidth, color: textColor),
             SizedBox(height: verticalWith),
 
             // Framework filter
@@ -256,9 +256,9 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
                   .toList(),
             ),
             SizedBox(height: verticalWith),
-            Divider(thickness: ticknessWidth, color: textColor),
+            // Divider(thickness: ticknessWidth, color: textColor),
             //create a button for closing the filters overlay
-            SizedBox(height: verticalWith),
+            SizedBox(height: verticalWith + 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop({
@@ -317,7 +317,12 @@ class _DeveloperFilterState extends State<DeveloperFilter> {
             Spacer(),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop({
+                  'selectedFramework': [],
+                  'selectedProgrammingLanguage': [],
+                  'selectedDatabase': [],
+                  'selectedYearsOfExperience': []
+                });
               },
               child: const Icon(Icons.close, color: textColor, size: 30),
             ),

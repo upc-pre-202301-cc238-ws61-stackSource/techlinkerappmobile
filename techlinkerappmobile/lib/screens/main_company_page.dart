@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/developer.dart';
 import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/messages_company.dart';
 import 'package:techlinkerappmobile/screens/notifications_company.dart';
-
+import 'package:techlinkerappmobile/screens/Profile_AddProjectDeveloper.dart';
 import '../constants/colors.dart';
+import '../models/company.dart';
 import 'home_company.dart';
 
 class MainCompanyPage extends StatefulWidget {
-  const MainCompanyPage({super.key});
+  final int companyId;
+  const MainCompanyPage({super.key, required this.companyId});
 
   @override
   State<MainCompanyPage> createState() => _MainCompanyPageState();
@@ -15,13 +18,24 @@ class MainCompanyPage extends StatefulWidget {
 
 class _MainCompanyPageState extends State<MainCompanyPage> {
   int index = 0;
+  Company company = Company();
+  List<Widget> screens = [];
 
-  final screens = [
-    CompanyHome(),
-    CompanyMessage(),
-    CompanyNotifications(),
-    CompanyProfile(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    screens = [
+      CompanyHome(
+        companyId: widget.companyId,
+      ),
+      CompanyMessage(companyId: widget.companyId),
+      CompanyNotifications(
+        UserId: widget.companyId,
+      ),
+      CompanyProfile(companyId: widget.companyId),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

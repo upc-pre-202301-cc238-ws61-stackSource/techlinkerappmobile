@@ -4,34 +4,52 @@ import 'package:shimmer/shimmer.dart';
 
 import '../constants/colors.dart';
 import '../models/notification_unique_item.dart';
+import '../models/user.dart';
+
+import 'package:techlinkerappmobile/services/developer_service.dart';
+import 'package:techlinkerappmobile/models/notify.dart';
+
 import '../widgets/notification_item.dart';
 
 class DeveloperNotifications extends StatefulWidget {
-  const DeveloperNotifications({super.key});
+  final int UserId;
+  const DeveloperNotifications({Key? key, required this.UserId})
+      : super(key: key);
 
   @override
   State<DeveloperNotifications> createState() => _DeveloperNotificationsState();
 }
 
 class _DeveloperNotificationsState extends State<DeveloperNotifications> {
-  List<NotificationUniqueItem> companyNotifications =
-      NotificationUniqueItem.notificationItems();
+  List<Notify> developerNotifications = [];
+  List<User?> emitters = [];
+  bool isLoading = true;
+  final urlEmittersImages = <String>[];
 
-  bool isLoding = true;
-
-  final urlEmittersImages = [];
+  bool apiCall = false;
+  int numberOfNotifications = 10;
 
   @override
   void initState() {
     super.initState();
+    getNotificationsByDeveloperId(widget.UserId.toString()).then((value) {
+      if (mounted) {
+        setState(() {
+          apiCall = true;
+          numberOfNotifications = 1;
+        });
+      }
+    });
+  }
 
-    getNotificationsImageUrls();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+  Future refreshNotifications() async {
+    await getNotificationsByDeveloperId(widget.UserId
+        .toString()); // Actualiza el ID del desarrollador según sea necesario
   }
 
   Future loadData() async {
     if (mounted) {
-      setState(() => isLoding = true);
+      setState(() => isLoading = true);
     }
 
     await Future.wait(urlEmittersImages
@@ -39,17 +57,26 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
         .toList());
 
     if (mounted) {
-      setState(() => isLoding = false);
+      setState(() => isLoading = false);
     }
   }
 
-  Future cacheImage(BuildContext context, String urlImage) =>
-      precacheImage(CachedNetworkImageProvider(urlImage), context);
+  Future cacheImage(BuildContext context, String urlImage) async {
+    if (urlImage.isNotEmpty) {
+      await precacheImage(CachedNetworkImageProvider(urlImage), context);
+    }
+  }
 
   void getNotificationsImageUrls() {
-    for (var item in companyNotifications) {
-      urlEmittersImages.add(item.emitterIcon);
+    urlEmittersImages.clear();
+    for (var item in developerNotifications) {
+      final user = item.emitterId?.image;
+      if (user != null && user.isNotEmpty) {
+        urlEmittersImages.add(user);
+      }
     }
+
+    loadData();
   }
 
   @override
@@ -57,69 +84,94 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF39BCFD),
-                  Color(0xFF4F93E9),
-                  Color(0xFF7176EE),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF39BCFD),
+                    Color(0xFF4F93E9),
+                    Color(0xFF7176EE),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Column(
+                children: const [
+                  SizedBox(height: 40),
+                  Text(
+                    "Developer",
+                    style: TextStyle(
+                      color: cardColor,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    "Notifications",
+                    style: TextStyle(
+                      color: cardColor,
+                      fontSize: 41,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(height: 25),
                 ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
               ),
             ),
-            child: Column(children: const [
-              SizedBox(
-                height: 40,
-              ),
-              Text(
-                "Developer",
-                style: TextStyle(
-                    color: cardColor,
-                    fontSize: 40,
-                    fontWeight: FontWeight.w800),
-              ),
-              Text(
-                "Notifications",
-                style: TextStyle(
-                    color: cardColor,
-                    fontSize: 41,
-                    fontWeight: FontWeight.w800),
-              ),
-              SizedBox(
-                height: 25,
-              )
-            ]),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
+            const SizedBox(height: 20),
+            Expanded(
               child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: ListView.builder(
-                itemCount: companyNotifications.length,
-                itemBuilder: (context, index) {
-                  final notification = companyNotifications[index];
-
-                  return isLoding
-                      ? Shimmer.fromColors(
-                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                          highlightColor: Colors.grey[200]!,
-                          child: buildSkeletonNotification(context))
-                      : NotificationItem(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: RefreshIndicator(
+                  onRefresh: refreshNotifications,
+                  child: ListView.builder(
+                    itemCount: developerNotifications.isEmpty
+                        ? numberOfNotifications
+                        : developerNotifications.length,
+                    itemBuilder: (context, index) {
+                      if (developerNotifications.isEmpty) {
+                        return apiCall
+                            ? const Padding(
+                                padding: EdgeInsets.only(top: 100),
+                                child: Center(
+                                  child: Text(
+                                    'You dont have notifications',
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: buildSkeletonNotification(context),
+                              );
+                      } else {
+                        final notification = developerNotifications[index];
+                        return NotificationItem(
                           notification: notification,
-                          emmiterIcon: urlEmittersImages[index],
+                          emitterId: emitters[index] ?? User.empty(),
+                          refreshNotifications: refreshNotifications,
                         );
-                }),
-          )),
-          const SizedBox(height: 10),
-        ],
-      )),
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 
@@ -136,7 +188,6 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            //create a circle for simulating the image of avatar
             children: [
               Container(
                 width: 50,
@@ -174,5 +225,27 @@ class _DeveloperNotificationsState extends State<DeveloperNotifications> {
         ],
       ),
     );
+  }
+
+  Future getNotificationsByDeveloperId(String id) async {
+    try {
+      final notificationsData =
+          await DeveloperService.getNotificationsByDeveloperId(id);
+      if (mounted) {
+        setState(() {
+          if (notificationsData != null) {
+            developerNotifications = notificationsData
+                .map<Notify>((notification) => Notify.fromJson(notification))
+                .toList();
+            emitters = developerNotifications
+                .map<User?>((notification) => notification.emitterId)
+                .toList();
+            getNotificationsImageUrls();
+          }
+        });
+      }
+    } catch (e) {
+      print('Failed to get notifications: $e');
+    }
   }
 }

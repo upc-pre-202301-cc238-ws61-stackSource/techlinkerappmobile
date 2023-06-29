@@ -15,6 +15,14 @@ class ProgrammingLanguage {
     required this.name,
   });
 
+  //a empty constructor
+  ProgrammingLanguage.empty()
+      : description = '',
+        digitalProfile = DigitalProfile.empty(),
+        iconLink = '',
+        id = 0,
+        name = '';
+
   factory ProgrammingLanguage.fromJson(Map<String, dynamic> json) {
     return ProgrammingLanguage(
       description: json['description'],

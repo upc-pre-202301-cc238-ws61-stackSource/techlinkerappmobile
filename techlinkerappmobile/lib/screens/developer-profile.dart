@@ -2,9 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+// import 'package:techlinkerappmobile/screens/developer-Database-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-Frameworks-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-ProgramingLanguajes-create.dart';
+// import 'package:techlinkerappmobile/screens/developer-project-post.dart';
+
+import 'package:techlinkerappmobile/screens/developer_certificate_create.dart';
+import 'package:techlinkerappmobile/screens/developer_education_post.dart';
+
 import 'package:techlinkerappmobile/models/database.dart';
 import 'package:techlinkerappmobile/models/programming_language.dart';
 import 'package:techlinkerappmobile/models/study_center.dart';
+import 'package:techlinkerappmobile/screens/login.dart';
+
 import 'package:techlinkerappmobile/widgets/developer_certificate.dart';
 import 'package:techlinkerappmobile/widgets/developer_database.dart';
 import 'package:techlinkerappmobile/widgets/developer_framework.dart';
@@ -15,15 +25,21 @@ import '../models/company_unique_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../models/developer.dart';
+import '../models/digital_profile.dart';
 import '../models/education.dart';
 import '../models/framework.dart';
 import '../models/project.dart';
 import '../services/developer_service.dart';
 import '../widgets/developer_study_center.dart';
+import 'developer-Database-create.dart';
+import 'developer-Frameworks-create.dart';
+import 'developer-ProgramingLanguajes-create.dart';
+import 'developer-editProfile.dart';
+import 'developer-project-post.dart';
 
 class DeveloperProfile extends StatefulWidget {
-  final Developer developer;
-  const DeveloperProfile({required this.developer, super.key});
+  final int developerId;
+  const DeveloperProfile({required this.developerId, super.key});
 
   @override
   State<DeveloperProfile> createState() => _DeveloperProfileState();
@@ -37,6 +53,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   bool projectsIconisLoading = true;
   bool certificatesIconisLoading = true;
   bool studyCenterIconisLoading = true;
+  bool apiHasBeenCalled = false;
+
+  Developer MyDeveloper = Developer();
+  DigitalProfile? digProfile;
+  int educationId = 0;
 
   final companyPosts = PostItem.allCompanyPosts();
   List<Framework> developerFrameworks = [];
@@ -46,52 +67,80 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
   List<Certificate> developerCertificates = [];
   List<StudyCenter> developerStudyCenters = [];
 
-  final urlUserIcons = [
-    "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/1212984/pexels-photo-1212984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-  ];
+  List<StudyCenter> developerStudyCentersAtInit = [];
+  List<Framework> developerFrameworksAtInit = [];
+  List<Database> developerDatabasesAtInit = [];
+  List<Project> developerProjectsAtInit = [];
+  List<ProgrammingLanguage> developerProgrammingLanguagesAtInit = [];
+  List<Certificate> developerCertificatesAtInit = [];
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
 
-    //create delay to show shimmer 2 seconds
+    developerStudyCentersAtInit.add(StudyCenter.empty());
+    developerFrameworksAtInit.add(Framework.empty());
+    developerDatabasesAtInit.add(Database.empty());
+    developerProjectsAtInit.add(Project.empty());
+    developerProgrammingLanguagesAtInit.add(ProgrammingLanguage.empty());
+    developerCertificatesAtInit.add(Certificate.empty());
 
-    getEducationByDigitalProfileId(widget.developer.id!.toString())
-        .then((value) async {
-      developerStudyCenters = await getStudyCentersByEducation(value);
-      developerProjects =
-          await getProjectsByDigitalProfileId(widget.developer.id!.toString());
-      developerFrameworks = await getFrameworksByDigitalProfileId(
-          widget.developer.id!.toString());
-      developerDatabases = await getDatabasesByDigitalProfileId(//error
-          widget.developer.id!.toString());
-      developerProgrammingLanguages =
-          await getProgrammingLanguagesByDigitalProfileId(
-              widget.developer.id!.toString());
-      developerCertificates = await getCertficationsByEducationId(value);
+    // Crear un retraso para mostrar el efecto shimmer durante 2 segundos
+    getDeveloperById(widget.developerId.toString()).then((developer) {
+      if (mounted) {
+        setState(() {
+          MyDeveloper = developer;
+        });
+      }
+      getDigitalProfileByDeveloperId(widget.developerId.toString())
+          .then((digital) {
+        if (mounted) {
+          setState(() {
+            digProfile = digital;
+          });
+        }
+      }).then((value) {
+        getEducationByDigitalProfileId(digProfile!.id.toString())
+            .then((value) async {
+          developerStudyCenters = await getStudyCentersByEducation(value);
+          developerProjects = await getProjectsByDigitalProfileId(
+              widget.developerId.toString());
+          developerFrameworks = await getFrameworksByDigitalProfileId(
+              widget.developerId.toString());
+          developerDatabases = await getDatabasesByDigitalProfileId(
+              widget.developerId.toString());
+          developerProgrammingLanguages =
+              await getProgrammingLanguagesByDigitalProfileId(
+                  widget.developerId.toString());
+          developerCertificates = await getCertficationsByEducationId(value);
+          if (mounted) {
+            setState(() {});
+          }
 
-      setState(() {});
+          getPostImages();
+          WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+        });
+      });
     });
-
-    getPostImages();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
   }
 
   Future loadData() async {
     if (mounted) {
-      setState(() => isLoading = true);
+      setState(() {
+        isLoading = true;
+        studyCenterIconisLoading = true;
+      });
     }
 
     await Future.delayed(const Duration(seconds: 1));
-
+    if (!mounted) return;
     if (mounted) {
       await Future.wait(urlPostImages
-          .map((urlImage) => cacheImage(context, urlImage))
-          .toList());
-
-      await Future.wait(urlUserIcons
           .map((urlImage) => cacheImage(context, urlImage))
           .toList());
     }
@@ -103,13 +152,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
             projectsIconisLoading = false,
             certificatesIconisLoading = false,
             studyCenterIconisLoading = false,
+            apiHasBeenCalled = true,
           });
     }
   }
 
   Future cacheImage(BuildContext context, String urlImage) =>
       precacheImage(CachedNetworkImageProvider(urlImage), context);
-
   void getPostImages() {
     for (var item in companyPosts) {
       urlPostImages.add(item.imageUrl!);
@@ -118,6 +167,27 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldUpdateData =
+        ModalRoute.of(context)?.settings.arguments as bool?;
+    if (shouldUpdateData == true) {
+      getEducationByDigitalProfileId(widget.developerId.toString())
+          .then((value) async {
+        developerStudyCenters = await getStudyCentersByEducation(value);
+        developerProjects =
+            await getProjectsByDigitalProfileId(widget.developerId.toString());
+        developerFrameworks = await getFrameworksByDigitalProfileId(
+            widget.developerId.toString());
+        developerDatabases =
+            await getDatabasesByDigitalProfileId(widget.developerId.toString());
+        developerProgrammingLanguages =
+            await getProgrammingLanguagesByDigitalProfileId(
+                widget.developerId.toString());
+        developerCertificates = await getCertficationsByEducationId(value);
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -145,7 +215,29 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return LoginPage();
+                              },
+                            ));
+                          },
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     const Center(
                       child: Text(
                         "Profile",
@@ -178,26 +270,62 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(widget.developer.description!,
-                        textAlign: TextAlign.justify,
-                        style: const TextStyle(
-                            color: textColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal)),
+                    child: MyDeveloper.description != null
+                        ? Text(MyDeveloper!.description!,
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                color: textColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal))
+                        : Text(""),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                 ]),
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Education",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Education",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperEducationPost(
+                                digitalProfileId: digProfile!.id),
+                          ),
+                        ).then((value) async {
+                          await getStudyCentersByEducation(
+                                  digProfile!.id.toString())
+                              .then((value) {
+                            if (mounted) {
+                              setState(() {
+                                developerStudyCenters = value;
+                              });
+                            }
+                          });
+                        });
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -205,16 +333,27 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
                   viewportFraction: 0.8,
-
-                  // Add more options as needed
                 ),
-                items: developerStudyCenters
+                items: (developerStudyCenters.isEmpty
+                        ? developerStudyCentersAtInit
+                        : developerStudyCenters)
                     .map((item) => developerStudyCenters.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeveloperEducationPost(
+                                            digitalProfileId: digProfile!.id),
+                                  ),
+                                );
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperStudyCenter(
                             studyCenter: item, studyCenterIcon: item.iconUrl!))
                     .toList(),
@@ -222,31 +361,69 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Frameworks",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Frameworks",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperFrameworkRegister(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction: developerFrameworks.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerFrameworks
+                items: (developerFrameworks.isEmpty
+                        ? developerFrameworksAtInit
+                        : developerFrameworks)
                     .map((item) => developerFrameworks.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeveloperFrameworkRegister(
+                                            myDigitalProfile: digProfile!),
+                                  ),
+                                );
+                                print("Add Framework");
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperFramework(
                             framework: item, frameworkIcon: item.iconLink!))
                     .toList(),
@@ -254,31 +431,67 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Databases",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Database",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperDatabasePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction: developerDatabases.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerDatabases
+                items: (developerDatabases.isEmpty
+                        ? developerDatabasesAtInit
+                        : developerDatabases)
                     .map((item) => developerDatabases.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperDatabasePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperDatabase(
                             database: item, databaseIcon: item.iconLink!))
                     .toList(),
@@ -286,31 +499,69 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Programming Languages",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Programming Languages",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperLanguajePost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
                   height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   // Enable automatic sliding
-                  viewportFraction: 0.5,
+                  viewportFraction:
+                      developerProgrammingLanguages.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerProgrammingLanguages
+                items: (developerProgrammingLanguages.isEmpty
+                        ? developerProgrammingLanguagesAtInit
+                        : developerProgrammingLanguages)
                     .map((item) => developerProgrammingLanguages.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperLanguajePost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
+                                print("Add Programming Language");
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperProgrammingLanguage(
                             programmingLanguage: item,
                             programmingLanguageIcon: item.iconLink!))
@@ -319,31 +570,68 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 20,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text("Latest projects",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Projects",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperProjectPost(
+                                myDigitalProfile: digProfile!),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 270, // Adjust the height as per your requirements
+                  height: 200, // Adjust the height as per your requirements
                   enableInfiniteScroll: true, // Enable infinite scrolling
                   autoPlay: false, // Enable automatic sliding
-                  viewportFraction: 0.7,
+                  viewportFraction: developerProjects.isEmpty ? 0.7 : 0.5,
 
                   // Add more options as needed
                 ),
-                items: developerProjects
+                items: (developerProjects.isEmpty
+                        ? developerProjectsAtInit
+                        : developerProjects)
                     .map((item) => developerProjects.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DeveloperProjectPost(
+                                        myDigitalProfile: digProfile!),
+                                  ),
+                                );
+                                print("Add Project");
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperProject(
                             project: item, projectIcon: item.iconUrl!))
                     .toList(),
@@ -351,14 +639,39 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
               const SizedBox(
                 height: 20,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("Certificates & Awards",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Certificates & Awards",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
                         color: textColor,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800)),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeveloperCertificateRegister(
+                              digitalProfileId: digProfile!.id,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.add_circle_outline_outlined,
+                        color: textColor,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               CarouselSlider(
                 options: CarouselOptions(
@@ -369,13 +682,26 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
                   // Add more options as needed
                 ),
-                items: developerCertificates
+                items: (developerCertificates.isEmpty
+                        ? developerCertificatesAtInit
+                        : developerCertificates)
                     .map((item) => developerCertificates.isEmpty
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
+                        ? apiHasBeenCalled
+                            ? skeletonAddItem(context, () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeveloperCertificateRegister(
+                                            digitalProfileId: digProfile!.id),
+                                  ),
+                                );
+                              })
+                            : Shimmer.fromColors(
+                                baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                                highlightColor: Colors.grey[200]!,
+                                child: skeletonPostItem(context),
+                              )
                         : DeveloperCertificate(
                             certificate: item, certificateIcon: item.iconUrl!))
                     .toList(),
@@ -424,6 +750,78 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     );
   }
 
+  Widget skeletonAddItem(BuildContext context, Function onPressed) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Color.fromARGB(154, 228, 228, 228),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.transparent,
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              // Llama a la función onPressed cuando se presiona el botón
+              onPressed();
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              elevation: 0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF39BCFD),
+                    Color(0xFF4F93E9),
+                    Color(0xFF7176EE),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Text(
+                      textAlign: TextAlign.center,
+                      "Add",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget buildSkeletonUserIcon(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10, top: 10),
@@ -434,43 +832,96 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     );
   }
 
-  Card buildProfileCard() {
+  Widget buildProfileCard() {
+    if (MyDeveloper == null) {
+      return CircularProgressIndicator();
+    }
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(widget.developer.image!),
+      child: Stack(
+        alignment: Alignment
+            .topRight, // Alinea el botón en la esquina superior derecha
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${widget.developer.firstName!} ${widget.developer.lastName!}',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MyDeveloper.image != null
+                    ? CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(MyDeveloper!.image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 50,
+                      ),
+                const SizedBox(height: 16),
+                Text(
+                  '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: textColor),
+                ),
+                const SizedBox(height: 5),
+                MyDeveloper.email != null
+                    ? Text(
+                        MyDeveloper!.email!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: textColor,
+                        ),
+                      )
+                    : Text(""),
+                const SizedBox(height: 8),
+              ],
             ),
-            const SizedBox(height: 5),
-            Text(
-              widget.developer.email!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: textColor,
+          ),
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                    builder: (_) => EditProfileView(
+                      myDeveloper: MyDeveloper,
+                    ),
+                  ))
+                      .then((value) async {
+                    Map<String, dynamic> MyDeveloperUpdatE = value;
+                    if (mounted && MyDeveloperUpdatE != null) {
+                      setState(() {
+                        MyDeveloper = Developer.fromJson(MyDeveloperUpdatE);
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                  ),
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.blue, // Cambia el color del icono aquí
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -518,6 +969,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
           await DeveloperService.getEducationByDigitalProfileId(id);
       if (mounted) {
         final education = Education.fromJson(educationData);
+        if (mounted) {
+          setState(() {
+            educationId = education.id!;
+          });
+        }
         return education.id.toString();
       }
     } catch (e) {
@@ -638,5 +1094,32 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     }
 
     return [];
+  }
+
+  Future<Developer> getDeveloperById(String id) async {
+    try {
+      final developerData = await DeveloperService.getDeveloperById(id);
+      if (mounted) {
+        final develop = Developer.fromJson(developerData);
+        return develop;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
+
+    return Developer(); // Retornar una instancia vacía de Developer en caso de error
+  }
+
+  Future getDigitalProfileByDeveloperId(String id) async {
+    try {
+      final digitalProfileData =
+          await DeveloperService.getDigitalProfileByDeveloperId(id);
+      if (mounted) {
+        final digitalProfile = DigitalProfile.fromJson(digitalProfileData);
+        return digitalProfile;
+      }
+    } catch (e) {
+      print('Failed to fetch developer data. Error: $e');
+    }
   }
 }

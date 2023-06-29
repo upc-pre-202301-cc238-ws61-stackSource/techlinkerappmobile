@@ -1,14 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:techlinkerappmobile/models/company.dart';
+import 'package:techlinkerappmobile/models/company_x_message.dart';
+import 'package:techlinkerappmobile/models/message_company.dart';
+import 'package:techlinkerappmobile/services/company_service.dart';
+import 'package:techlinkerappmobile/services/developer_service.dart';
+import 'package:techlinkerappmobile/widgets/message_item_company.dart';
 
 import '../constants/colors.dart';
+import '../models/developer.dart';
 import '../models/developer_unique_item.dart';
+import '../models/developer_x_message.dart';
+import '../models/message.dart';
 import '../widgets/message_item.dart';
 import 'message_company_inbox.dart';
+import 'message_developer_inbox .dart';
 
 class DeveloperMessages extends StatefulWidget {
-  const DeveloperMessages({super.key});
+  final int developerId;
+  const DeveloperMessages({super.key, required this.developerId});
 
   @override
   State<DeveloperMessages> createState() => _DeveloperMessagesState();
@@ -16,8 +27,11 @@ class DeveloperMessages extends StatefulWidget {
 
 class _DeveloperMessagesState extends State<DeveloperMessages> {
   bool isLoding = true;
+  bool apiCall = false;
+  int numberOfMessages = 10;
 
   final urlMessagesIcons = [];
+  List<CompanyMessage> companyContacts = <CompanyMessage>[];
 
   @override
   void initState() {
@@ -25,6 +39,14 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
 
     getDevelopersImageUrls();
     WidgetsBinding.instance!.addPostFrameCallback((_) => loadData());
+    getMessagesByDeveloperId(widget.developerId.toString()).then((value) {
+      if (mounted) {
+        setState(() {
+          apiCall = true;
+          numberOfMessages = 1;
+        });
+      }
+    });
   }
 
   Future loadData() async {
@@ -99,27 +121,52 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ListView.builder(
-                itemCount: DeveloperUniqueItem.developerItems().length,
+                itemCount:
+                    companyContacts.isEmpty ? numberOfMessages : companyContacts.length,
                 itemBuilder: (context, index) {
-                  final developer = DeveloperUniqueItem.developerItems()[index];
-
-                  return isLoding
-                      ? Shimmer.fromColors(
-                          baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                          highlightColor: Colors.grey[200]!,
-                          child: buildSkeleton(context))
-                      : MessageItem(
-                          item: developer,
-                          onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CompanyMessageInbox(item: developer),
-                                  ),
+                  if (companyContacts.isEmpty) {
+                    return apiCall
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Text(
+                                'You dont have messages yet',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              },
-                          urlImage: urlMessagesIcons[index]);
+                              ),
+                            ),
+                          )
+                        : Shimmer.fromColors(
+                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
+                            highlightColor: Colors.grey[200]!,
+                            child: buildSkeleton(context));
+                  } else {
+                    final company = companyContacts[index];
+
+                    return MessageItemCompany(
+                        item: company,
+                        onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DeveloperMessageInbox(
+                                      developerId: widget.developerId!,
+                                      item: company),
+                                ),
+                              ).then((value) {
+                                if (mounted) {
+                                  setState(() {
+                                    getMessagesByDeveloperId(
+                                        widget.developerId.toString());
+                                  });
+                                }
+                              }),
+                            },
+                        urlImage: company.company.image!);
+                  }
                 },
               ),
             ),
@@ -155,5 +202,59 @@ class _DeveloperMessagesState extends State<DeveloperMessages> {
         ],
       ),
     );
+  }
+
+  Future<Company> getCompanyById(String id) async {
+    Company company = Company();
+
+    try {
+      final companyData = await CompanyService.getCompanyById(id);
+      if (mounted) {
+        company = Company.fromJson(companyData);
+      }
+    } catch (e) {
+      print('Failed to fetch company data. Error: $e');
+    }
+
+    return company;
+  }
+
+  Future getMessagesByDeveloperId(String id) async {
+    List<MessageCompany> messages = <MessageCompany>[];
+    List<Company> myCompanyContacts = <Company>[];
+
+    try {
+      final messagesData =
+          await DeveloperService.getLastMessagesByDeveloperId(id);
+      if (mounted) {
+        messages.addAll(messagesData
+            .map<MessageCompany>((message) => MessageCompany.fromJson(message))
+            .toList());
+      }
+    } catch (e) {
+      print('Failed to fetch messages data. Error: $e');
+    }
+
+    //print all messages
+    for (var message in messages) {
+      myCompanyContacts
+          .add(await getCompanyById(message.receiverId.toString()));
+    }
+
+    companyContacts.clear();
+
+    //add developers from myDevContacts  and Nessage from  messages to developerContacts, before adding make sure that developer id is similar to message receiver id
+    for (var company in myCompanyContacts) {
+      for (var message in messages) {
+        if (company.id == message.receiverId) {
+          companyContacts
+              .add(CompanyMessage(company: company, message: message));
+        }
+      }
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

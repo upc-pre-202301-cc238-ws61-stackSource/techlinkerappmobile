@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/programming_language.dart';
+import '../services/developer_service.dart';
 
 class DeveloperProgrammingLanguage extends StatelessWidget {
   final ProgrammingLanguage programmingLanguage;
@@ -40,13 +41,37 @@ class DeveloperProgrammingLanguage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                    child: Text(
-                  programmingLanguage.name!,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 18),
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 60.0),
+                      child: Text(
+                        programmingLanguage.name!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        DeveloperService.deleteProgrammingLanguage(
+                            programmingLanguage.id);
+                        // Lógica para eliminar el elemento
+                        // Puedes implementar aquí la acción que deseas realizar al hacer clic en el icono "delete"
+                      },
+                      child: Icon(Icons.delete),
+                    ),
+                  ],
                 )),
                 Center(
-                    child: Text(programmingLanguage.description!,
+                    child: Text(
+                        programmingLanguage.description.length > 20
+                            ? programmingLanguage.description!
+                                    .substring(0, 20) +
+                                '...'
+                            : programmingLanguage.description!,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400, fontSize: 16)))
               ],
@@ -56,4 +81,6 @@ class DeveloperProgrammingLanguage extends StatelessWidget {
       ),
     );
   }
+
+  void Eliminar() {}
 }

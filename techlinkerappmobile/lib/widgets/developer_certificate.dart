@@ -44,7 +44,10 @@ class DeveloperCertificate extends StatelessWidget {
                       fontWeight: FontWeight.w700, fontSize: 18),
                 ),
                 const SizedBox(height: 5),
-                Text(certificate.description!,
+                Text(
+                    certificate.description.length > 20
+                        ? certificate.description!.substring(0, 20) + '...'
+                        : certificate.description!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontWeight: FontWeight.w400, fontSize: 16)),
