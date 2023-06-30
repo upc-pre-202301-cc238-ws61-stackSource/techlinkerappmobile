@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:techlinkerappmobile/models/accept_terms.dart';
 import 'package:techlinkerappmobile/screens/main_company_page.dart';
+import 'package:techlinkerappmobile/screens/terms.dart';
+import 'package:techlinkerappmobile/util/db_helper.dart';
 
 import '../models/company.dart';
 import '../models/developer.dart';
@@ -21,6 +24,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final formKey = GlobalKey<FormState>();
+  DbHelper ? dbHelper;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String email = '';
@@ -49,13 +53,27 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     hasPressedRegister = false;
   }
 
+  bool accepted = false;
+
+  AcceptTerms ? acceptTerms = AcceptTerms(id: 0, isAccepted: 0);
+  
+
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DbHelper();
+    dbHelper!.openDb();
+    if(mounted){
+      insertAcceptTermsInDB(acceptTerms!);
+    }
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.isDeveloper
-            ? const Text("Register Developer")
-            : const Text("Register Company"),
+        title: widget.isDeveloper ? const Text("Register Developer") : const Text("Register Company"),
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
@@ -83,8 +101,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     key: formKey,
                     child: Theme(
                       data: ThemeData(
-                        brightness: Brightness.dark,
-                        primarySwatch: Colors.cyan,
                         inputDecorationTheme: InputDecorationTheme(
                           labelStyle: TextStyle(
                             color: Colors.black87,
@@ -208,15 +224,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 fillColor: Color.fromARGB(255, 236, 233, 233),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                     color: Theme.of(context).primaryColorDark,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _isConfirmPasswordVisible =
-                                          !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
+                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
                                     });
                                   },
                                 ),
@@ -348,6 +361,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 },
                                 keyboardType: TextInputType.text,
                               ),
+ 
                             hasPressedRegister
                                 ? CircularProgressIndicator()
                                 : Padding(
@@ -477,6 +491,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     }
   }
 
+  Future insertAcceptTermsInDB(AcceptTerms acceptTerms) async {
+    await dbHelper!.openDb();
+    await dbHelper!.insertAcceptTerms(acceptTerms);
+  }
+
   Future registerDeveloper(Developer dev) async {
     final user = await LoginService.GetUserByEmail(email);
     if (user.email == email) {
@@ -583,5 +602,21 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
       print(response);
     }
+  }
+
+  Future isAcceptedTerms(AcceptTerms acceptTerms) async {
+    print("--------------------------------Update------------------");
+    await dbHelper!.openDb();
+    final response = await dbHelper!.getLatestAcceptTerms();
+    
+    setState(() {
+      print(response);
+      if (response.isAccepted == 1) {
+        accepted = true;
+      }
+      else{
+        accepted = false;
+      }
+    });
   }
 }
