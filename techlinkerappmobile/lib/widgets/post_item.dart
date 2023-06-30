@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
 import 'package:techlinkerappmobile/models/post.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../models/developer.dart';
 import '../screens/common/flash-correct-message-widget.dart';
 import '../services/developer_service.dart';
@@ -28,6 +28,15 @@ class CompanyPost extends StatelessWidget {
         idReceiver,
         'Developer ${developer.firstName} is interest in your post ${item!.title}');
   }
+  Future AbrirGogle(String address) async{
+     String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+
+    await launch(googleMapsUrl).catchError((e) {
+      throw 'No se pudo abrir Google Maps';
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +92,12 @@ class CompanyPost extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.location_on),
+                            IconButton(onPressed:(){
+                              String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=${item.company.address!.toString()}';
+                               launch(googleMapsUrl).catchError((e) {
+                                throw 'No se pudo abrir Google Maps';
+                                });
+                            }, icon: const Icon(Icons.location_on)),
                             SizedBox(width: 8),
                             Text(item.company.address!),
                           ],
