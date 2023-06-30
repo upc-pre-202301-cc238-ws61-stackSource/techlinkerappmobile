@@ -73,42 +73,45 @@ class _GithubCardState extends State<GithubCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        margin: EdgeInsets.all(32.0),
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'GitHub Username',
+    return Column(
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+        Card(
+          margin: EdgeInsets.all(32.0),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'GitHub Username',
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16.0),
-              _usernameController.text == ''
-                  ? ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Connect Account'),
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color.fromARGB(255, 182, 192,
-                            200), // Cambiar el color de fondo del botón
-                        onPrimary: Colors
-                            .white, // Cambiar el color del texto del botón
+                const SizedBox(height: 16.0),
+                _usernameController.text == ''
+                    ? ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('Connect Account'),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color.fromARGB(255, 182, 192,
+                              200), // Cambiar el color de fondo del botón
+                          onPrimary: Colors
+                              .white, // Cambiar el color del texto del botón
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          _connectAccount(_usernameController.text, context);
+                        },
+                        child: const Text('Connect Account'),
                       ),
-                    )
-                  : ElevatedButton(
-                      onPressed: () {
-                        _connectAccount(_usernameController.text, context);
-                      },
-                      child: const Text('Connect Account'),
-                    ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

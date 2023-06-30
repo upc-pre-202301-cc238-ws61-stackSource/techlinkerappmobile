@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
       //home: LoginPage(),
-      home: LoginPage(),
+      home: DeveloperProfile(developerId: 1),
     );
   }
 }

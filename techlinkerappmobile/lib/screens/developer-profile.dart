@@ -330,6 +330,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           top: 30, bottom: 10, left: 20, right: 20),
                       child: GestureDetector(
                         onTap: () {
+                          print("THIS IS THE GITHUB URL: ");
+                          print(githubUrl);
                           if (githubUrl != "none") launch(githubUrl);
                         },
                         child: Container(
@@ -372,6 +374,24 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                                 'https://cdn-icons-png.flaticon.com/512/25/25231.png',
                                 width: 24,
                                 height: 24,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    githubUsername = "none";
+                                    githubAvatarUrl = "none";
+                                    githubUrl = "none";
+                                  });
+                                  setGithubData();
+                                },
+                                child: Icon(
+                                  Icons.cleaning_services_outlined,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
                               const SizedBox(
                                 width: 20,
@@ -1255,12 +1275,17 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString('username') ?? "none";
     String avatar = prefs.getString('avatar_url') ?? "none";
-    String githubUrl = prefs.getString('github_url') ?? "none";
+    String url = prefs.getString('github_url') ?? "none";
 
     setState(() {
       githubUsername = username;
       githubAvatarUrl = avatar;
-      githubUrl = githubUrl;
+      githubUrl = url;
     });
+    print("Github Credentials");
+
+    print("Github Username: $githubUsername");
+    print("Github Avatar: $githubAvatarUrl");
+    print("Github Url: $githubUrl");
   }
 }
