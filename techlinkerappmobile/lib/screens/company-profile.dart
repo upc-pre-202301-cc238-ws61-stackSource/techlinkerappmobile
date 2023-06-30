@@ -31,9 +31,23 @@ class _CompanyProfileState extends State<CompanyProfile> {
     "https://images.pexels.com/photos/774095/pexels-photo-774095.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   ];
 
+  List<CompanyPost> companyPostAtInit = [];
+  bool backendCalled = false;
+
   @override
   void initState() {
     super.initState();
+    backendCalled = false;
+    companyPostAtInit.add(CompanyPost(
+        developerId: 1,
+        show: true,
+        item: Post(
+            company: Company.empty(),
+            description: "",
+            id: 1,
+            imageUrl: "",
+            title: "")));
+
     getPostByCompanyId(widget.companyId.toString()).then((value) {
       companyPosts = value;
 
@@ -48,6 +62,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
           if (mounted) {
             setState(() {});
           }
+          backendCalled = true;
         });
       });
     });
@@ -91,6 +106,15 @@ class _CompanyProfileState extends State<CompanyProfile> {
     super.dispose();
   }
 
+  void updateCompanyData() async {
+    companyPosts = await getPostByCompanyId(widget.companyId.toString());
+    if (mounted) {
+      setState(() {
+        companyPosts = companyPosts;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final shouldUpdateData =
@@ -103,6 +127,9 @@ class _CompanyProfileState extends State<CompanyProfile> {
         }
       });
     }
+
+    updateCompanyData();
+
     return Scaffold(
       backgroundColor: primaryColor,
       body: Container(
@@ -227,15 +254,29 @@ class _CompanyProfileState extends State<CompanyProfile> {
 
                   // Add more options as needed
                 ),
-                items: companyPosts
-                    .map((item) => isLoading && usersIconisLoading
-                        ? Shimmer.fromColors(
-                            baseColor: Color.fromARGB(255, 219, 221, 225)!,
-                            highlightColor: Colors.grey[200]!,
-                            child: skeletonPostItem(context),
-                          )
-                        : CompanyPost(developerId: -1, show: true, item: item))
-                    .toList(),
+                items: companyPosts.isEmpty
+                    ? backendCalled
+                        ? companyPostAtInit
+                            .map((item) => skeletonAddItem(context, () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => CompanyCreatePost(
+                                            companyId:
+                                                widget.companyId.toString(),
+                                          )));
+                                }))
+                            .toList()
+                        : companyPostAtInit
+                            .map((item) => Shimmer.fromColors(
+                                  baseColor:
+                                      Color.fromARGB(255, 219, 221, 225)!,
+                                  highlightColor: Colors.grey[200]!,
+                                  child: skeletonPostItem(context),
+                                ))
+                            .toList()
+                    : companyPosts
+                        .map((item) => CompanyPost(
+                            developerId: -1, show: true, item: item))
+                        .toList(),
               ),
               const SizedBox(
                 height: 25,
@@ -244,6 +285,78 @@ class _CompanyProfileState extends State<CompanyProfile> {
           )),
         ],
       )),
+    );
+  }
+
+  Widget skeletonAddItem(BuildContext context, Function onPressed) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Color.fromARGB(154, 228, 228, 228),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      height: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: Colors.transparent,
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              // Llama a la función onPressed cuando se presiona el botón
+              onPressed();
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              elevation: 0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF39BCFD),
+                    Color(0xFF4F93E9),
+                    Color(0xFF7176EE),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      textAlign: TextAlign.center,
+                      "New Post",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

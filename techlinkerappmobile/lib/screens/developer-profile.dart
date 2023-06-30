@@ -277,7 +277,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) => GithubCard(),
+                            builder: (context) =>
+                                GithubCard(developerId: widget.developerId),
                           ).then((value) {
                             if (mounted && value != null && value[0] != "") {
                               setState(() {
@@ -783,7 +784,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "Certificates & Awards",
                       textAlign: TextAlign.justify,
                       style: TextStyle(
@@ -803,7 +804,7 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                           ),
                         );
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.add_circle_outline_outlined,
                         color: textColor,
                         size: 30,
@@ -930,13 +931,13 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text(
                       textAlign: TextAlign.center,
                       "Add",
@@ -1264,18 +1265,20 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
 
   void setGithubData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', githubUsername);
-    prefs.setString('avatar_url', githubAvatarUrl);
-    prefs.setString('github_url', githubUrl);
+    prefs.setString('username_${widget.developerId}', githubUsername);
+    prefs.setString('avatar_url_${widget.developerId}', githubAvatarUrl);
+    prefs.setString('github_url_${widget.developerId}', githubUrl);
 
     getGithubData();
   }
 
   void getGithubData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = prefs.getString('username') ?? "none";
-    String avatar = prefs.getString('avatar_url') ?? "none";
-    String url = prefs.getString('github_url') ?? "none";
+    String username =
+        prefs.getString('username_${widget.developerId}') ?? "none";
+    String avatar =
+        prefs.getString('avatar_url_${widget.developerId}') ?? "none";
+    String url = prefs.getString('github_url_${widget.developerId}') ?? "none";
 
     setState(() {
       githubUsername = username;

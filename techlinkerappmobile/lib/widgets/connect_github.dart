@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/common/flash-correct-message-widget.dart';
 
 class GithubCard extends StatefulWidget {
-  const GithubCard({super.key});
+  final int developerId;
+  const GithubCard({required this.developerId, super.key});
 
   @override
   State<GithubCard> createState() => _GithubCardState();
@@ -37,9 +38,11 @@ class _GithubCardState extends State<GithubCard> {
 
       if (response != null && response['login'] != null) {
         SharedPreferences.getInstance().then((prefs) {
-          prefs.setString('username', response['login']);
-          prefs.setString('avatar_url', response['avatar_url']);
-          prefs.setString('github_url', response['html_url']);
+          prefs.setString('username_${widget.developerId}', response['login']);
+          prefs.setString(
+              'avatar_url_${widget.developerId}', response['avatar_url']);
+          prefs.setString(
+              'github_url_${widget.developerId}', response['html_url']);
         });
 
         print(response['login']);

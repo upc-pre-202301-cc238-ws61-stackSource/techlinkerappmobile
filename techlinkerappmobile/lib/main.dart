@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:techlinkerappmobile/screens/company-profile.dart';
 import 'package:techlinkerappmobile/screens/developer-profile.dart';
 import 'package:techlinkerappmobile/screens/login.dart';
 import 'package:techlinkerappmobile/screens/main_developer_page.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
       //home: LoginPage(),
-      home: DeveloperProfile(developerId: 1),
+      home: CompanyProfile(companyId: 11),
     );
   }
 }
