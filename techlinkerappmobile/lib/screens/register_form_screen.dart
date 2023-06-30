@@ -45,6 +45,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   String bannerImage = ''; //
   String description = ''; //
   String image = ''; //
+  bool hasPressedRegister = false;
+
+  @override
+  void initState() {
+    super.initState();
+    hasPressedRegister = false;
+  }
 
   bool accepted = false;
 
@@ -354,142 +361,106 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 },
                                 keyboardType: TextInputType.text,
                               ),
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => 
-                                  TermsAndConditions(acceptTerms: acceptTerms!,))).then(
-                                    (value) => {
-                                      setState(() {
-                                        isAcceptedTerms(acceptTerms!);
-                                      })
-                                    });
-                              },
-                              child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Checkbox(
-                                    activeColor: Colors.blueAccent,
-                                    value: accepted,
-                                    onChanged: (value) {
-                                    setState(() {
-                                      accepted = value!;
-                                      if (accepted)
-                                        acceptTerms!.isAccepted = 1;
-                                      dbHelper!.openDb();
-                                      dbHelper!.updateAcceptTerms(acceptTerms!);
-                                      });
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
+ 
+                            hasPressedRegister
+                                ? CircularProgressIndicator()
+                                : Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 25),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (formKey.currentState!.validate()) {
+                                          verifyDataToRegister();
+                                          formKey.currentState!.save();
+                                          if (widget.isDeveloper) {
+                                            Developer developer = Developer(
+                                              id: id,
+                                              firstName: firstName,
+                                              lastName: lastName,
+                                              email: email,
+                                              phone: phone,
+                                              password: password,
+                                              role: role,
+                                              description: description,
+                                              image: image,
+                                              bannerImage: bannerImage,
+                                            );
+                                            print(
+                                                'Llamando a insert developer');
+                                            registerDeveloper(developer);
+                                          } else {
+                                            Company company = Company(
+                                              id: id,
+                                              firstName: firstName,
+                                              lastName: lastName,
+                                              email: email,
+                                              phone: phone,
+                                              password: password,
+                                              role: role,
+                                              description: description,
+                                              image: image,
+                                              bannerImage: bannerImage,
+                                              ruc: ruc,
+                                              owner: owner,
+                                              name: name,
+                                              address: address,
+                                              country: country,
+                                              city: city,
+                                            );
+                                            print('Llamando a insert Company');
+                                            registerCompany(company);
+                                          }
+
+                                          if (mounted) {
+                                            setState(() {
+                                              hasPressedRegister = true;
+                                            });
+                                          }
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.transparent,
+                                        elevation: 0,
                                       ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'Accept our terms of services & privacy policy',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 25),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate() && accepted) {
-                                    verifyDataToRegister();
-                                    formKey.currentState!.save();
-                                    if (widget.isDeveloper) {
-                                      Developer developer = Developer(
-                                        id: id,
-                                        firstName: firstName,
-                                        lastName: lastName,
-                                        email: email,
-                                        phone: phone,
-                                        password: password,
-                                        role: role,
-                                        description: description,
-                                        image: image,
-                                        bannerImage: bannerImage,
-                                      );
-                                      print('Llamando a insert developer');
-                                      registerDeveloper(developer);
-                                    } else {
-                                      Company company = Company(
-                                        id: id,
-                                        firstName: firstName,
-                                        lastName: lastName,
-                                        email: email,
-                                        phone: phone,
-                                        password: password,
-                                        role: role,
-                                        description: description,
-                                        image: image,
-                                        bannerImage: bannerImage,
-                                        ruc: ruc,
-                                        owner: owner,
-                                        name: name,
-                                        address: address,
-                                        country: country,
-                                        city: city,
-                                      );
-                                      print('Llamando a insert Company');
-                                      registerCompany(company);
-                                    }
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.transparent,
-                                  elevation: 0,
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: accepted ?
-                                      [
-                                        Color(0xFF39BCFD),
-                                        Color(0xFF4F93E9),
-                                        Color(0xFF7176EE),
-                                      ]
-                                       : [
-                                        Color.fromARGB(255, 149, 153, 155),
-                                        Color.fromARGB(255, 159, 160, 161),
-                                        Color.fromARGB(255, 109, 109, 116),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(15.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Text(
-                                          textAlign: TextAlign.center,
-                                          "Register",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFF39BCFD),
+                                              Color(0xFF4F93E9),
+                                              Color(0xFF7176EE),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.0),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: const [
+                                              Text(
+                                                textAlign: TextAlign.center,
+                                                "Register",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
                             const SizedBox(height: 20.0),
                           ],
                         ),
@@ -504,8 +475,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   void verifyDataToRegister() {
-    image =
-        'https://www.kindpng.com/picc/m/144-1447559_profile-icon-missing-profile-picture-icon-hd-png.png';
+    image = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
     if (widget.isDeveloper) {
       bannerImage =
           'https://www.techyon.es/media/news/web-developer-principales-responsabilidades-y-competencias_1650467356_100.jpg';

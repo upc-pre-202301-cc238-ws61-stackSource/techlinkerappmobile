@@ -39,18 +39,10 @@ class DeveloperFramework extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Text(
-                          framework.name!,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 18),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    framework.name!,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 18),
                   ),
                 ),
                 Center(

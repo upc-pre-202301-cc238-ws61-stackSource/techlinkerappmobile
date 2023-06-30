@@ -32,6 +32,15 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
   Title _titleSelected = Title.BackendDeveloper;
 
   final formKey = GlobalKey<FormState>();
+  final descriptionKey = GlobalKey<FormFieldState<String>>();
+  final descriptionKey2 = GlobalKey<FormFieldState<String>>();
+
+  @override
+  void initState() {
+    super.initState();
+    imageUrlPost =
+        "https://www.simplilearn.com/ice9/free_resources_article_thumb/How_to_Become_a_Back_End_Developer.jpg";
+  }
 
   void createPost(String id) async {
     final company = await CompanyService.getCompanyById(id);
@@ -42,8 +51,10 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
       imageUrl: imageUrlPost,
       companyUniqueItem: CompanyUniqueItem.fromJson(company),
     );
+    print(
+        "->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-    print(postJob);
+    print(postJob.toString());
 
     final post = await CompanyService.setCompanyPost(postJob);
     if (post != null) {
@@ -139,7 +150,7 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                           _titleSelected = value!;
                           titlePost = 'Mobile Developer';
                           imageUrlPost =
-                              'https://iwdtechnologies.com/blog/wp-content/uploads/2020/05/app-development-services.jpg';
+                              'https://assets-global.website-files.com/6410ebf8e483b5bb2c86eb27/6410ebf8e483b5758186fbd8_ABM%20college%20mobile%20app%20dev%20main.jpg';
                         });
                       },
                     ),
@@ -169,7 +180,7 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                           _titleSelected = value!;
                           titlePost = 'Data Scientist';
                           imageUrlPost =
-                              'https://bernardmarr.com/wp-content/uploads/2022/11/The-Top-5-Data-Science-And-Analytics-Trends-In-2023.jpg';
+                              'https://d1m75rqqgidzqn.cloudfront.net/wp-data/2019/09/11134058/What-is-data-science-2.jpg';
                         });
                       },
                     ),
@@ -193,6 +204,7 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                       padding: const EdgeInsets.only(
                           left: 25.0, right: 20.0, top: 8.0),
                       child: TextFormField(
+                        key: descriptionKey,
                         decoration: const InputDecoration(
                           labelText: 'Specify developer type',
                           border: OutlineInputBorder(),
@@ -213,6 +225,7 @@ class _CompanyCreatePostState extends State<CompanyCreatePost> {
                     padding: const EdgeInsets.only(
                         left: 25.0, right: 20.0, top: 8.0),
                     child: TextFormField(
+                      key: descriptionKey2,
                       decoration: const InputDecoration(
                         labelText: 'Description',
                         border: OutlineInputBorder(),

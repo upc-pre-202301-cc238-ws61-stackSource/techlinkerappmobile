@@ -25,6 +25,11 @@ class PostItem {
     );
   }
 
+  @override
+  String toString() {
+    return 'PostItem{id: $id, title: $title, description: $description, imageUrl: $imageUrl, companyUniqueItem: $companyUniqueItem}';
+  }
+
   static List<PostItem> allCompanyPosts() {
     return [
       PostItem(

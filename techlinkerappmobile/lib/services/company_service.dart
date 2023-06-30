@@ -39,7 +39,8 @@ class CompanyService {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
-        throw Exception('Failed to create developer. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to create developer. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to create developer. Error: $e');
@@ -89,7 +90,7 @@ class CompanyService {
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         return jsonData;
       } else {
@@ -305,7 +306,6 @@ class CompanyService {
     }
   }
 
-
   static getNotificationsByCompanyId(String id) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications');
     print(url);
@@ -329,7 +329,8 @@ class CompanyService {
     }
   }
 
-  static deleteNotificationIdByDeveloperIdOrCompanyId(String id, String notificationId) async {
+  static deleteNotificationIdByDeveloperIdOrCompanyId(
+      String id, String notificationId) async {
     final url = Uri.parse('$baseUrl/users/$id/notifications/$notificationId');
     print(url);
     try {
