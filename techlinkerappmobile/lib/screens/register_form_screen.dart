@@ -24,7 +24,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final formKey = GlobalKey<FormState>();
-  DbHelper ? dbHelper;
+  DbHelper? dbHelper;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String email = '';
@@ -38,42 +38,37 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   String city = '';
   String country = '';
 
-  String role = ''; //
-  String name = ''; //
-  String owner = ''; //
-  String ruc = ''; //
-  String bannerImage = ''; //
-  String description = ''; //
-  String image = ''; //
+  String role = '';
+  String name = '';
+  String owner = '';
+  String ruc = '';
+  String bannerImage = '';
+  String description = '';
+  String image = '';
   bool hasPressedRegister = false;
-
-  @override
-  void initState() {
-    super.initState();
-    hasPressedRegister = false;
-  }
-
   bool accepted = false;
 
-  AcceptTerms ? acceptTerms = AcceptTerms(id: 0, isAccepted: 0);
-  
+  AcceptTerms? acceptTerms = AcceptTerms(id: 0, isAccepted: 0);
 
   @override
   void initState() {
     super.initState();
     dbHelper = DbHelper();
     dbHelper!.openDb();
-    if(mounted){
+    hasPressedRegister = false;
+
+    if (mounted) {
       insertAcceptTermsInDB(acceptTerms!);
     }
-    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.isDeveloper ? const Text("Register Developer") : const Text("Register Company"),
+        title: widget.isDeveloper
+            ? const Text("Register Developer")
+            : const Text("Register Company"),
         backgroundColor: Colors.transparent,
         elevation: 0,
         flexibleSpace: Container(
@@ -112,6 +107,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
+                            const SizedBox(
+                              height: 5.0,
+                            ),
                             TextFormField(
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -224,12 +222,15 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 fillColor: Color.fromARGB(255, 236, 233, 233),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                    _isConfirmPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                     color: Theme.of(context).primaryColorDark,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
+                                      _isConfirmPasswordVisible =
+                                          !_isConfirmPasswordVisible; // Alternar la visibilidad de la contraseña
                                     });
                                   },
                                 ),
@@ -361,7 +362,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 },
                                 keyboardType: TextInputType.text,
                               ),
- 
+                            const SizedBox(
+                              height: 5.0,
+                            ),
                             hasPressedRegister
                                 ? CircularProgressIndicator()
                                 : Padding(
@@ -608,13 +611,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     print("--------------------------------Update------------------");
     await dbHelper!.openDb();
     final response = await dbHelper!.getLatestAcceptTerms();
-    
+
     setState(() {
       print(response);
       if (response.isAccepted == 1) {
         accepted = true;
-      }
-      else{
+      } else {
         accepted = false;
       }
     });

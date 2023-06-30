@@ -1005,7 +1005,8 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
                       ),
                 const SizedBox(height: 16),
                 Text(
-                  '${MyDeveloper!.firstName!} ${MyDeveloper!.lastName!}',
+                  '${MyDeveloper!.firstName!} ${formatLastName(MyDeveloper!.lastName!)}',
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -1290,5 +1291,11 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
     print("Github Username: $githubUsername");
     print("Github Avatar: $githubAvatarUrl");
     print("Github Url: $githubUrl");
+  }
+
+  String formatLastName(String lastName) {
+    List<String> parts = lastName.split(' ');
+    String formattedLastName = parts.join('\n');
+    return formattedLastName;
   }
 }

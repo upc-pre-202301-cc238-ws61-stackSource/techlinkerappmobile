@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tech Linker',
       //home: LoginPage(),
-      home: CompanyProfile(companyId: 11),
+      home: LoginPage(),
     );
   }
 }

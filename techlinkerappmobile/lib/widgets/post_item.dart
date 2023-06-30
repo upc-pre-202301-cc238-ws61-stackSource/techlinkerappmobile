@@ -28,15 +28,15 @@ class CompanyPost extends StatelessWidget {
         idReceiver,
         'Developer ${developer.firstName} is interest in your post ${item!.title}');
   }
-  Future AbrirGogle(String address) async{
-     String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+
+  Future AbrirGogle(String address) async {
+    String googleMapsUrl =
+        'https://www.google.com/maps/search/?api=1&query=$address';
 
     await launch(googleMapsUrl).catchError((e) {
       throw 'No se pudo abrir Google Maps';
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,12 +92,15 @@ class CompanyPost extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            IconButton(onPressed:(){
-                              String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=${item.company.address!.toString()}';
-                               launch(googleMapsUrl).catchError((e) {
-                                throw 'No se pudo abrir Google Maps';
-                                });
-                            }, icon: const Icon(Icons.location_on)),
+                            IconButton(
+                                onPressed: () {
+                                  String googleMapsUrl =
+                                      'https://www.google.com/maps/search/?api=1&query=${item.company.address!.toString()}';
+                                  launch(googleMapsUrl).catchError((e) {
+                                    throw 'No se pudo abrir Google Maps';
+                                  });
+                                },
+                                icon: const Icon(Icons.location_on)),
                             SizedBox(width: 8),
                             Text(item.company.address!),
                           ],

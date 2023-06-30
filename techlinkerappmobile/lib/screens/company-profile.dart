@@ -444,12 +444,12 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         ),
                       )
                     : Text(
-                        "${MyCompany!.firstName!} ${MyCompany!.lastName!}",
+                        '${MyCompany!.firstName!} ${formatLastName(MyCompany!.lastName!)}',
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
-                        ),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: textColor),
                       ),
                 const SizedBox(height: 5),
                 MyCompany!.email == null
@@ -653,5 +653,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
     }
 
     return Company(); // Retornar una instancia vacía de Company en caso de error
+  }
+
+  String formatLastName(String lastName) {
+    List<String> parts = lastName.split(' ');
+    String formattedLastName = parts.join('\n');
+    return formattedLastName;
   }
 }
