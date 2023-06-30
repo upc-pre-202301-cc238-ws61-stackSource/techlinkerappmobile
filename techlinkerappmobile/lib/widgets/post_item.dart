@@ -40,11 +40,12 @@ class CompanyPost extends StatelessWidget {
       importance: Importance.max,
       priority: Priority.high,
     );
+    /*
     const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
     int receiverId = int.parse(idReceiver);
-
+    print(receiverId);
     await flutterLocalNotificationsPlugin.show(
       receiverId,
       'Looking for job!',
@@ -52,6 +53,8 @@ class CompanyPost extends StatelessWidget {
       platformChannelSpecifics,
       payload: 'notification_payload',
     );
+    */
+
   }
 
 

@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techlinkerappmobile/screens/login.dart';
-import 'package:techlinkerappmobile/screens/main_developer_page.dart';
-import 'package:techlinkerappmobile/screens/main_company_page.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:techlinkerappmobile/services/notificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool hasRequestedPermission = prefs.getBool('hasRequestedPermission') ?? false;
 
-  if (!hasRequestedPermission) {
-    await requestNotificationPermission();
-    await prefs.setBool('hasRequestedPermission', true);
-  }
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  await initializeNotificationsPlugin();
+  final InitializationSettings initializationSettings =
+  InitializationSettings(android: initializationSettingsAndroid);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   runApp(const MyApp());
 }
-
+void requestNotificationPermission() async {
+  final PermissionStatus status = await Permission.notification.request();
+  print('Permiso de notificación: $status');
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
