@@ -47,5 +47,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+    <!-- Agrega la configuración de notificaciones a continuación -->
+    <key>UIUserNotificationSettings</key>
+    <dict>
+        <key>UIUserNotificationTypeAlert</key>
+        <integer>7</integer>
+        <key>UIUserNotificationTypeBadge</key>
+        <integer>5</integer>
+        <key>UIUserNotificationTypeSound</key>
+        <integer>6</integer>
+    </dict>
 </dict>
 </plist>

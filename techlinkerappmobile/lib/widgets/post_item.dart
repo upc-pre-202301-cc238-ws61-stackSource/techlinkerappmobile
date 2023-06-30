@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:techlinkerappmobile/constants/colors.dart';
+import 'package:techlinkerappmobile/models/company.dart';
 import 'package:techlinkerappmobile/models/post.dart';
 import 'package:techlinkerappmobile/services/company_service.dart';
 
 import '../models/developer.dart';
 import '../screens/common/flash-correct-message-widget.dart';
 import '../services/developer_service.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 class CompanyPost extends StatelessWidget {
   final int developerId;
   final bool show;
@@ -24,10 +28,32 @@ class CompanyPost extends StatelessWidget {
     final dev = await DeveloperService.getDeveloperById(id);
     Developer developer = Developer.fromJson(dev);
     await DeveloperService.sendNotificationFromDeveloperToCompany(
-        id,
-        idReceiver,
-        'Developer ${developer.firstName} is interest in your post ${item!.title}');
+      id,
+      idReceiver,
+      'Developer ${developer.firstName} is interested in your post ${item!.title}',
+    );
+
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    int receiverId = int.parse(idReceiver);
+
+    await flutterLocalNotificationsPlugin.show(
+      receiverId,
+      'Looking for job!',
+      'Developer ${developer.firstName} is interested in your post ${item!.title}',
+      platformChannelSpecifics,
+      payload: 'notification_payload',
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
