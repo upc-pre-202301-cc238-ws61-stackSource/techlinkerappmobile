@@ -365,6 +365,52 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                             const SizedBox(
                               height: 5.0,
                             ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            TermsAndConditions(
+                                              acceptTerms: acceptTerms!,
+                                            )))
+                                    .then((value) => {
+                                          setState(() {
+                                            isAcceptedTerms(acceptTerms!);
+                                          })
+                                        });
+                              },
+                              child: Row(
+                                //mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Checkbox(
+                                    activeColor: Colors.blueAccent,
+                                    value: accepted,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        accepted = value!;
+                                        if (accepted)
+                                          acceptTerms!.isAccepted = 1;
+                                        dbHelper!.openDb();
+                                        dbHelper!
+                                            .updateAcceptTerms(acceptTerms!);
+                                      });
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Accept our terms of services & privacy policy',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             hasPressedRegister
                                 ? CircularProgressIndicator()
                                 : Padding(
@@ -372,7 +418,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                         vertical: 25),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        if (formKey.currentState!.validate()) {
+                                        if (formKey.currentState!.validate() &&
+                                            accepted) {
                                           verifyDataToRegister();
                                           formKey.currentState!.save();
                                           if (widget.isDeveloper) {
@@ -428,12 +475,21 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                       child: Container(
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFF39BCFD),
-                                              Color(0xFF4F93E9),
-                                              Color(0xFF7176EE),
-                                            ],
+                                          gradient: LinearGradient(
+                                            colors: accepted
+                                                ? [
+                                                    Color(0xFF39BCFD),
+                                                    Color(0xFF4F93E9),
+                                                    Color(0xFF7176EE),
+                                                  ]
+                                                : [
+                                                    Color.fromARGB(
+                                                        255, 149, 153, 155),
+                                                    Color.fromARGB(
+                                                        255, 159, 160, 161),
+                                                    Color.fromARGB(
+                                                        255, 109, 109, 116),
+                                                  ],
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
                                           ),
@@ -518,7 +574,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              FlashCorrectMessageWidget(message: 'Regystered successfully'),
+              FlashCorrectMessageWidget(message: 'Registered successfully'),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.transparent,
           elevation: 0.0,
