@@ -264,7 +264,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       title: "Decline",
                       onTap: () async {
                         print('Clicked Decline');
-                        widget.acceptTerms.isAccepted = false;
+                        widget.acceptTerms.isAccepted = 0;
                         await dbHelper!.openDb();
                         await dbHelper!.updateAcceptTerms(widget.acceptTerms);
                         Navigator.pop(context);
@@ -280,7 +280,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                         print('Clicked Accept');
                         print("----------------Accept Terms----------------");
                         print(widget.acceptTerms.toJson());
-                        widget.acceptTerms.isAccepted = true;
+                        widget.acceptTerms.isAccepted = 1;
                         await dbHelper!.openDb();
                         await dbHelper!.updateAcceptTerms(widget.acceptTerms);
                         Navigator.pop(context);

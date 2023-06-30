@@ -46,7 +46,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   String description = ''; //
   String image = ''; //
 
-  AcceptTerms ? acceptTerms = AcceptTerms(id: 1, isAccepted: false);
+  bool accepted = false;
+
+  AcceptTerms ? acceptTerms = AcceptTerms(id: 0, isAccepted: 0);
   
 
   @override
@@ -54,7 +56,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     super.initState();
     dbHelper = DbHelper();
     dbHelper!.openDb();
-    dbHelper!.insertAcceptTerms(acceptTerms!);
+    if(mounted){
+      insertAcceptTermsInDB(acceptTerms!);
+    }
     
   }
 
@@ -366,10 +370,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 children: [
                                   Checkbox(
                                     activeColor: Colors.blueAccent,
-                                    value: acceptTerms!.isAccepted,
+                                    value: accepted,
                                     onChanged: (value) {
                                     setState(() {
-                                      acceptTerms!.isAccepted = value!;
+                                      accepted = value!;
+                                      if (accepted)
+                                        acceptTerms!.isAccepted = 1;
                                       dbHelper!.openDb();
                                       dbHelper!.updateAcceptTerms(acceptTerms!);
                                       });
@@ -394,7 +400,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 25),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  if (formKey.currentState!.validate()) {
+                                  if (formKey.currentState!.validate() && accepted) {
                                     verifyDataToRegister();
                                     formKey.currentState!.save();
                                     if (widget.isDeveloper) {
@@ -443,11 +449,17 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                                 child: Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
+                                    gradient: LinearGradient(
+                                      colors: accepted ?
+                                      [
                                         Color(0xFF39BCFD),
                                         Color(0xFF4F93E9),
                                         Color(0xFF7176EE),
+                                      ]
+                                       : [
+                                        Color.fromARGB(255, 149, 153, 155),
+                                        Color.fromARGB(255, 159, 160, 161),
+                                        Color.fromARGB(255, 109, 109, 116),
                                       ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -507,6 +519,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       ruc = '123456789012345';
       description = 'I am a recruiter';
     }
+  }
+
+  Future insertAcceptTermsInDB(AcceptTerms acceptTerms) async {
+    await dbHelper!.openDb();
+    await dbHelper!.insertAcceptTerms(acceptTerms);
   }
 
   Future registerDeveloper(Developer dev) async {
@@ -620,12 +637,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   Future isAcceptedTerms(AcceptTerms acceptTerms) async {
     print("--------------------------------Update------------------");
     await dbHelper!.openDb();
-    final response = await dbHelper!.getAcceptTerms(1);
+    final response = await dbHelper!.getLatestAcceptTerms();
     
     setState(() {
       print(response);
-      acceptTerms.id = response.id;
-      acceptTerms.isAccepted = response.isAccepted;
+      if (response.isAccepted == 1) {
+        accepted = true;
+      }
+      else{
+        accepted = false;
+      }
     });
   }
 }

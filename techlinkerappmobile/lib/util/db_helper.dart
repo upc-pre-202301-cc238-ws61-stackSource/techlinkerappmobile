@@ -16,10 +16,10 @@ class DbHelper {
   Future<Database> openDb() async {
     if (db == null) {
       db = await openDatabase(
-        join(await getDatabasesPath(), 'techlinker.db'),
+        join(await getDatabasesPath(), 'techlinker_v5.db'),
         onCreate: (database, version) {
           database.execute(
-            'CREATE TABLE accept_terms(id INTEGER PRIMARY KEY, isAccepted INTEGER)',
+            'CREATE TABLE accept_terms(id INTEGER PRIMARY KEY AUTOINCREMENT, isAccepted INTEGER)',
           );
         },
         version: version,
@@ -31,7 +31,7 @@ class DbHelper {
   Future<int> insertAcceptTerms(AcceptTerms acceptTerms) async {
     int id = await this.db!.insert(
           'accept_terms',
-          acceptTerms.toJson(),
+          acceptTerms.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
     return id;
@@ -49,6 +49,19 @@ class DbHelper {
       throw Exception('ID $id not found');
     }
   }
+
+  Future<AcceptTerms> getLatestAcceptTerms() async {
+  List<Map<String, dynamic>> maps = await db!.query(
+    'accept_terms',
+    orderBy: 'id DESC',
+    limit: 1,
+  );
+  if (maps.length > 0) {
+    return AcceptTerms.fromJson(maps.first);
+  } else {
+    throw Exception('No se encontraron registros en accept_terms');
+  }
+}
 
   Future<int> deleteAcceptTerms(int id) async {
     return await db!.delete(

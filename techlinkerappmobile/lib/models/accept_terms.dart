@@ -1,7 +1,7 @@
 
 class AcceptTerms{
   int? id;
-  bool? isAccepted;
+  int? isAccepted;
   AcceptTerms({
     this.id,
     this.isAccepted,
@@ -15,5 +15,12 @@ class AcceptTerms{
     data['id']=this.id;
     data['isAccepted']=this.isAccepted;
     return data;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'isAccepted': isAccepted,
+    };
   }
 }
