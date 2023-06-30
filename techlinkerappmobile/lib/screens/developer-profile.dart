@@ -113,15 +113,15 @@ class _DeveloperProfileState extends State<DeveloperProfile> {
         getEducationByDigitalProfileId(digProfile!.id.toString())
             .then((value) async {
           developerStudyCenters = await getStudyCentersByEducation(value);
-          developerProjects = await getProjectsByDigitalProfileId(
-              widget.developerId.toString());
-          developerFrameworks = await getFrameworksByDigitalProfileId(
-              widget.developerId.toString());
-          developerDatabases = await getDatabasesByDigitalProfileId(
-              widget.developerId.toString());
+          developerProjects =
+              await getProjectsByDigitalProfileId(digProfile!.id.toString());
+          developerFrameworks =
+              await getFrameworksByDigitalProfileId(digProfile!.id.toString());
+          developerDatabases =
+              await getDatabasesByDigitalProfileId(digProfile!.id.toString());
           developerProgrammingLanguages =
               await getProgrammingLanguagesByDigitalProfileId(
-                  widget.developerId.toString());
+                  digProfile!.id.toString());
           developerCertificates = await getCertficationsByEducationId(value);
           if (mounted) {
             setState(() {});
